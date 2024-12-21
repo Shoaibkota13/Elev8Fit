@@ -1,7 +1,8 @@
-//package com.fitness.elev8fit.data.login
-//
-//data class LoginState(
-//    val isloading:Boolean =false,
-//    val loginResult:LoginResult?=false,
-//    val error:String?=null
-//)
+package com.fitness.elev8fit.data.login
+
+data class LoginState(
+    val isIdle: Boolean = false,
+    val isLoading: Boolean = false,
+    val successMessage: String? = null,
+    val errorMessage: String? = null
+)

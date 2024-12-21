@@ -52,7 +52,8 @@ fun Firstonboard(navController: NavController){
     )
     {
 
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+        Column(modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(horizontalArrangement = Arrangement.Center) {
                 Text(text = "Elev",
@@ -98,10 +99,8 @@ fun Firstonboard(navController: NavController){
             val context = LocalContext.current
             Text(text = "If you have account,please sign in",
                 modifier = Modifier.clickable {
-
-
-                    Toast.makeText(context, "Hellp", Toast.LENGTH_LONG).show()
-                }, fontFamily = quicksand)
+     navController.navigate(Navdestination.login.toString())
+                }, fontFamily = quicksand, fontSize = 16.sp, fontWeight = FontWeight.Bold)
 
             Column(
                 modifier = Modifier

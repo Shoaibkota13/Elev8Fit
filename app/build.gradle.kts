@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.fitness.elev8fit"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.fitness.elev8fit"
@@ -59,6 +59,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -71,12 +72,13 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     //imagecoil
-    implementation ("io.coil-kt:coil-compose:2.4.0")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.5.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
     //view model
     val lifecycle_version = "2.8.7"
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
 }

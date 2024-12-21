@@ -241,6 +241,19 @@ fun OnBoardingCommon(
 
                 }
             }
+
+            Column( modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom) {
+                Button(onClick = buttononclick, modifier = Modifier.padding(16.dp),
+                    shape = CutCornerShape(8.dp)) {
+
+                    Text(text = buttontext)
+
+                }
+            }
         }
     }
 }

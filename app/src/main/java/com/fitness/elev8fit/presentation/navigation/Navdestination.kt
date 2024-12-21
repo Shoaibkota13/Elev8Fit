@@ -4,4 +4,6 @@ sealed class Navdestination(val route:String) {
     object onboarding1 : Navdestination("onboarding1")
     object onboarding2 : Navdestination("onboarding2")
     object onboarding3 : Navdestination("onboarding3")
+    object login :Navdestination("Login")
+    object Signup :Navdestination("SignUp")
 }

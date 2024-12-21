@@ -2,12 +2,14 @@ package com.fitness.elev8fit.presentation.activity.onboarding
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.presentation.common.OnBoardingCommon
+import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.presentation.viewmodel.imageview
 
 @Composable
-fun thirdOnboarding(viewModel: imageview){
+fun thirdOnboarding(viewModel: imageview,navController: NavController){
     val selectedImage = viewModel.selectedimg.value
 
     OnBoardingCommon(
@@ -22,14 +24,8 @@ fun thirdOnboarding(viewModel: imageview){
         buttontext ="Continue",
         viewModel = viewModel
     ) {
+        navController.navigate(Navdestination.Signup.toString())
 
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun thirdOnboardingpreview(){
-    val mockViewModel = imageview().apply { setimg(R.drawable.boy) }
-
-    thirdOnboarding(mockViewModel)
-}
