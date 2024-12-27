@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -39,28 +39,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.fitness.elev8fit.R
+import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.LoginIntent
-import com.fitness.elev8fit.presentation.viewmodel.LoginViewModel
+import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.card_color
+import com.fitness.elev8fit.ui.theme.text_color
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
-    val context = LocalContext.current
-    var isLogin by remember { mutableStateOf(true) }  // Track if login is active
+fun LoginScreen(
+    loginview: LoginViewModel,
+    signUpViewModel: SignUpViewModel,
+    navController: NavController
+) {
 
-    val loginstate by viewModel.state.collectAsState()
-    var username by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
+    val context = LocalContext.current
+    var isLogin by remember { mutableStateOf(true) }
+    val loginstate by loginview.state.collectAsState()
+    val signupstate by signUpViewModel.state.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -68,7 +71,6 @@ fun LoginScreen(viewModel: LoginViewModel) {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -93,21 +95,16 @@ fun LoginScreen(viewModel: LoginViewModel) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Welcome Message
             Text(
                 text = "Welcome To Elev8Fit",
-                modifier = Modifier.padding(16.dp),
                 fontSize = 24.sp
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
                     text = "Login",
@@ -120,26 +117,24 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 Text(
                     text = "Sign Up",
                     modifier = Modifier
-                        .clickable {
-                            isLogin = false
-                            // SignUpScreen(viewModel = SignUpViewModel())
-                        }
+                        .clickable { isLogin = false }
                         .padding(8.dp),
                     color = if (!isLogin) Color.Blue else Color.Gray,
                     fontWeight = FontWeight.Bold
                 )
             }
+
             AnimatedContent(
                 targetState = isLogin,
                 transitionSpec = {
                     slideInHorizontally(initialOffsetX = { if (targetState) -it else it }) + fadeIn() with
                             slideOutHorizontally(targetOffsetX = { if (targetState) it else -it }) + fadeOut()
-                }, label = " "
+                }, label = ""
             ) { targetState ->
                 if (targetState) {
                     Card(
-                        shape = CutCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(card_color)
+                        shape = CutCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(text_color)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -152,21 +147,28 @@ fun LoginScreen(viewModel: LoginViewModel) {
                                 cards(
                                     labeltext = "Username",
                                     icons = R.drawable.ic_username,
-                                    input = username,
-                                    onValueChange = { username = it },
+                                    input = loginstate.username,
+                                    onValueChange = { loginview.username(it) },
                                     label = "User Name"
                                 )
                                 cards(
                                     labeltext = "Password",
                                     icons = R.drawable.ic_username,
-                                    input = password,
-                                    onValueChange = {password = it },
-                                    label = "Enter Password"
+                                    input = loginstate.password,
+                                    onValueChange = { loginview.password(it) },
+                                    label = "Enter Password",
+                                    isPassword = true
                                 )
 
                                 Button(
                                     onClick = {
-                                        viewModel.LoginIntent(LoginIntent.LoginDetails(username,password))
+                                        loginview.handleLoginIntent(
+                                            LoginIntent.LoginDetails(
+                                                username = loginstate.username,
+                                                password = loginstate.password
+                                            ),
+                                            navController = navController ,context=context// Pass NavController here
+                                        )
                                     },
                                     modifier = Modifier
                                         .padding(16.dp)
@@ -177,57 +179,126 @@ fun LoginScreen(viewModel: LoginViewModel) {
                             }
                         }
                     }
+                } else {
+                    Card(
+                        shape = CutCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(text_color)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "SignUp",
+                                    modifier = Modifier.padding(16.dp),
+                                    fontSize = 24.sp
+                                )
 
-                }
-                else{
-                //    SignUpScreen(viewModel = SignUpViewModel())
-                }
-                }
+                                cards(
+                                    icons = R.drawable.ic_username,
+                                    input = signupstate.username,
+                                    label = "Enter user name",
+                                    labeltext = "User Name",
+                                    onValueChange = { signUpViewModel.username(it) }
+                                )
 
-            if(loginstate.isLoading){
+                                cards(
+                                    icons = R.drawable.ic_username,
+                                    input = signupstate.password,
+                                    label = "Enter password",
+                                    onValueChange = { signUpViewModel.password(it) },
+                                    labeltext = "Password",
+                                    isPassword = true
+                                )
+
+                                cards(
+                                    icons = R.drawable.ic_username,
+                                    input = signupstate.Confirmpassword,
+                                    label = "Confirm password",
+                                    onValueChange = { signUpViewModel.confirmPassword(it) },
+                                    labeltext = "Confirm Password",
+                                    isPassword = true
+                                )
+
+                                cards(
+                                    icons = R.drawable.ic_username,
+                                    input = signupstate.phonenumber,
+                                    label = "Phone number",
+                                    onValueChange = { signUpViewModel.phonenumber(it) },
+                                    labeltext = "Phone number",
+                                    keyboardType = KeyboardType.Phone
+                                )
+
+                                Button(
+                                    onClick = {
+                                        signUpViewModel.SignUpIntentHandler(
+                                            SignUpIntent.Signup(
+                                                signupstate.username,
+                                                signupstate.password,
+                                                signupstate.phonenumber
+                                            ), navController
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text("Sign Up")
+                                }
+
+                                signupstate.errorMessage?.let {
+                                    Text(it, color = Color.Red, modifier = Modifier.padding(8.dp))
+                                }
+
+                                if (signupstate.isLoading) {
+                                    CircularProgressIndicator()
+                                }
+
+                                signupstate.successMessage?.let {
+                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                    signUpViewModel.clearSuccessMessage()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (loginstate.isLoading) {
                 CircularProgressIndicator()
             }
 
-            if (loginstate.successMessage != null) {
-                Toast.makeText(context, loginstate.successMessage, Toast.LENGTH_LONG).show()
-            }
-            if (loginstate.errorMessage != null) {
-                Toast.makeText(context, loginstate.errorMessage, Toast.LENGTH_LONG).show()
+            loginstate.successMessage?.let {
+                Text(it, color = Color.Red, modifier = Modifier.padding(8.dp))
+                loginview.clearSuccessMessage()
             }
 
+            loginstate.errorMessage?.let {
+                Text(it, color = Color.Red, modifier = Modifier.padding(8.dp))
+
+            }
 
             Text(text = "Or")
             Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                Image(painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "",
+
+                    Image(
+                        painter = painterResource(R.drawable.google),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clickable {
+
+
+                            }
+                    )
+                Image(
+                    painter = painterResource(R.drawable.facebook),
+                    contentDescription = null,
                     modifier = Modifier
-                        .width(60.dp)
-                        .height(70.dp)
-                        .clickable {
-
-                        })
-                Image(painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .width(60.dp)
-                        .height(70.dp)
-                        .clickable {
-
-                        })
-                Image(painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .width(60.dp)
-                        .height(70.dp)
-                        .clickable {
-
-                        })
-
-
+                        .size(60.dp)
+                        .clickable { }
+                )
+                }
             }
-
-
         }
     }
-}
+
 

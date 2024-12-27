@@ -1,6 +1,8 @@
 package com.fitness.elev8fit.data.login
 
 data class LoginState(
+    var username :String="",
+    var password :String ="",
     val isIdle: Boolean = false,
     val isLoading: Boolean = false,
     val successMessage: String? = null,

@@ -5,7 +5,6 @@ data class LoginDetails(val username:String,val password:String):LoginIntent()
 
 object GoogleLogin:LoginIntent()
 object FacebookLogin:LoginIntent()
-object ApplePayLogin:LoginIntent()
 
 }
 

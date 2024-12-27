@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "593588186105",
+    "project_id": "elev8fit-f75d5",
+    "storage_bucket": "elev8fit-f75d5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593588186105:android:4e7f73d1c96590a51bab28",
+        "android_client_info": {
+          "package_name": "com.fitness.elev8fit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "593588186105-qpoha6bl0e9sfrhpbd4eageu0meag5sf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fitness.elev8fit",
+            "certificate_hash": "8c18f607d3855a36571674d2ea4ae9e324193215"
+          }
+        },
+        {
+          "client_id": "593588186105-9hk6qifh6ign6pq1revh5lapr058gt9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsbz-MZz8QIIGh0sXlkmCK1odw-9N4hH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "593588186105-9hk6qifh6ign6pq1revh5lapr058gt9q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
