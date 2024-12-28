@@ -43,7 +43,7 @@ import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.text_color
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
+fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController , otpViewModel: OtpViewModel) {
     val signupstate by viewModel.state.collectAsState()
 
     val context = LocalContext.current
@@ -104,16 +104,16 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                     // Username Input
                     cards(
-                        icons = R.drawable.ic_username,
-                        input = signupstate.username,
-                        label = "Enter user name",
+                        icons = R.drawable.user,
+                        input = signupstate.email,
+                        label = "Enter Email",
                         labeltext = "User Name",
-                        onValueChange = { viewModel.username(it) }
+                        onValueChange = { viewModel.email(it) }
                     )
 
                     // Password Input
                     cards(
-                        icons = R.drawable.ic_username,
+                        icons = R.drawable.padlock,
                         input = signupstate.password,
                         label = "Enter password",
                         onValueChange = { viewModel.password(it) },
@@ -123,7 +123,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                     // Confirm Password Input
                     cards(
-                        icons = R.drawable.ic_username,
+                        icons = R.drawable.padlock,
                         input = signupstate.Confirmpassword,
                         label = "Confirm password",
                         onValueChange = { viewModel.confirmPassword(it) },
@@ -133,7 +133,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                     // Phone Number Input
                     cards(
-                        icons = R.drawable.ic_username,
+                        icons = R.drawable.telephone,
                         input = signupstate.phonenumber,
                         label = "Phone number",
                         onValueChange = { input ->
@@ -146,7 +146,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                     )
 
                     // OTP Verification link
-                    if (signupstate.phonenumber.length == 14) {
+                    if (signupstate.phonenumber.length ==10) {
                         Text(
                             text = "Verify OTP",
                             modifier = Modifier
@@ -154,7 +154,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                                 .align(Alignment.Start)
                                 .clickable {
                                     if (activity != null) {
-                                        viewModel.triggerOtp(
+                                        otpViewModel.triggerOtp(
                                             activity,
                                             phoneNumber = signupstate.phonenumber,
                                             onOtpSent = { verificationId ->
@@ -166,11 +166,13 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                                                 navController.navigate(Navdestination.otp.toString())
                                             },
                                             onFailure = { error ->
-                                                Toast.makeText(
-                                                    context,
-                                                    error,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        error,
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
                                             }
                                         )
                                     }
@@ -184,7 +186,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                             if (signupstate.phonenumber.length == 10 && signupstate.password == signupstate.Confirmpassword) {
                                 viewModel.SignUpIntentHandler(
                                     SignUpIntent.Signup(
-                                        signupstate.username,
+                                        signupstate.email,
                                         signupstate.password,
                                         signupstate.phonenumber
                                     ),
@@ -213,6 +215,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                     signupstate.successMessage?.let {
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         viewModel.clearSuccessMessage()
+                        viewModel.resetFields()
                     }
                 }
             }

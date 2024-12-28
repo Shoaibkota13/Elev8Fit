@@ -9,6 +9,7 @@ import com.fitness.elev8fit.presentation.activity.Home.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeViewModel
 import com.fitness.elev8fit.presentation.activity.SignUp.OTPVerificationScreen
+import com.fitness.elev8fit.presentation.activity.SignUp.OtpViewModel
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
@@ -24,6 +25,7 @@ fun displaynav() {
     val navController = rememberNavController()
     val recipeViewModel = RecipeViewModel()
     val signUpViewModel = SignUpViewModel()
+    val otpViewModel = OtpViewModel()
     val loginviewmodel = LoginViewModel()
     val viewModel: imageview = imageview() // Create ViewModel here
 
@@ -38,10 +40,10 @@ fun displaynav() {
             thirdOnboarding(viewModel = viewModel, navController = navController)
         }
         composable(Navdestination.login.toString()){
-            LoginScreen(loginview = loginviewmodel, signUpViewModel =signUpViewModel,navController=navController )
+            LoginScreen(loginview = loginviewmodel, signUpViewModel =signUpViewModel,navController=navController, otpViewModel = otpViewModel )
         }
         composable(Navdestination.Signup.toString()){
-            SignUpScreen(viewModel =signUpViewModel,navController=navController)
+            SignUpScreen(viewModel =signUpViewModel,navController=navController, otpViewModel = otpViewModel)
         }
         composable(Navdestination.home.toString()){
             HomePage(navController=navController)
@@ -54,7 +56,7 @@ fun displaynav() {
             RecipeScreen(navController = navController)
         }
         composable(Navdestination.otp.toString()) {
-            OTPVerificationScreen(signUpViewModel,navController)
+            OTPVerificationScreen(otpViewModel, navController)
         }
     }
 }

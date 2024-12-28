@@ -3,13 +3,12 @@ package com.fitness.elev8fit.presentation.activity.SignUp
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +44,7 @@ import com.fitness.elev8fit.ui.theme.card_color
 import kotlinx.coroutines.delay
 
 @Composable
-fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavController) {
+fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavController) {
     val verificationId = navController.previousBackStackEntry?.savedStateHandle?.get<String>("verificationId")
     val otpLength = 6
     val otpFields = remember { mutableStateListOf("", "", "", "", "", "") }
@@ -63,14 +63,18 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
         focusRequesters[0].requestFocus()
     }
 
+    // Get screen width
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val otpFieldSize = (screenWidth / (otpLength + 2)).dp // Adjust size dynamically
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(card_color).padding(16.dp),
+            .background(card_color)
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = "Verification",
             fontSize = 24.sp,
@@ -87,9 +91,7 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally),
         ) {
             for (index in 0 until otpLength) {
                 OTPTextField(
@@ -108,7 +110,8 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
                         if (index > 0) {
                             focusRequesters[index - 1].requestFocus()
                         }
-                    }
+                    },
+                    otpFieldSize = otpFieldSize // Pass dynamic size
                 )
             }
         }
@@ -117,7 +120,7 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
             onClick = {
                 val otp = otpFields.joinToString("")
                 if (verificationId != null && otp.length == otpLength) {
-                    viewModel.verifyOtp(context, verificationId, otp) { success ->
+                    otpViewModel.verifyOtp(context, verificationId, otp) { success ->
                         if (success) {
                             navController.navigate(Navdestination.home.toString())
                         } else {
@@ -161,7 +164,8 @@ fun OTPTextField(
     value: String,
     onValueChange: (String) -> Unit,
     focusRequester: FocusRequester,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    otpFieldSize: androidx.compose.ui.unit.Dp // Receive dynamic size as parameter
 ) {
     OutlinedTextField(
         value = value,
@@ -173,7 +177,7 @@ fun OTPTextField(
             fontSize = 18.sp
         ),
         modifier = Modifier
-            .size(60.dp)
+            .width(otpFieldSize) // Use dynamic width
             .clip(RoundedCornerShape(8.dp))
             .padding(2.dp)
             .focusRequester(focusRequester)
@@ -196,10 +200,12 @@ fun OTPTextField(
 }
 
 
+
 //@Preview(showBackground = true)
 //@Composable
 //fun PreviewOTPVerificationScreen() {
-//    OTPVerificationScreen()
+//    val nav = rememberNavController()
+//    OTPVerificationScreen(otpViewModel = OtpViewModel(),nav)
 //}
-
+//
 

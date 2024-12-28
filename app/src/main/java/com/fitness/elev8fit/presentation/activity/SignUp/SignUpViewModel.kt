@@ -1,8 +1,6 @@
 package com.fitness.elev8fit.presentation.activity.SignUp
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,18 +9,13 @@ import com.fitness.elev8fit.domain.Firebase.FirebaseClass
 import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.concurrent.TimeUnit
 
 class SignUpViewModel:ViewModel() {
 
@@ -30,8 +23,18 @@ class SignUpViewModel:ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state
-    fun username(newusername :String){
-        _state.value = _state.value.copy(username= newusername)
+    private var userAge: Int? = null
+    private var userName: String? = null
+    fun setAge(age: Int) {
+        userAge = age
+    }
+
+    fun setUsername(username: String) {
+        userName = username
+    }
+
+    fun email(newusername :String){
+        _state.value = _state.value.copy(email =  newusername)
     }
     fun password(password :String){
         _state.value = _state.value.copy(password = password)
@@ -47,7 +50,7 @@ class SignUpViewModel:ViewModel() {
     fun SignUpIntentHandler(intent: SignUpIntent,navController: NavController) {
 
         when (intent) {
-            is SignUpIntent.Signup -> checkAuth(intent.username, intent.password,navController,intent.phonenumber)
+            is SignUpIntent.Signup -> checkAuth(intent.email, intent.password,navController,intent.phonenumber)
         }
     }
     fun checkAuth(username: String, password: String,navController: NavController,phonenumber:String) {
@@ -130,39 +133,17 @@ class SignUpViewModel:ViewModel() {
 
     }
 
-    fun triggerOtp(activity: Activity,phoneNumber: String, onOtpSent: (String) -> Unit, onFailure: (String) -> Unit) {
-        val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity) // Replace with your activity context
-            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    // Auto-retrieval or instant verification
-                }
+    fun resetFields() {
+        _state.value = _state.value.copy(
+            email = "",
+            password = "",
+            Confirmpassword = "",
+            phonenumber = "",
 
-                override fun onVerificationFailed(e: FirebaseException) {
-                    onFailure(e.message ?: "OTP verification failed")
-                }
-
-                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                    onOtpSent(verificationId)
-                }
-            })
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
+        )
     }
 
-    fun verifyOtp(context: Context, verificationId: String, otp: String, onComplete: (Boolean) -> Unit) {
-        val credential = PhoneAuthProvider.getCredential(verificationId, otp)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true)
-                } else {
-                    onComplete(false)
-                }
-            }
-    }
+
 }
 
 

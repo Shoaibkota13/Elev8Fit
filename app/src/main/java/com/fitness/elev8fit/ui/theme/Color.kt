@@ -15,3 +15,7 @@ val bg_color = Color(0xCEF6AE8F)
 val default_text =Color(0xFF000000)
 val text_color = Color(0xCEF6AE8F)
 val card_color = Color(0xFFF4B59A)
+
+
+
+

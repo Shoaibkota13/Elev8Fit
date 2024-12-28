@@ -1,5 +1,6 @@
 package com.fitness.elev8fit.presentation.activity.login
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -44,10 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fitness.elev8fit.R
+import com.fitness.elev8fit.presentation.activity.SignUp.OtpViewModel
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.LoginIntent
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
+import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.text_color
 
@@ -56,10 +59,12 @@ import com.fitness.elev8fit.ui.theme.text_color
 fun LoginScreen(
     loginview: LoginViewModel,
     signUpViewModel: SignUpViewModel,
-    navController: NavController
+    navController: NavController,
+    otpViewModel: OtpViewModel
 ) {
 
     val context = LocalContext.current
+    val activity = context as? Activity
     var isLogin by remember { mutableStateOf(true) }
     val loginstate by loginview.state.collectAsState()
     val signupstate by signUpViewModel.state.collectAsState()
@@ -146,14 +151,14 @@ fun LoginScreen(
 
                                 cards(
                                     labeltext = "Username",
-                                    icons = R.drawable.ic_username,
+                                    icons = R.drawable.user,
                                     input = loginstate.username,
                                     onValueChange = { loginview.username(it) },
                                     label = "User Name"
                                 )
                                 cards(
                                     labeltext = "Password",
-                                    icons = R.drawable.ic_username,
+                                    icons = R.drawable.padlock,
                                     input = loginstate.password,
                                     onValueChange = { loginview.password(it) },
                                     label = "Enter Password",
@@ -185,23 +190,27 @@ fun LoginScreen(
                         colors = CardDefaults.cardColors(text_color)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(16.dp)
+                            ) {
                                 Text(
                                     text = "SignUp",
-                                    modifier = Modifier.padding(16.dp),
                                     fontSize = 24.sp
                                 )
 
+                                // Username Input
                                 cards(
-                                    icons = R.drawable.ic_username,
-                                    input = signupstate.username,
+                                    icons = R.drawable.user,
+                                    input = signupstate.email,
                                     label = "Enter user name",
                                     labeltext = "User Name",
-                                    onValueChange = { signUpViewModel.username(it) }
+                                    onValueChange = { signUpViewModel.email(it) }
                                 )
 
+                                // Password Input
                                 cards(
-                                    icons = R.drawable.ic_username,
+                                    icons = R.drawable.padlock,
                                     input = signupstate.password,
                                     label = "Enter password",
                                     onValueChange = { signUpViewModel.password(it) },
@@ -209,8 +218,9 @@ fun LoginScreen(
                                     isPassword = true
                                 )
 
+                                // Confirm Password Input
                                 cards(
-                                    icons = R.drawable.ic_username,
+                                    icons = R.drawable.padlock,
                                     input = signupstate.Confirmpassword,
                                     label = "Confirm password",
                                     onValueChange = { signUpViewModel.confirmPassword(it) },
@@ -218,24 +228,66 @@ fun LoginScreen(
                                     isPassword = true
                                 )
 
+                                // Phone Number Input
                                 cards(
-                                    icons = R.drawable.ic_username,
+                                    icons = R.drawable.telephone,
                                     input = signupstate.phonenumber,
                                     label = "Phone number",
-                                    onValueChange = { signUpViewModel.phonenumber(it) },
+                                    onValueChange = { input ->
+                                        if (input.length <= 20) {
+                                            signUpViewModel.phonenumber(input)
+                                        }
+                                    },
                                     labeltext = "Phone number",
                                     keyboardType = KeyboardType.Phone
                                 )
 
+                                // OTP Verification link
+                                if (signupstate.phonenumber.length ==10) {
+                                    Text(
+                                        text = "Verify OTP",
+                                        modifier = Modifier
+                                            .padding(start = 8.dp)
+                                            .align(Alignment.Start)
+                                            .clickable {
+                                                if (activity != null) {
+                                                    otpViewModel.triggerOtp(
+                                                        activity,
+                                                        phoneNumber = signupstate.phonenumber,
+                                                        onOtpSent = { verificationId ->
+                                                            // Pass the verificationId to the OTPVerificationScreen
+                                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                                "verificationId",
+                                                                verificationId
+                                                            )
+                                                            navController.navigate(Navdestination.otp.toString())
+                                                        },
+                                                        onFailure = { error ->
+                                                            Toast.makeText(
+                                                                context,
+                                                                error,
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                    )
+                                }
+
+                                // Sign Up Button
                                 Button(
                                     onClick = {
-                                        signUpViewModel.SignUpIntentHandler(
-                                            SignUpIntent.Signup(
-                                                signupstate.username,
-                                                signupstate.password,
-                                                signupstate.phonenumber
-                                            ), navController
-                                        )
+                                        if (signupstate.phonenumber.length == 10 && signupstate.password == signupstate.Confirmpassword) {
+                                            signUpViewModel.SignUpIntentHandler(
+                                                SignUpIntent.Signup(
+                                                    signupstate.email,
+                                                    signupstate.password,
+                                                    signupstate.phonenumber
+                                                ),
+                                                navController
+                                            )
+                                        }
                                     },
                                     modifier = Modifier
                                         .padding(16.dp)
@@ -244,6 +296,7 @@ fun LoginScreen(
                                     Text("Sign Up")
                                 }
 
+                                // Error message
                                 signupstate.errorMessage?.let {
                                     Text(it, color = Color.Red, modifier = Modifier.padding(8.dp))
                                 }
@@ -255,9 +308,11 @@ fun LoginScreen(
                                 signupstate.successMessage?.let {
                                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                                     signUpViewModel.clearSuccessMessage()
+                                    signUpViewModel.resetFields()
+                                }
                                 }
                             }
-                        }
+                        
                     }
                 }
             }
