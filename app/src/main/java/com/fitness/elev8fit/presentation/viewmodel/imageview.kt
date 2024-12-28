@@ -3,9 +3,10 @@ package com.fitness.elev8fit.presentation.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.fitness.elev8fit.R
 
 class imageview: ViewModel() {
-    private val _selectedimage = mutableStateOf<Int?>(null)
+    private val _selectedimage = mutableStateOf<Int>(R.drawable.boy)
     val selectedimg: State<Int?> = _selectedimage
     private val _ageinput = mutableStateOf<Int?>(null)
     val ageinput :State<Int?> =_ageinput
