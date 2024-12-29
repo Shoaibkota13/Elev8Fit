@@ -25,9 +25,7 @@ fun secondOnboarding(navController: NavController,viewModel: imageview) {
             showimage2 = true,
             showimage3 = true,
             buttontext = "Continue",
-            ageinput = null,
-            nameinput = null,
-            viewModel = viewModel
+           viewModel = viewModel
         ) {
             navController.navigate(Navdestination.onboarding3.toString())
 

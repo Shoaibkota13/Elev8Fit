@@ -1,6 +1,8 @@
 package com.fitness.elev8fit.data.login
 
 data class SignUpState(
+   var name:String="",
+   var age:String="",
    var email :String ="",
    val password : String = "",
    val Confirmpassword : String = "",

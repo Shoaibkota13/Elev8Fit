@@ -27,17 +27,17 @@ fun displaynav() {
     val signUpViewModel = SignUpViewModel()
     val otpViewModel = OtpViewModel()
     val loginviewmodel = LoginViewModel()
-    val viewModel: imageview = imageview() // Create ViewModel here
+    val imageview: imageview = imageview() // Create ViewModel here
 
     NavHost(navController = navController, startDestination = Navdestination.onboarding1.toString()) {
         composable(Navdestination.onboarding1.toString()) {
             Firstonboard(navController = navController)
         }
         composable(Navdestination.onboarding2.toString()) {
-            secondOnboarding(viewModel = viewModel, navController = navController)
+            secondOnboarding(viewModel = imageview, navController = navController)
         }
         composable(Navdestination.onboarding3.toString()) {
-            thirdOnboarding(viewModel = viewModel, navController = navController)
+            thirdOnboarding(signUpViewModel = signUpViewModel,imageview=imageview,navController=navController)
         }
         composable(Navdestination.login.toString()){
             LoginScreen(loginview = loginviewmodel, signUpViewModel =signUpViewModel,navController=navController, otpViewModel = otpViewModel )

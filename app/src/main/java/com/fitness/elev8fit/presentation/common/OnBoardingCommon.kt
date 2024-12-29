@@ -1,6 +1,5 @@
 package com.fitness.elev8fit.presentation.common
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,15 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fitness.elev8fit.presentation.viewmodel.imageview
@@ -53,8 +47,6 @@ fun OnBoardingCommon(
     imageresid3:Int?,
     text1:String?,
     text2:String?,
-    ageinput:Int?,
-    nameinput:String?,
     showimage2:Boolean=false,
     showimage3:Boolean=false,
     buttontext:String,
@@ -114,51 +106,7 @@ fun OnBoardingCommon(
             )
             {
 
-                if (ageinput != null && nameinput != null) {
-                    Column {
-                        Text(
-                            text = "Select Age",
-                            fontSize = 20.sp,
-                            color = CustomBackgroundColor,
-                            modifier = Modifier.fillMaxWidth().padding(8.dp),
-                            textAlign = TextAlign.Center
-                        )
 
-                        LazyColumn(
-                            state = LazyListState(),
-                            modifier = Modifier
-                                .height(50.dp)
-                                .fillMaxWidth()
-                        ) {
-                            items((18..100).toList()) { age ->
-                                Text(
-                                    text = "$age",
-                                    fontSize = 32.sp,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp).clickable {
-                                            ageInputString = age
-                                            viewModel.setage(ageInputString)
-                                            Log.e("Selected Age", "Current Age: $ageInputString")
-                                        },
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-
-                        OutlinedTextField(
-                            value = nameinputs,
-                            onValueChange = { name ->
-                                nameinputs = name
-                                viewModel.setname(nameinput)
-                            }, // Update the state
-                            label = { Text("Enter Your Name") },
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth()
-                        )
-                    }
-                }
 
                 if (showimage2 && imageresid2 != null) {
                     Column {

@@ -23,18 +23,16 @@ class SignUpViewModel:ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state
-    private var userAge: Int? = null
-    private var userName: String? = null
-    fun setAge(age: Int) {
-        userAge = age
+    fun setAge(newage: String) {
+      _state.value = _state.value.copy( age = newage)
     }
 
     fun setUsername(username: String) {
-        userName = username
+        _state.value = _state.value.copy(name = username)
     }
 
-    fun email(newusername :String){
-        _state.value = _state.value.copy(email =  newusername)
+    fun email(newemail :String){
+        _state.value = _state.value.copy(email =  newemail)
     }
     fun password(password :String){
         _state.value = _state.value.copy(password = password)
@@ -53,7 +51,7 @@ class SignUpViewModel:ViewModel() {
             is SignUpIntent.Signup -> checkAuth(intent.email, intent.password,navController,intent.phonenumber)
         }
     }
-    fun checkAuth(username: String, password: String,navController: NavController,phonenumber:String) {
+    fun checkAuth(email: String, password: String,navController: NavController,phonenumber:String) {
         _state.value = _state.value.copy(isLoading = true)
         val confirmPassword = _state.value.Confirmpassword
         if (password != confirmPassword) {
@@ -65,28 +63,28 @@ class SignUpViewModel:ViewModel() {
             return
         }
 
-        if (username.isBlank() || password.isBlank()) {
+        if (email.isBlank() || password.isBlank()) {
             _state.value = _state.value.copy(
-                errorMessage = "Username and password cannot be empty",
+                errorMessage = "email and password cannot be empty",
                 isLoading = false,
                successMessage = null
             )
             return
         }
-        createUser(username,password,navController, phonenumber)
+        createUser(email,password,navController, phonenumber)
     }
 
     @SuppressLint("SuspiciousIndentation")
-    private fun createUser(username: String, password: String, navController: NavController,phonenumber:String) {
+    private fun createUser(email: String, password: String, navController: NavController,phonenumber:String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             try {
-                val task = auth.createUserWithEmailAndPassword(username, password)
+                val task = auth.createUserWithEmailAndPassword(email, password)
                     task.await()
                 if (task.isSuccessful) {
                     val firebaseuser :FirebaseUser = task.result!!.user!!
                     val email = firebaseuser.email!!
-                    val user = User(firebaseuser.uid,username,email,phonenumber)
+                    val user = User(firebaseuser.uid, name = _state.value.name,email,phonenumber, age = _state.value.age)
                     //passing the activity
 
                     FirebaseClass().registerUser(this@SignUpViewModel,user)

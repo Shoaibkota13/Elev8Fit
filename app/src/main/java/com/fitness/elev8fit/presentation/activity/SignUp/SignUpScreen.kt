@@ -44,6 +44,7 @@ import com.fitness.elev8fit.ui.theme.text_color
 
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController , otpViewModel: OtpViewModel) {
+    val otpstate by otpViewModel.state.collectAsState()
     val signupstate by viewModel.state.collectAsState()
 
     val context = LocalContext.current
@@ -146,44 +147,109 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController , otpV
                     )
 
                     // OTP Verification link
-                    if (signupstate.phonenumber.length ==10) {
+//                    if (!otpstate.isverified) {
+//                        Text(
+//                            text = "Verify OTP",
+//                            color = Color.Red,
+//                            modifier = Modifier
+//                                .padding(start = 8.dp)
+//                                .align(Alignment.Start)
+//                                .clickable {
+//                                    if (activity != null) {
+//
+//                                        otpViewModel.triggerOtp(
+//                                            activity,
+//                                            phoneNumber = signupstate.phonenumber,
+//                                            onOtpSent = { verificationId ->
+//                                                // Pass the verificationId to the OTPVerificationScreen
+//                                                navController.currentBackStackEntry?.savedStateHandle?.set(
+//                                                    "verificationId",
+//                                                    verificationId
+//                                                )
+//                                                navController.navigate(Navdestination.otp.toString())
+//                                            },
+//                                            onFailure = { error ->
+//                                                Toast
+//                                                    .makeText(
+//                                                        context,
+//                                                        error,
+//                                                        Toast.LENGTH_SHORT
+//                                                    )
+//                                                    .show()
+//                                            }
+//                                        )
+//                                    }
+//                                }
+//                        )
+//                    }
+//                    else{
+//                        Text(
+//                            text = "Verifed",
+//                            modifier = Modifier
+//                                .padding(start = 8.dp)
+//                                .align(Alignment.Start),
+//                            color = Color.Green
+//                        )
+//
+//                    }
+
+                    // OTP Verification link
+                    if (!otpstate.isverified) {
+                        if (otpstate.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(8.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Verify OTP",
+                                color = Color.Red,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                                    .align(Alignment.Start)
+                                    .clickable {
+                                        if (activity != null) {
+                                            otpViewModel.triggerOtp(
+                                                activity,
+                                                phoneNumber = signupstate.phonenumber,
+                                                onOtpSent = { verificationId ->
+                                                    // Pass the verificationId to the OTPVerificationScreen
+                                                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                        "verificationId",
+                                                        verificationId
+                                                    )
+                                                    navController.navigate(Navdestination.otp.toString())
+                                                },
+                                                onFailure = { error ->
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            error,
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            )
+                                        }
+                                    }
+                            )
+                        }
+                    } else {
                         Text(
-                            text = "Verify OTP",
+                            text = "Verified",
                             modifier = Modifier
                                 .padding(start = 8.dp)
-                                .align(Alignment.Start)
-                                .clickable {
-                                    if (activity != null) {
-                                        otpViewModel.triggerOtp(
-                                            activity,
-                                            phoneNumber = signupstate.phonenumber,
-                                            onOtpSent = { verificationId ->
-                                                // Pass the verificationId to the OTPVerificationScreen
-                                                navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                    "verificationId",
-                                                    verificationId
-                                                )
-                                                navController.navigate(Navdestination.otp.toString())
-                                            },
-                                            onFailure = { error ->
-                                                Toast
-                                                    .makeText(
-                                                        context,
-                                                        error,
-                                                        Toast.LENGTH_SHORT
-                                                    )
-                                                    .show()
-                                            }
-                                        )
-                                    }
-                                }
+                                .align(Alignment.Start),
+                            color = Color.Green
                         )
                     }
+
 
                     // Sign Up Button
                     Button(
                         onClick = {
-                            if (signupstate.phonenumber.length == 10 && signupstate.password == signupstate.Confirmpassword) {
+                            if (otpstate.isverified) {
                                 viewModel.SignUpIntentHandler(
                                     SignUpIntent.Signup(
                                         signupstate.email,
@@ -192,7 +258,13 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController , otpV
                                     ),
                                     navController
                                 )
+                            
                             }
+
+                                else {
+                                    Toast.makeText(context, "Please verify OTP first", Toast.LENGTH_SHORT).show()
+                                }
+
                         },
                         modifier = Modifier
                             .padding(16.dp)

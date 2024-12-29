@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.card_color
 import kotlinx.coroutines.delay
 
@@ -47,6 +48,7 @@ import kotlinx.coroutines.delay
 fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavController) {
     val verificationId = navController.previousBackStackEntry?.savedStateHandle?.get<String>("verificationId")
     val otpLength = 6
+    val otpstate by otpViewModel.state.collectAsState()
     val otpFields = remember { mutableStateListOf("", "", "", "", "", "") }
     val focusRequesters = remember { List(otpLength) { FocusRequester() } }
     val context = LocalContext.current
@@ -91,7 +93,8 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
 
         Row(
             modifier = Modifier
-                .fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally),
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally),
         ) {
             for (index in 0 until otpLength) {
                 OTPTextField(
@@ -116,29 +119,38 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
             }
         }
 
-        Button(
-            onClick = {
-                val otp = otpFields.joinToString("")
-                if (verificationId != null && otp.length == otpLength) {
-                    otpViewModel.verifyOtp(context, verificationId, otp) { success ->
-                        if (success) {
-                            navController.navigate(Navdestination.home.toString())
-                        } else {
-                            Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } else {
-                    Toast.makeText(context, "Please enter all OTP digits", Toast.LENGTH_SHORT).show()
-                }
 
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0078D4))
-        ) {
-            Text(text = "Verify Otp", color = Color.White)
+        if (otpstate.isLoading) {
+            // Show progress indicator while verifying OTP
+            androidx.compose.material3.CircularProgressIndicator(
+                modifier = Modifier.padding(top = 24.dp),
+                color = Color(0xFF0078D4)
+            )
+        } else {
+            Button(
+                onClick = {
+                    val otp = otpFields.joinToString("")
+                    if (verificationId != null && otp.length == otpLength) {
+                        otpViewModel.verifyOtp(context, verificationId, otp) { success ->
+                            if (success) {
+                                navController.popBackStack()
+                            } else {
+                                Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "Please enter all OTP digits", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0078D4))
+            ) {
+                Text(text = "Verify Otp", color = Color.White)
+            }
         }
+
 
         Text(
             text = if (timerState.value > 0) {
@@ -157,7 +169,12 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
                 }
         )
     }
+
+
+
 }
+
+
 
 @Composable
 fun OTPTextField(
