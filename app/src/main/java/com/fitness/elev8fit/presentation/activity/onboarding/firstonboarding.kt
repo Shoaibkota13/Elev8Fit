@@ -1,7 +1,6 @@
 package com.fitness.elev8fit.presentation.activity.onboarding
 
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -99,7 +98,7 @@ fun Firstonboard(navController: NavController){
             val context = LocalContext.current
             Text(text = "If you have account,please sign in",
                 modifier = Modifier.clickable {
-     navController.navigate(Navdestination.login.toString())
+            navController.navigate(Navdestination.login.toString())
                 }, fontFamily = quicksand, fontSize = 16.sp, fontWeight = FontWeight.Bold)
 
             Column(

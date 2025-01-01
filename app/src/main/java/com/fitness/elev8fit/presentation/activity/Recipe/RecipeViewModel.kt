@@ -1,21 +1,23 @@
 package com.fitness.elev8fit.presentation.activity.Recipe
 
 import androidx.lifecycle.ViewModel
+import com.fitness.elev8fit.data.state.RecipeState
 import com.fitness.elev8fit.domain.Firebase.FirebaseClass
-import com.fitness.elev8fit.data.Recipe.RecipeState
 import com.fitness.elev8fit.domain.model.Recipe
 import com.fitness.elev8fit.presentation.intent.RecipeIntent
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class RecipeViewModel:ViewModel() {
+@HiltViewModel
+class RecipeViewModel @Inject constructor(
+    private val firebaseClass: FirebaseClass,
+    private val auth: FirebaseAuth
+) :ViewModel() {
     private val _state = MutableStateFlow(RecipeState())
     val state: StateFlow<RecipeState> = _state
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
-
     fun updateRecipeTitle(newTitle: String) {
         _state.value = _state.value.copy(recipetitle = newTitle)
     }
@@ -71,7 +73,7 @@ class RecipeViewModel:ViewModel() {
         }
     }
 
-    private fun Recipeupdate(recipeState: RecipeState) {
+     fun Recipeupdate(recipeState: RecipeState) {
         val recipeInfo = Recipe(
             id = recipeState.id,
             image = recipeState.image,
@@ -82,7 +84,7 @@ class RecipeViewModel:ViewModel() {
             benifits = recipeState.benfits
         )
 
-        FirebaseClass().RecipeDb(this, recipeInfo)
+         firebaseClass.RecipeDb(this,recipeInfo)
     }
 
     fun saved() {

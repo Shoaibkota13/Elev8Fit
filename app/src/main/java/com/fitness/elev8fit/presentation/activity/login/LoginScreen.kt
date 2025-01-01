@@ -45,8 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fitness.elev8fit.R
-import com.fitness.elev8fit.presentation.activity.SignUp.OtpViewModel
+import com.fitness.elev8fit.presentation.activity.Otp.OtpViewModel
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
+import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.LoginIntent
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
@@ -60,7 +61,8 @@ fun LoginScreen(
     loginview: LoginViewModel,
     signUpViewModel: SignUpViewModel,
     navController: NavController,
-    otpViewModel: OtpViewModel
+    otpViewModel: OtpViewModel,
+    googleSignInViewModel: GoogleSignInViewModel
 ) {
 
     val context = LocalContext.current
@@ -312,8 +314,10 @@ fun LoginScreen(
                                 }
                                 }
                             }
-                        
+
                     }
+
+                  //  SignUpScreen(viewModel = hiltViewModel(), navController =navController , otpViewModel = hiltViewModel() )
                 }
             }
 
@@ -340,6 +344,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .size(60.dp)
                             .clickable {
+                                googleSignInViewModel.handleGoogleSignIn(context, navController)
 
 
                             }

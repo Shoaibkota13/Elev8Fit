@@ -12,7 +12,7 @@
 //import androidx.compose.ui.graphics.Color as ComposeColor
 //import androidx.compose.ui.tooling.preview.Preview
 //import androidx.compose.ui.unit.dp
-//import com.fitness.elev8fit.data.Recipe.RecipeState
+//import com.fitness.elev8fit.data.state.RecipeState
 //import com.fitness.elev8fit.ui.theme.bg_color
 //
 //@Composable

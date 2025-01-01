@@ -1,5 +1,6 @@
-package com.fitness.elev8fit.presentation.activity.SignUp
+package com.fitness.elev8fit.presentation.activity.Otp
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -130,9 +131,11 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
             Button(
                 onClick = {
                     val otp = otpFields.joinToString("")
-                    if (verificationId != null && otp.length == otpLength) {
+                    if (verificationId != null && otp.length == otpLength ) {
                         otpViewModel.verifyOtp(context, verificationId, otp) { success ->
                             if (success) {
+                              
+
                                 navController.popBackStack()
                             } else {
                                 Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
@@ -149,6 +152,8 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
             ) {
                 Text(text = "Verify Otp", color = Color.White)
             }
+
+            Log.e("verify","${otpstate.isverified}")
         }
 
 

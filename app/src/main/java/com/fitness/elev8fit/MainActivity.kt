@@ -11,7 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.presentation.navigation.displaynav
 import com.fitness.elev8fit.ui.theme.Elev8FitTheme
 import com.google.firebase.FirebaseApp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
    // private val navController: NavController = rememberNavController()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,11 +27,8 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 
-                displaynav()
+                displaynav(navController)
 
-
-
-//                       OTPVerificationScreen()
                 }
             }
         }

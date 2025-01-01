@@ -1,20 +1,25 @@
-package com.fitness.elev8fit.presentation.activity.SignUp
+package com.fitness.elev8fit.presentation.activity.Otp
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.fitness.elev8fit.data.login.OtpState
+import com.fitness.elev8fit.data.state.OtpState
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class OtpViewModel:ViewModel() {
-    private val auth = FirebaseAuth.getInstance()
+@HiltViewModel
+class OtpViewModel @Inject constructor(
+ private val auth :FirebaseAuth
+):ViewModel() {
     private val _state = MutableStateFlow(OtpState())
     val state : StateFlow<OtpState> = _state
 
@@ -29,6 +34,8 @@ class OtpViewModel:ViewModel() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                     _state.value = _state.value.copy(isLoading = false)
                     // Auto-retrieval or instant verification
+                  //  signInWithPhoneAuthCredential(credential)
+
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
@@ -46,13 +53,15 @@ class OtpViewModel:ViewModel() {
     }
 
     fun verifyOtp(context: Context, verificationId: String, otp: String, onComplete: (Boolean) -> Unit) {
-        _state.value = _state.value.copy(isverified = true)
-        _state.value = _state.value.copy(isLoading = true)
+
+
         val credential = PhoneAuthProvider.getCredential(verificationId, otp)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _state.value = _state.value.copy(isLoading = false)
+                    _state.value = _state.value.copy(isLoading = false, isverified = true) // Verified successfully
+                    Log.d("OTP", "verifyOtp: OTP verification successful. isVerified = ${_state.value.isverified}")
+
                     onComplete(true)
                 } else {
                     _state.value = _state.value.copy(isLoading = false)

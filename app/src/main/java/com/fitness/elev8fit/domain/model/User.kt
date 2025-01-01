@@ -6,12 +6,14 @@ import android.os.Parcelable
 data class User(
     val id :String="",
     val name:String="",
-    val email:String="",
-    val mobile:String="",
-    val age:String=""
+    val email:String?="",
+    val mobile:String?="",
+    val age:String?="",
+    val photoUrl: String? = "",
 
 ):Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -28,6 +30,7 @@ data class User(
         writeString(email)
         writeString(mobile)
         writeString(age)
+        writeString(photoUrl)
     }
 
     companion object CREATOR : Parcelable.Creator<User> {

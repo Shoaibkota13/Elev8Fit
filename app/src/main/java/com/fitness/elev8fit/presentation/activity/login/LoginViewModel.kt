@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.fitness.elev8fit.data.login.LoginState
+import com.fitness.elev8fit.data.state.LoginState
 import com.fitness.elev8fit.presentation.intent.LoginIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.google.firebase.auth.FirebaseAuth

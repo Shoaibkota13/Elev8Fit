@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.data.Recipe
+package com.fitness.elev8fit.data.state
 
 data class RecipeState(
     var id:Int=0,

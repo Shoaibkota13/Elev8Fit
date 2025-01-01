@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -25,9 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.domain.model.BottomMenuItems
+import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.card_color
@@ -55,7 +58,7 @@ fun HomePage(navController: NavController) {
             when (selected) {
                 "Home" -> Excercise()
                 "Recipe" -> RecipeScreen(navController)
-                "Account" -> ProfileScreen()
+                "Account" -> ProfileScreen(googleSignInViewModel = hiltViewModel(),navController)
             }
         }
 
@@ -126,7 +129,7 @@ fun RecipeScreen(navController: NavController) {
 }
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(googleSignInViewModel: GoogleSignInViewModel,navController: NavController) {
     // Example implementation for the Profile Screen
     Box(
         modifier = Modifier
@@ -134,11 +137,9 @@ fun ProfileScreen() {
             .background(Color(0xFF80DEEA)), // Light cyan background
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "Profile Information",
-            color = Color.White,
-            modifier = Modifier.padding(16.dp)
-        )
+       Button(onClick = { googleSignInViewModel.logout(navController)}) {
+           Text(text = "Logout")
+       }
     }
 }
 
