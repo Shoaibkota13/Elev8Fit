@@ -134,9 +134,9 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
                     if (verificationId != null && otp.length == otpLength ) {
                         otpViewModel.verifyOtp(context, verificationId, otp) { success ->
                             if (success) {
-                              
+                                Log.e("verify","${otpstate.isverified}")
 
-                                navController.popBackStack()
+                                Toast.makeText(context, "sucesss", Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
                             }
@@ -153,7 +153,7 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
                 Text(text = "Verify Otp", color = Color.White)
             }
 
-            Log.e("verify","${otpstate.isverified}")
+
         }
 
 

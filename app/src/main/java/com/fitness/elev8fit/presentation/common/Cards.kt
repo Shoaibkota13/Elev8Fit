@@ -76,12 +76,6 @@ fun cards(
                 textStyle = TextStyle(color = default_text, fontSize = 16.sp),
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
                 leadingIcon = {
-//                    Icon(
-//                        painter = painterResource(id = icons),
-//                        contentDescription = "icon",
-//                        modifier = Modifier.size(24.dp),
-//                        tint = Color.Black// Icon size
-//                    )
                     Icon(
                         painter = painterResource(id = icons),
                         contentDescription = "icon",

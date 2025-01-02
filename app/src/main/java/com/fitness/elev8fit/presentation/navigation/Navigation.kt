@@ -11,30 +11,41 @@ import com.fitness.elev8fit.presentation.activity.Otp.OTPVerificationScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
-import com.fitness.elev8fit.presentation.activity.login.LoginViewModel
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
-import com.fitness.elev8fit.presentation.viewmodel.imageview
 import secondOnboarding
 
 
 @Composable
-fun displaynav(navController: NavHostController) {
-    val loginviewmodel = LoginViewModel()
-    val imageview: imageview = imageview() // Create ViewModel here
+fun displaynav(
+    navController: NavHostController,
+    isAuthenticated: Boolean
+){
+    val startDestination = when {
+        isAuthenticated -> {
+            // User is logged in, show home
+            Navdestination.home.toString()
+        }
+        else -> {
+            // User is not logged in, show login
+            Navdestination.onboarding1.toString()
+        }
+    }
 
-    NavHost(navController = navController, startDestination = Navdestination.onboarding1.toString()) {
+
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Navdestination.onboarding1.toString()) {
             Firstonboard(navController = navController)
         }
         composable(Navdestination.onboarding2.toString()) {
-            secondOnboarding(viewModel = imageview, navController = navController)
+            secondOnboarding(viewModel = hiltViewModel(), navController = navController)
         }
         composable(Navdestination.onboarding3.toString()) {
-            thirdOnboarding(signUpViewModel = hiltViewModel(),imageview=imageview,navController=navController)
+            thirdOnboarding(signUpViewModel = hiltViewModel(),imageview= hiltViewModel(),navController=navController)
         }
         composable(Navdestination.login.toString()){
-            LoginScreen(loginview = loginviewmodel, signUpViewModel = hiltViewModel(),navController=navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel() )
+            LoginScreen(loginview = hiltViewModel(), signUpViewModel = hiltViewModel(),navController=navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel() )
         }
         composable(Navdestination.Signup.toString()){
             SignUpScreen(viewModel =hiltViewModel(),navController=navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel())

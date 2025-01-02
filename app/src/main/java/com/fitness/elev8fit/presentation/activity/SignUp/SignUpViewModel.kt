@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.fitness.elev8fit.data.repository.authfirebaseimpl
 import com.fitness.elev8fit.data.state.SignUpState
-import com.fitness.elev8fit.domain.Firebase.FirebaseClass
 import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val auth :FirebaseAuth,
-    private val firebaseClass: FirebaseClass
+    private val authRepository: authfirebaseimpl
 
 ) :ViewModel() {
     private val _state = MutableStateFlow(SignUpState())
@@ -91,9 +91,10 @@ class SignUpViewModel @Inject constructor(
                     val user = User(firebaseuser.uid, name = _state.value.name,email,phonenumber, age = _state.value.age)
                     //passing the activity
 
-
-                    firebaseClass.registerUser(this@SignUpViewModel,user)
-                    navController.navigate(Navdestination.home.toString())
+                    authRepository.registerUser(this@SignUpViewModel,user)
+                    navController.navigate(Navdestination.home.toString()){
+                        popUpTo((Navdestination.Signup.route)){ inclusive = true }
+                    }
                 } else {
                     _state.value = _state.value.copy(
                         isLoading = false,

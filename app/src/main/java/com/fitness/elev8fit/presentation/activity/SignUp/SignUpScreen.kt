@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fitness.elev8fit.R
+import com.fitness.elev8fit.data.constant.DataStoreManager
 import com.fitness.elev8fit.presentation.activity.Otp.OtpViewModel
 import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
 import com.fitness.elev8fit.presentation.common.cards
@@ -44,6 +46,7 @@ import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.text_color
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
@@ -52,6 +55,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
 ) {
     val otpstate by otpViewModel.state.collectAsState()
     val signupstate by viewModel.state.collectAsState()
+    val coroutine = rememberCoroutineScope()
 
     val context = LocalContext.current
     val activity = context as? Activity
@@ -114,7 +118,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                     cards(
                         icons = R.drawable.user,
                         input = signupstate.email,
-                        label = "Enter Email",
+                        label = "Enter Email ",
                         labeltext = "User Name",
                         onValueChange = { viewModel.email(it) }
                     )
@@ -178,7 +182,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                                                         "verificationId",
                                                         verificationId
                                                     )
-                                                   navController.navigate(Navdestination.otp.toString())
+                                                    navController.navigate(Navdestination.otp.toString())
                                                 },
                                                 onFailure = { error ->
                                                     Toast
@@ -208,19 +212,21 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                     // Sign Up Button
                     Button(
                         onClick = {
-                            if (otpstate.isverified) {
-                                viewModel.SignUpIntentHandler(
-                                    SignUpIntent.Signup(
-                                        signupstate.email,
-                                        signupstate.password,
-                                        signupstate.phonenumber
-                                    ),
-                                    navController
-                                )
-                            
-                            }
 
-                                else {
+                                if (otpstate.isverified) {
+
+
+                                    // Proceed with the signup
+                                    viewModel.SignUpIntentHandler(
+                                        SignUpIntent.Signup(
+                                            signupstate.email,
+                                            signupstate.password,
+                                            signupstate.phonenumber
+                                        ),
+                                        navController
+                                    )
+                                } else {
+                                    // Show a Toast if OTP isn't verified yet
                                     Toast.makeText(context, "Please verify OTP first", Toast.LENGTH_SHORT).show()
                                 }
 
@@ -231,6 +237,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                     ) {
                         Text("Sign Up")
                     }
+
 
                     // Error message
                     signupstate.errorMessage?.let {
@@ -244,9 +251,13 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
 
                     // Success message
                     signupstate.successMessage?.let {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                        viewModel.clearSuccessMessage()
-                        viewModel.resetFields()
+                        coroutine.launch {
+                            DataStoreManager.saveAuthState(context, true)
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                            viewModel.clearSuccessMessage()
+                            viewModel.resetFields()
+                        }
+
                     }
                 }
             }
@@ -262,7 +273,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                     modifier = Modifier
                         .size(60.dp)
                         .clickable {
-                          googleSignInViewModel.handleGoogleSignIn(context, navController)
+                            googleSignInViewModel.handleGoogleSignIn(context, navController)
                         }
                 )
                 Image(
@@ -272,6 +283,9 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                         .size(60.dp)
                         .clickable {
                             // Handle Facebook login
+//                            facebookSignInViewModel.handleFacebookSignIn(context,navController,)
+
+
                         }
                 )
             }

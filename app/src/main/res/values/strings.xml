@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Elev8Fit</string>
-    <string name="Web_client_id">"593588186105-9hk6qifh6ign6pq1revh5lapr058gt9q.apps.googleusercontent.com"</string>
+    <string name="Web_client_id">593588186105-9hk6qifh6ign6pq1revh5lapr058gt9q.apps.googleusercontent.com</string>
+
+    <string name="facebook_app_id">2014364505743725</string>
+    <string name="fb_login_protocol_scheme">fb2014364505743725</string>
+    <string name="facebook_client_token">2234726933c690b22ba4841ddeedc97a</string>
+
+
 </resources>

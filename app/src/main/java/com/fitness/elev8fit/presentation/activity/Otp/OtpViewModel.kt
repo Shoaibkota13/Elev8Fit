@@ -16,35 +16,36 @@ import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 @HiltViewModel
 class OtpViewModel @Inject constructor(
- private val auth :FirebaseAuth
-):ViewModel() {
+    private val auth: FirebaseAuth
+) : ViewModel() {
     private val _state = MutableStateFlow(OtpState())
-    val state : StateFlow<OtpState> = _state
+    val state: StateFlow<OtpState> = _state
 
     fun triggerOtp(activity: Activity, phoneNumber: String, onOtpSent: (String) -> Unit, onFailure: (String) -> Unit) {
         _state.value = _state.value.copy(isLoading = true)
-        val formatedphone = "+91 $phoneNumber"
+        val formattedPhone = "+91 $phoneNumber"
         val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(formatedphone)
+            .setPhoneNumber(formattedPhone)
             .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity) // Replace with your activity context
+            .setActivity(activity)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                     _state.value = _state.value.copy(isLoading = false)
-                    // Auto-retrieval or instant verification
-                  //  signInWithPhoneAuthCredential(credential)
-
+                    Log.d("OTP", "onVerificationCompleted: Auto-retrieval or instant verification succeeded.")
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
                     _state.value = _state.value.copy(isLoading = false)
+                    Log.e("OTP", "onVerificationFailed: ${e.message}", e)
                     onFailure(e.message ?: "OTP verification failed")
                 }
 
                 override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
                     _state.value = _state.value.copy(isLoading = false)
+                    Log.d("OTP", "onCodeSent: VerificationId received - $verificationId")
                     onOtpSent(verificationId)
                 }
             })
@@ -53,18 +54,18 @@ class OtpViewModel @Inject constructor(
     }
 
     fun verifyOtp(context: Context, verificationId: String, otp: String, onComplete: (Boolean) -> Unit) {
-
-
         val credential = PhoneAuthProvider.getCredential(verificationId, otp)
+        _state.value = _state.value.copy(isLoading = true)
+
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _state.value = _state.value.copy(isLoading = false, isverified = true) // Verified successfully
-                    Log.d("OTP", "verifyOtp: OTP verification successful. isVerified = ${_state.value.isverified}")
-
+                    _state.value = _state.value.copy(isLoading = false, isverified = true)
+                    Log.d("OTP", "verifyOtp: OTP verification successful.")
                     onComplete(true)
                 } else {
                     _state.value = _state.value.copy(isLoading = false)
+                    Log.e("OTP", "verifyOtp: OTP verification failed.", task.exception)
                     onComplete(false)
                 }
             }

@@ -109,7 +109,11 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.54")
     kapt ("com.google.dagger:hilt-compiler:2.54")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
-
+    //implementation ("com.facebook.android:facebook-android-sdk:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:16.0.0")
+//    import com.facebook.FacebookSdk;
+//    import com.facebook.appevents.AppEventsLogger;
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 }
 hilt {
     enableTransformForLocalTests = true
