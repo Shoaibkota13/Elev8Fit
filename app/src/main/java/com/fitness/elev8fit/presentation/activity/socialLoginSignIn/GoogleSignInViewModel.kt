@@ -1,4 +1,4 @@
-gpackage com.fitness.elev8fit.presentation.activity.socialLoginSignIn
+package com.fitness.elev8fit.presentation.activity.socialLoginSignIn
 
 import android.content.Context
 import android.util.Log
