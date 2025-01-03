@@ -1,6 +1,10 @@
 package com.fitness.elev8fit.presentation.activity.Recipe
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,15 +27,20 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.fitness.elev8fit.presentation.intent.RecipeIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
@@ -43,15 +55,41 @@ fun RecipeEntry(recipemodel : RecipeViewModel,navController: NavController) {
 
 val recipestate by recipemodel.state.collectAsState()
     val routine = rememberCoroutineScope()
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var instructionInput by remember { mutableStateOf(recipestate.instruction.joinToString(", ")) }
+    var ingredientInput by remember { mutableStateOf(recipestate.recipeIngredient.joinToString(", ")) }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        selectedImageUri = uri
+        uri?.let {
+            recipemodel.updateRecipeImage(it.toString())
+        }
 
-    Box(
+
+    }
+    val isFormValid = remember(recipestate) {
+        recipestate.recipetitle.isNotBlank() &&
+                recipestate.category.isNotBlank() &&
+        recipestate.recipeIngredient.isNotEmpty() &&
+                recipestate.instruction.isNotEmpty() &&
+                recipestate.benfits.isNotBlank()
+}
+
+Box(
         modifier = Modifier
             .fillMaxSize()
             .background(bg_color),
         contentAlignment = Alignment.Center
     ) {
 
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+            .verticalScroll(
+                rememberScrollState()
+            )
+
+
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,8 +183,14 @@ val recipestate by recipemodel.state.collectAsState()
             // Ingredients Input
             Text("Ingredients (comma separated):")
             TextField(
-                value = recipestate.recipeIngredient.joinToString (","),
-                onValueChange = { recipemodel.updateRecipeIngredients(it.split(",").map { it.trim() }) },
+                value = ingredientInput,
+                onValueChange = {
+                                ingredientInput = it
+
+                    recipemodel.updateRecipeIngredients(
+                        ingredientInput.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp, top = 8.dp)
@@ -168,8 +212,14 @@ val recipestate by recipemodel.state.collectAsState()
             // Instructions Input
             Text("Instructions (comma separated):")
             TextField(
-                value = recipestate.instruction.joinToString (","),
-                onValueChange = { recipemodel.updateRecipeInstructions(it.split(",").map { it.trim() }) },
+                value = instructionInput,
+                onValueChange = {
+                    instructionInput =it
+
+                    recipemodel.updateRecipeInstructions(
+                        instructionInput.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                    ) },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp, top = 8.dp)
@@ -209,22 +259,51 @@ val recipestate by recipemodel.state.collectAsState()
                 )
 
             )
+            Text("Recipe Image:")
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
+                    .clickable { launcher.launch("image/*") },
+                contentAlignment = Alignment.Center
+            ) {
+                if (selectedImageUri != null) {
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = "Selected Recipe Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        text = "Tap to select image",
+                        color = Color.DarkGray,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
 
                 // Submit Button
                 Button(
                     onClick = {
                         routine.launch {
+                            recipemodel.setLoadingState(true)
                             recipemodel.handlerecipeintent(RecipeIntent.SubmitRecipe(recipestate))
 
                         }
                         navController.navigate(Navdestination.home.toString())
+                        recipemodel.setLoadingState(false)
 
                     },
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .align(Alignment.CenterHorizontally),
                     shape = CutCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(CustomBackgroundColor)
+                    colors = ButtonDefaults.buttonColors(CustomBackgroundColor),
+                    enabled = isFormValid
                 ) {
                     Text("Submit Recipe")
                 }

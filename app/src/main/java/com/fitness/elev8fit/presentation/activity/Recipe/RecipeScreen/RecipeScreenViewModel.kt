@@ -15,73 +15,40 @@ import javax.inject.Inject
 class RecipeScreenViewModel @Inject constructor(
     private val firestore: FirebaseFirestore
 
-) :ViewModel(){
+) :ViewModel() {
 
 
-    private val _state = MutableStateFlow<List<Recipe>>(emptyList()) // StateFlow to hold the list of recipes
+    private val _state =
+        MutableStateFlow<List<Recipe>>(emptyList()) // StateFlow to hold the list of recipes
     val state: StateFlow<List<Recipe>> = _state
-
 
     fun fetchRecipes() {
         viewModelScope.launch {
             firestore.collection("Recipe")
                 .get()
                 .addOnSuccessListener { documents ->
-                    val recipeList = documents.mapNotNull { document ->
-                        Log.d("RecipeViewModel", "Successfully fetched documents: ${documents.size()} items")
+                    Log.d("RecipeViewModel", "Successfully fetched ${documents.size()} documents")
 
-                        document.toObject(Recipe::class.java)
-                    // Automatically maps Firestore fields to Recipe class
+                    val recipeList = documents.mapNotNull { document ->
+                        try {
+                            Log.d("RecipeViewModel", "Document Data: ${document.data}")
+                            document.toObject(Recipe::class.java)
+                        } catch (e: Exception) {
+                            Log.e("MappingError", "Error mapping document: ${document.id}, ${e.message}")
+                            null
+                        }
                     }
 
-                    _state.value = recipeList
+                    if (recipeList.isNotEmpty()) {
+                        Log.d("RecipeViewModel", "Recipes fetched successfully: $recipeList")
+                        _state.value = recipeList
+                    } else {
+                        Log.w("RecipeViewModel", "No recipes found in the database.")
+                    }
                 }
                 .addOnFailureListener { exception ->
-                    // Handle errors, e.g., log or update a UI state for errors
                     Log.e("RecipeViewModel", "Error fetching recipes: ${exception.message}")
                 }
         }
-
-        }
     }
-//
-//
-//
-//@HiltViewModel
-//class RecipeScreenViewModel @Inject constructor(
-//    private val firestore: FirebaseFirestore
-//) : ViewModel() {
-//
-//    private val _state = MutableStateFlow<List<Recipe>>(emptyList()) // StateFlow to hold the list of recipes
-//    val state: StateFlow<List<Recipe>> = _state
-//
-//    fun fetchRecipes() {
-//        viewModelScope.launch {
-//            firestore.collection("Recipe")
-//                .get()
-//                .addOnSuccessListener { documents ->
-//                    Log.d("RecipeViewModel", "Successfully fetched ${documents.size()} documents")
-//
-//                    val recipeList = documents.mapNotNull { document ->
-//                        try {
-//                            Log.d("RecipeViewModel", "Document Data: ${document.data}")
-//                            document.toObject(Recipe::class.java)
-//                        } catch (e: Exception) {
-//                            Log.e("MappingError", "Error mapping document: ${document.id}, ${e.message}")
-//                            null
-//                        }
-//                    }
-//
-//                    if (recipeList.isNotEmpty()) {
-//                        Log.d("RecipeViewModel", "Recipes fetched successfully: $recipeList")
-//                        _state.value = recipeList
-//                    } else {
-//                        Log.w("RecipeViewModel", "No recipes found in the database.")
-//                    }
-//                }
-//                .addOnFailureListener { exception ->
-//                    Log.e("RecipeViewModel", "Error fetching recipes: ${exception.message}")
-//                }
-//        }
-//    }
-//}
+}

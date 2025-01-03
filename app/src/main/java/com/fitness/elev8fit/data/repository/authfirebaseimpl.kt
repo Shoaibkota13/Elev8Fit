@@ -67,12 +67,23 @@ class authfirebaseimpl @Inject constructor(
             }
     }
 
-    override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
-        firestore.collection(Constants.Recipe).document(getcurrentuser()).set(recipeInfo,
-            SetOptions.merge()).addOnSuccessListener {
-                    Recipe.saved()
+//    override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
+//        firestore.collection(Constants.Recipe).set(recipeInfo,
+//            SetOptions.merge()).addOnSuccessListener {
+//                    Recipe.saved()
+//        }
+//    }
+override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
+    firestore.collection(Constants.Recipe)
+        .add(recipeInfo) // Automatically generates a unique document ID
+        .addOnSuccessListener {
+            Recipe.saved() // Notify success
         }
-    }
+        .addOnFailureListener { e ->
+            Log.e("Firestore", "Error saving recipe: ${e.message}")
+        }
+}
+
 
     override suspend fun updateSingleField(field: String, value: String) {
         val currentUser = auth.currentUser

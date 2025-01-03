@@ -48,13 +48,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+//
                     displaynav(
                         navController = navController,
                         isAuthenticated = isAuthenticated.value
                     )
 
-                 //   RecipeScreen(recipeScreenViewModel = hiltViewModel(), navController =navController )
+                 //  RecipeScreen(recipeScreenViewModel = hiltViewModel(), navController =navController )
 //                    LoginFacebookButton(
 //                        onAuthComplete = {
 //                            Toast.makeText(this, "Login Successful", Toast.LENGTH_LONG).show()
