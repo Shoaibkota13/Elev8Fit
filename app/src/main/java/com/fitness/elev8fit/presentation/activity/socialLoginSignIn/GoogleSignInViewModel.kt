@@ -7,6 +7,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -36,6 +37,7 @@ class GoogleSignInViewModel @Inject constructor(
     private val authrepo: authfirebaseimpl,
     private val firestore: FirebaseFirestore
 ) : ViewModel() {
+    val user = MutableLiveData<User>(null)
 
     fun handleGoogleSignIn(context: Context, navController: NavController) {
         viewModelScope.launch {
@@ -54,6 +56,7 @@ class GoogleSignInViewModel @Inject constructor(
                         onSuccess = { authResult ->
                             DataStoreManager.saveAuthState(context, true)
                             val currentUser = authResult.user
+
                             Log.d("AuthDebug", "User: $currentUser")
                             Log.d("AuthDebug", "DisplayName: ${currentUser?.displayName}")
                             Log.d("AuthDebug", "Email: ${currentUser?.email}")
@@ -66,6 +69,7 @@ class GoogleSignInViewModel @Inject constructor(
                                     .get()
                                     .addOnSuccessListener { document ->
                                         if (!document.isEmpty) {
+
                                             Toast.makeText(
                                                 context,
                                                 "Welcome back",
@@ -73,7 +77,8 @@ class GoogleSignInViewModel @Inject constructor(
                                             ).show()
                                             navController.navigate(Navdestination.home.toString())
                                         } else {
-                                            val user = User(
+
+                                            val users = User(
                                                 currentUser.uid,
                                                 currentUser.displayName ?: "Unknown",
                                                 currentUser.email ?: "Unknown",
@@ -81,11 +86,13 @@ class GoogleSignInViewModel @Inject constructor(
                                                 "",
                                                 currentUser.photoUrl.toString()
                                             )
+
+
                                             viewModelScope.launch {
+
                                                 authrepo.registergoogle(
-                                                    this@GoogleSignInViewModel,
-                                                    user
-                                                )
+                                                    this@GoogleSignInViewModel, users)
+
                                                 Toast.makeText(
                                                     context,
                                                     "Account created successfully!",

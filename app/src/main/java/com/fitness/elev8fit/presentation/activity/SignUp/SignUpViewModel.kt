@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.fitness.elev8fit.data.repository.authfirebaseimpl
 import com.fitness.elev8fit.data.state.SignUpState
 import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
@@ -12,21 +11,24 @@ import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
-@HiltViewModel
-class SignUpViewModel @Inject constructor(
-    private val auth :FirebaseAuth,
-    private val authRepository: authfirebaseimpl
+//@HiltViewModel
+//class SignUpViewModel @Inject constructor(
+//    private val auth :FirebaseAuth,
+//    private val authRepository: authfirebaseimpl
+//
+//)
 
-) :ViewModel() {
+class SignUpViewModel:ViewModel() {
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state
+    private val auth = FirebaseAuth.getInstance()
+//    private val authfirebaseimpl : authfirebaseimpl().
+
     fun setAge(newage: String) {
       _state.value = _state.value.copy( age = newage)
     }
@@ -91,7 +93,7 @@ class SignUpViewModel @Inject constructor(
                     val user = User(firebaseuser.uid, name = _state.value.name,email,phonenumber, age = _state.value.age)
                     //passing the activity
 
-                    authRepository.registerUser(this@SignUpViewModel,user)
+//                    authRepository.registerUser(this@SignUpViewModel,user)
                     navController.navigate(Navdestination.home.toString()){
                         popUpTo((Navdestination.Signup.route)){ inclusive = true }
                     }

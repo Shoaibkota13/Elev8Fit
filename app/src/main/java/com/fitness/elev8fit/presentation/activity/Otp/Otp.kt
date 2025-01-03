@@ -1,6 +1,5 @@
 package com.fitness.elev8fit.presentation.activity.Otp
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,10 +45,11 @@ import com.fitness.elev8fit.ui.theme.card_color
 import kotlinx.coroutines.delay
 
 @Composable
-fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavController) {
+fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyviewmodel) {
     val verificationId = navController.previousBackStackEntry?.savedStateHandle?.get<String>("verificationId")
     val otpLength = 6
-    val otpstate by otpViewModel.state.collectAsState()
+    val otpverifys by otpverifed.state.collectAsState()
+//    val otpstate by remember { otpViewModel.state }.collectAsState()
     val otpFields = remember { mutableStateListOf("", "", "", "", "", "") }
     val focusRequesters = remember { List(otpLength) { FocusRequester() } }
     val context = LocalContext.current
@@ -83,6 +83,7 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
             fontSize = 24.sp,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
+
         )
 
         Text(
@@ -121,21 +122,24 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
         }
 
 
-        if (otpstate.isLoading) {
+        if (otpverifys.isLoading) {
             // Show progress indicator while verifying OTP
             androidx.compose.material3.CircularProgressIndicator(
                 modifier = Modifier.padding(top = 24.dp),
                 color = Color(0xFF0078D4)
             )
-        } else {
+        }
+//    else {
             Button(
                 onClick = {
                     val otp = otpFields.joinToString("")
                     if (verificationId != null && otp.length == otpLength ) {
-                        otpViewModel.verifyOtp(context, verificationId, otp) { success ->
-                            if (success) {
-                                Log.e("verify","${otpstate.isverified}")
 
+                    otpverifed.verifyOtp(context, verificationId, otp) { success ->
+                            if (success) {
+
+                               // Log.e("verify","${otpstate.isverified}")
+                                navController.popBackStack()
                                 Toast.makeText(context, "sucesss", Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
@@ -154,7 +158,7 @@ fun OTPVerificationScreen(otpViewModel: OtpViewModel, navController: NavControll
             }
 
 
-        }
+//        }
 
 
         Text(

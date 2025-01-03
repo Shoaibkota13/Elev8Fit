@@ -1,8 +1,10 @@
 package com.fitness.elev8fit
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     // private val navController: NavController = rememberNavController()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -50,6 +53,16 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         isAuthenticated = isAuthenticated.value
                     )
+
+//                    LoginFacebookButton(
+//                        onAuthComplete = {
+//                            Toast.makeText(this, "Login Successful", Toast.LENGTH_LONG).show()
+//                        },
+//                        onAuthError = {
+//                            Toast.makeText(this, "Login Failed: ", Toast.LENGTH_LONG).show()
+//                        }
+//                    )
+              //      ExerciseCard()
 
                 }
             }

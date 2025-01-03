@@ -1,114 +1,3 @@
-//package com.fitness.elev8fit.presentation.activity.Recipe
-//
-//import android.graphics.Color.*
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.layout.*
-//import androidx.compose.foundation.text.BasicText
-//import androidx.compose.material3.*
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.graphics.Color as ComposeColor
-//import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.dp
-//import com.fitness.elev8fit.data.state.RecipeState
-//import com.fitness.elev8fit.ui.theme.bg_color
-//
-//@Composable
-//fun Recipe(recipeState: RecipeState) {
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(bg_color),
-//        contentAlignment = Alignment.TopCenter
-//    ) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            // Recipe Title
-//            Text(
-//                text = recipeState.recipetitle,
-//                style = MaterialTheme.typography.bodyLarge,
-//                modifier = Modifier.padding(bottom = 8.dp)
-//            )
-//
-//            // Recipe Category
-//            Text(
-//                text = "Category: ${recipeState.category}",
-//                style = MaterialTheme.typography.bodyLarge,
-//                color = androidx.compose.ui.graphics.Color.Black,
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            )
-//
-//            // Preparation Time
-//            Text(
-//                text = "Prep Time: ${recipeState.prepTime} minutes",
-//                color = Color.Gray,
-//                modifier = Modifier.padding(bottom = 16.dp)
-//            )
-//
-//            // Ingredients Section
-//            Text(
-//                text = "Ingredients:",
-//                color = Color.Black,
-//                modifier = Modifier.padding(bottom = 8.dp)
-//            )
-//            recipeState.recipeIngredient.forEach { ingredient ->
-//                Text(
-//                    text = "• $ingredient",
-//                    color = Color.Black,
-//                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
-//                )
-//            }
-//
-//            // Instructions Section
-//            Text(
-//                text = "Instructions:",
-//                color = Color.Black,
-//                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-//            )
-//            recipeState.instruction.forEach { step ->
-//                Text(
-//                    text = "• $step",
-//                    color = Color.Black,
-//                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
-//                )
-//            }
-//
-//            // Benefits Section
-//            if (recipeState.benfits.isNotEmpty()) {
-//                Text(
-//                    text = "Benefits:",
-//                    color = Color.Black,
-//                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-//                )
-//                Text(
-//                    text = recipeState.benfits,
-//                    color = Color.Black
-//                )
-//            }
-//        }
-//    }
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun RecipePreview() {
-//    // Sample data for preview
-//    val sampleRecipe = RecipeState(
-//        id = 1,
-//        recipetitle = "Avocado Toast",
-//        recipeIngredient = listOf("1 ripe avocado", "2 slices of bread", "Salt", "Pepper"),
-//        image = 0, // You can add an image resource here
-//        instruction = listOf("Toast the bread", "Mash the avocado", "Spread on the toast", "Season with salt and pepper"),
-//        benfits = "Rich in healthy fats and fiber",
-//        prepTime = 10,
-//        category = "Breakfast"
-//    )
-//
-//    Recipe(recipeState = sampleRecipe)
-//}
-
-
 package com.fitness.elev8fit.presentation.activity.Recipe
 
 import androidx.compose.foundation.background
@@ -124,14 +13,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -140,12 +33,16 @@ import com.fitness.elev8fit.presentation.intent.RecipeIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
 import com.fitness.elev8fit.ui.theme.bg_color
+import com.fitness.elev8fit.ui.theme.quicksand
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeEntry(recipemodel : RecipeViewModel,navController: NavController) {
     // States for input fields
 
 val recipestate by recipemodel.state.collectAsState()
+    val routine = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -184,8 +81,19 @@ val recipestate by recipemodel.state.collectAsState()
                 onValueChange = { recipemodel.updateRecipeTitle(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp)
+                    .padding(bottom = 8.dp, top = 8.dp),
+
+                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, // Change this to your desired color
+                    unfocusedContainerColor = Color.LightGray,
+                    disabledContainerColor = Color.White,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = quicksand
+                )
 
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -197,8 +105,18 @@ val recipestate by recipemodel.state.collectAsState()
                 onValueChange = { recipemodel.updateCategory(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp)
+                    .padding(bottom = 8.dp, top = 8.dp),
+                shape = CutCornerShape(8.dp, 8.dp, 0.dp, 0.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, // Change this to your desired color
+                    unfocusedContainerColor = Color.LightGray,
+                    disabledContainerColor = Color.White,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = quicksand
+                )
 
             )
 
@@ -209,8 +127,18 @@ val recipestate by recipemodel.state.collectAsState()
                 onValueChange = { recipemodel.updatePrepTime(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp)
+                    .padding(bottom = 8.dp, top = 8.dp),
+                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, // Change this to your desired color
+                    unfocusedContainerColor = Color.LightGray,
+                    disabledContainerColor = Color.White,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = quicksand
+                )
 
             )
 
@@ -221,9 +149,19 @@ val recipestate by recipemodel.state.collectAsState()
                 onValueChange = { recipemodel.updateRecipeIngredients(it.split(",").map { it.trim() }) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp, top = 8.dp)
                     .heightIn(100.dp),
-                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp)
+                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, // Change this to your desired color
+                    unfocusedContainerColor = Color.LightGray,
+                    disabledContainerColor = Color.White,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = quicksand
+                )
 
             )
 
@@ -234,9 +172,19 @@ val recipestate by recipemodel.state.collectAsState()
                 onValueChange = { recipemodel.updateRecipeInstructions(it.split(",").map { it.trim() }) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp, top = 8.dp)
                     .heightIn(100.dp),
-                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp)
+                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, // Change this to your desired color
+                    unfocusedContainerColor = Color.LightGray,
+                    disabledContainerColor = Color.White,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = quicksand
+                )
 
             )
 
@@ -247,16 +195,29 @@ val recipestate by recipemodel.state.collectAsState()
                 onValueChange = {recipemodel.updateRecipeBenefits(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp)
+                    .padding(bottom = 8.dp, top = 8.dp),
+                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White, // Change this to your desired color
+                    unfocusedContainerColor = Color.LightGray,
+                    disabledContainerColor = Color.White,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = quicksand
+                )
 
             )
 
                 // Submit Button
                 Button(
                     onClick = {
-                      recipemodel.handlerecipeintent(RecipeIntent.SubmitRecipe(recipestate))
-                        navController.navigate(Navdestination.Recipe.toString())
+                        routine.launch {
+                            recipemodel.handlerecipeintent(RecipeIntent.SubmitRecipe(recipestate))
+
+                        }
+                        navController.navigate(Navdestination.home.toString())
 
                     },
                     modifier = Modifier
@@ -267,6 +228,8 @@ val recipestate by recipemodel.state.collectAsState()
                 ) {
                     Text("Submit Recipe")
                 }
+
+
 
         }
     }

@@ -1,7 +1,6 @@
 
 package com.fitness.elev8fit.presentation.activity.Home
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -32,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.domain.model.BottomMenuItems
-import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
+import com.fitness.elev8fit.presentation.activity.Profile.ProfileScreen
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.card_color
@@ -61,15 +59,14 @@ fun HomePage(navController: NavController) {
             when (selected) {
                 "Home" -> Excercise()
                 "Recipe" -> RecipeScreen(navController)
-                "Account" -> ProfileScreen(googleSignInViewModel = hiltViewModel(),navController,context)
+                "Account" -> ProfileScreen(profileViewModel = hiltViewModel())
             }
         }
 
         // Bottom navigation bar
         NavigationBar(
             modifier = Modifier.align(Alignment.BottomCenter),
-            containerColor = card_color,
-            contentColor = Color.White
+            containerColor = card_color
         ) {
             bottomMenuItems.forEach { menuItem ->
                 NavigationBarItem(
@@ -85,15 +82,17 @@ fun HomePage(navController: NavController) {
                     alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Color.Green,
-                        unselectedIconColor = Color.Gray,
+                        unselectedIconColor = Color.Black,
                         selectedTextColor = Color.Green,
-                        unselectedTextColor = Color.Gray
+                        unselectedTextColor = Color.Gray,
+                        indicatorColor = Color.Black
                     )
                 )
             }
         }
     }
 }
+
 
 
 @Composable
@@ -127,20 +126,7 @@ fun RecipeScreen(navController: NavController) {
     }
 }
 
-@Composable
-fun ProfileScreen(googleSignInViewModel: GoogleSignInViewModel,navController: NavController,context: Context) {
-    // Example implementation for the Profile Screen
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF80DEEA)), // Light cyan background
-        contentAlignment = Alignment.Center
-    ) {
-       Button(onClick = { googleSignInViewModel.logout(context,navController)}) {
-           Text(text = "Logout")
-       }
-    }
-}
+
 
 private fun preparebottom(): List<BottomMenuItems> {
     return listOf(

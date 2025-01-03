@@ -24,10 +24,6 @@ object DataStoreManager {
             preferences[AUTH_STATE_KEY] = isAuthenticated
         }
     }
-
-    // Save the onboarding state (true for completed onboarding)
-
-
     // Retrieve the authentication state
     fun getAuthState(context: Context): Flow<Boolean> {
         return context.dataStore.data

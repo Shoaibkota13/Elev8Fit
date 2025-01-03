@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.data.constant.DataStoreManager
 import com.fitness.elev8fit.presentation.activity.Otp.OtpViewModel
+import com.fitness.elev8fit.presentation.activity.Otp.otpverifyviewmodel
 import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
@@ -49,17 +50,18 @@ import com.fitness.elev8fit.ui.theme.text_color
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
-                 otpViewModel: OtpViewModel,
-                 googleSignInViewModel: GoogleSignInViewModel
+fun SignUpScreen(viewModel: SignUpViewModel,
+                 navController: NavController ,otpViewModel:OtpViewModel,
+                 googleSignInViewModel: GoogleSignInViewModel,otpverifys: otpverifyviewmodel
 ) {
     val otpstate by otpViewModel.state.collectAsState()
+    val otpverify by otpverifys.state.collectAsState()
     val signupstate by viewModel.state.collectAsState()
     val coroutine = rememberCoroutineScope()
 
     val context = LocalContext.current
     val activity = context as? Activity
-    Log.d("SignUpScreen", "OTP Verified: ${otpstate.isverified}")
+
 
     Box(
         modifier = Modifier
@@ -157,7 +159,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                         keyboardType = KeyboardType.Phone
                     )
                     // OTP Verification link
-                    if (!otpstate.isverified) {
+                    if (!otpverify.isverifed) {
                         if (otpstate.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -198,7 +200,8 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                                     }
                             )
                         }
-                    } else {
+                    }
+                         else {
                         Text(
                             text = "Verified",
                             modifier = Modifier
@@ -213,9 +216,9 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                     Button(
                         onClick = {
 
-                                if (otpstate.isverified) {
+                                if (otpverify.isverifed) {
 
-
+                            Log.e("ots ","${otpverify.isverifed}")
                                     // Proceed with the signup
                                     viewModel.SignUpIntentHandler(
                                         SignUpIntent.Signup(
@@ -225,8 +228,9 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController ,
                                         ),
                                         navController
                                     )
-                                } else {
-                                    // Show a Toast if OTP isn't verified yet
+                                }
+                        else {
+
                                     Toast.makeText(context, "Please verify OTP first", Toast.LENGTH_SHORT).show()
                                 }
 

@@ -5,11 +5,11 @@ import android.os.Parcelable
 
 data class User(
     val id :String="",
-    val name:String="",
-    val email:String?="",
-    val mobile:String?="",
-    val age:String?="",
-    val photoUrl: String? = "",
+    val name:String?=null,
+    val email:String?=null,
+    val mobile:String?=null,
+    val age:String?=null,
+    val photoUrl: String? =null
 
 ):Parcelable {
     constructor(parcel: Parcel) : this(

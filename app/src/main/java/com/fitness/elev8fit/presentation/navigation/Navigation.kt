@@ -48,7 +48,9 @@ fun displaynav(
             LoginScreen(loginview = hiltViewModel(), signUpViewModel = hiltViewModel(),navController=navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel() )
         }
         composable(Navdestination.Signup.toString()){
-            SignUpScreen(viewModel =hiltViewModel(),navController=navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel())
+            SignUpScreen(viewModel =hiltViewModel(),navController=navController,
+                hiltViewModel(), googleSignInViewModel = hiltViewModel(),
+                hiltViewModel())
         }
         composable(Navdestination.home.toString()){
             HomePage(navController=navController)
@@ -61,7 +63,7 @@ fun displaynav(
             RecipeScreen(navController = navController)
         }
         composable(Navdestination.otp.toString()) {
-            OTPVerificationScreen(hiltViewModel(), navController)
+            OTPVerificationScreen(navController,  hiltViewModel())
         }
     }
 }
