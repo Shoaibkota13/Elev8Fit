@@ -200,7 +200,6 @@ class RecipeViewModel @Inject constructor(
 //    ) {
 //        try {
 //            val imageFile = getFileFromUri(imageUri,context) // Helper function for file conversion
-//            val credentials = BasicAWSCredentials("AKIARYEUCRGF5JJFZZV7", "FCz6S8TBlBRrKXnqT/tv29akJqFgWsABRUF2KmNN")
 //            val s3Client = AmazonS3Client(credentials)
 //
 //            val bucketName = "your-bucket-name"
