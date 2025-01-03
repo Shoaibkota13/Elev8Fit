@@ -4,12 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Recipe(
-    val id:Int,
-    val image:Int,
+    val id:Int=0,
+    val image:Int=0,
     val RecipeTitle :String="",
     val recipeIngredient: List<String> = emptyList(), // Assuming it's a list of ingredients
     val instructions: List<String> = emptyList(),
-    val prepTime: Int,
+    val prepTime: Int=0,
     val benifits:String=""
 ):Parcelable {
     constructor(parcel: Parcel) : this(

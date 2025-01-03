@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
                         isAuthenticated = isAuthenticated.value
                     )
 
+                 //   RecipeScreen(recipeScreenViewModel = hiltViewModel(), navController =navController )
 //                    LoginFacebookButton(
 //                        onAuthComplete = {
 //                            Toast.makeText(this, "Login Successful", Toast.LENGTH_LONG).show()

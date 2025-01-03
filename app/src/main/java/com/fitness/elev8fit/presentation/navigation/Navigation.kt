@@ -6,9 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.fitness.elev8fit.presentation.activity.Home.HomePage
-import com.fitness.elev8fit.presentation.activity.Home.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.Otp.OTPVerificationScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
+import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
@@ -60,7 +60,7 @@ fun displaynav(
             RecipeEntry(recipemodel = hiltViewModel(),navController=navController )
         }
         composable(Navdestination.Recipe.toString()) {
-            RecipeScreen(navController = navController)
+            RecipeScreen(recipeScreenViewModel = hiltViewModel(),navController = navController)
         }
         composable(Navdestination.otp.toString()) {
             OTPVerificationScreen(navController,  hiltViewModel())

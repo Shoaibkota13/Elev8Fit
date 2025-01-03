@@ -160,15 +160,7 @@ class GoogleSignInViewModel @Inject constructor(
         }
     }
 
-    fun logout(context: Context, navController: NavController) {
-        viewModelScope.launch {
-            DataStoreManager.saveAuthState(context, false)
-            auth.signOut()
-            navController.navigate(Navdestination.onboarding1.toString()) {
-                popUpTo(Navdestination.home.toString()) { inclusive = true }
-            }
-        }
-    }
+
 
     fun onsucess(){
 

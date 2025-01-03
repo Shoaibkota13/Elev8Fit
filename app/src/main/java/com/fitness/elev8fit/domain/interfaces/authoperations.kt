@@ -17,4 +17,6 @@ interface authoperations {
     suspend fun fetchCurrentUser(onFetch: (User?) -> Unit)
 
     suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe)
+
+    suspend fun updateSingleField( field: String, value: String)
 }

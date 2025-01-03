@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -31,7 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.domain.model.BottomMenuItems
 import com.fitness.elev8fit.presentation.activity.Profile.ProfileScreen
-import com.fitness.elev8fit.presentation.navigation.Navdestination
+import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.card_color
 
@@ -58,8 +57,9 @@ fun HomePage(navController: NavController) {
         ) {
             when (selected) {
                 "Home" -> Excercise()
-                "Recipe" -> RecipeScreen(navController)
-                "Account" -> ProfileScreen(profileViewModel = hiltViewModel())
+                "Recipe" -> RecipeScreen(recipeScreenViewModel = hiltViewModel(),navController)
+                "Account" -> ProfileScreen(profileViewModel = hiltViewModel(), navController, common = hiltViewModel(),context)
+
             }
         }
 
@@ -92,41 +92,6 @@ fun HomePage(navController: NavController) {
         }
     }
 }
-
-
-
-@Composable
-fun RecipeScreen(navController: NavController) {
-    // Example implementation for the Recipe Screen
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFB2DFDB)), // Light greenish-blue background
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Explore Delicious Recipes Here!",
-            color = Color.White,
-            modifier = Modifier.padding(16.dp)
-        )
-
-        FloatingActionButton(onClick = { navController.navigate(Navdestination.recipeentry.toString()) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp, 10.dp, 10.dp, 30.dp), // Padding from the edges
-            containerColor = Color.Black
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add Recipe",
-                tint = Color.White
-            )
-            
-        }
-    }
-}
-
-
 
 private fun preparebottom(): List<BottomMenuItems> {
     return listOf(

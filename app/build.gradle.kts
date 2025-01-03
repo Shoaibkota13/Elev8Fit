@@ -114,6 +114,11 @@ dependencies {
 //    import com.facebook.FacebookSdk;
 //    import com.facebook.appevents.AppEventsLogger;
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
+   //image selector
+    implementation("com.google.accompanist:accompanist-permissions:0.37.0")
+    implementation ("androidx.compose.foundation:foundation:1.1.0")
+    //amazon sdk
+    implementation ("com.amazonaws:aws-android-sdk-s3:2.75.0")
 }
 hilt {
     enableTransformForLocalTests = true

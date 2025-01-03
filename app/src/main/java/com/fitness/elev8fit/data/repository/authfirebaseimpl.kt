@@ -73,4 +73,19 @@ class authfirebaseimpl @Inject constructor(
                     Recipe.saved()
         }
     }
+
+    override suspend fun updateSingleField(field: String, value: String) {
+        val currentUser = auth.currentUser
+        currentUser?.let {
+            val userId = it.uid
+            firestore.collection("Users").document(userId)
+                .update(field,value)
+                .addOnSuccessListener {
+                    // Optionally, fetch the updated data after update
+                }
+                .addOnFailureListener {
+                    Log.w("ProfileViewModel", "Error updating document",)
+                }
+        }
+    }
 }
