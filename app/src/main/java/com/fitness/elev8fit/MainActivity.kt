@@ -15,7 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.data.constant.DataStoreManager
-import com.fitness.elev8fit.presentation.navigation.displaynav
+import com.fitness.elev8fit.presentation.activity.Home.ExerciseScreen
+import com.fitness.elev8fit.presentation.viewmodel.ExerciseViewModel
 import com.fitness.elev8fit.ui.theme.Elev8FitTheme
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,10 +50,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //
-                    displaynav(
-                        navController = navController,
-                        isAuthenticated = isAuthenticated.value
-                    )
+//                    displaynav(
+//                        navController = navController,
+//                        isAuthenticated = isAuthenticated.value
+//                    )
+
+                    ExerciseScreen(ExerciseViewModel())
 
                  //  RecipeScreen(recipeScreenViewModel = hiltViewModel(), navController =navController )
 //                    LoginFacebookButton(

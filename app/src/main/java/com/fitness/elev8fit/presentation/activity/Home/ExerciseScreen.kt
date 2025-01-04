@@ -37,7 +37,7 @@ fun ExerciseScreen(viewModel: ExerciseViewModel) {
     } else {
         LazyColumn {
             items(state.exerciseList) { exercise ->
-                ExerciseItem(exercise = exercise)
+                ExerciseCard(exercise = exercise)
             }
         }
     }
@@ -48,14 +48,14 @@ fun ExerciseScreen(viewModel: ExerciseViewModel) {
 fun ExerciseItem(exercise: Exercise) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Name: ${exercise.name}", style = MaterialTheme.typography.bodyLarge)
-        Text(text = "Exercise ID: ${exercise.exerciseId}")
+        Text(text = "Exercise ID: ${exercise.id}")
         Text(text = "Instructions:")
         exercise.instructions.forEach { instruction ->
             Text(text = "- $instruction")
         }
-        Text(text = "Target Muscles: ${exercise.targetMuscles.joinToString()}")
-        Text(text = "Body Parts: ${exercise.bodyParts.joinToString()}")
-        Text(text = "Equipments: ${exercise.equipments.joinToString()}")
+        Text(text = "Target Muscles: ${exercise.secondaryMuscles.joinToString()}")
+//        Text(text = "Body Parts: ${exercise.bodyParts.joinToString()}")
+//        Text(text = "Equipments: ${exercise.equipments.joinToString()}")
         Text(text = "Secondary Muscles: ${exercise.secondaryMuscles.joinToString()}")
         Spacer(modifier = Modifier.height(8.dp))
 //        AsyncImage(

@@ -1,6 +1,6 @@
 package com.fitness.elev8fit.presentation.activity.Home
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fitness.elev8fit.R
+import coil.compose.AsyncImage
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.fitness.elev8fit.domain.model.exercise.Exercise
 
 
 @Composable
@@ -54,11 +56,10 @@ fun RecipeCard(
         }
     }
 }
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ExerciseCard(
-    name: String = "Exercise Name",
-    target: String = "Target Muscle",
-    imageRes: Int = R.drawable.boy // Replace with an actual resource ID
+    exercise: Exercise
 ) {
     Card(
         modifier = Modifier
@@ -70,27 +71,27 @@ fun ExerciseCard(
         Row(
             modifier = Modifier.padding(8.dp)
         ) {
-            // Image on the left
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = "Exercise Image",
-                modifier = Modifier
-                    .size(80.dp)
-                    .padding(end = 8.dp)
-            )
-            // Column with text aligned to the end
+            AsyncImage(
+            model = exercise.gifUrl,
+            contentDescription = "Exercise GIF",
+                modifier = Modifier.size(60.dp).border( 1.dp,color = Color.Gray,shape = RoundedCornerShape(2.dp))
+        )
+//            GlideImage(model = exercise.gifUrl, contentDescription = "Ex")
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = name,
-                    style = MaterialTheme.typography.bodyLarge
+                    text = exercise.name.replaceFirstChar { it.uppercase() },
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.End
                 )
                 Text(
-                    text = target,
-                    style = MaterialTheme.typography.bodySmall
+                    text = exercise.target.replaceFirstChar { it.uppercase() },
+                    style = MaterialTheme.typography.bodySmall,
+
+
                 )
             }
         }
@@ -102,8 +103,8 @@ fun RecipeCardPreview() {
     RecipeCard(title = "Pasta Recipe")
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ExerciseCardPreview() {
-    ExerciseCard(name = "Push-Ups", target = "Chest")
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ExerciseCardPreview() {
+//    ExerciseCard(name = Exercis, target = "Chest")
+//}

@@ -24,24 +24,60 @@ class ExerciseViewModel : ViewModel() {
 
     }
 
+//    fun fetchExercises(offset: Int, limit: Int) {
+//        viewModelScope.launch {
+////            _state.value = _state.value.copy(isLoading = true)
+//
+//            repository.getExercises(offset, limit)
+//                .onSuccess { response ->
+//                        val data = response.data
+//                    Log.d("ExerciseViewModel", "API call successful: ${response.data}")
+//                    _state.value = _state.value.copy(
+//                        isLoading = false,
+//                      // Pass the full list of Exercise objects
+//                        successMessage = "Exercises loaded successfully",
+//                        exerciseList = data.exercises
+//                    )
+//                }
+//                .onFailure { error ->
+//                    _state.value = _state.value.copy(errorMessage = "byee")
+//                }
+//        }
+//    }
+
     fun fetchExercises(offset: Int, limit: Int) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
+            try {
+                // Optional: Set loading state before making the API call
+                _state.value = _state.value.copy(isLoading = true)
 
-            repository.getExercises(offset, limit)
-                .onSuccess { response ->
-                        val data = response.data
-                    Log.d("ExerciseViewModel", "API call successful: ${response.data}")
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                      // Pass the full list of Exercise objects
-                        successMessage = "Exercises loaded successfully",
-                        exerciseList = data.exercises
-                    )
-                }
-                .onFailure { error ->
-                    _state.value = _state.value.copy(errorMessage = "byee")
-                }
+                // API call to fetch exercises
+                repository.getExercises(offset, limit)
+                    .onSuccess { exercises ->
+                        Log.d("ExerciseViewModel", "API call successful: ${exercises}")
+
+                        // Update the state with the loaded exercises
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                            successMessage = "Exercises loaded successfully",
+                            exerciseList = exercises
+                        )
+                    }
+                    .onFailure { error ->
+                        _state.value = _state.value.copy(
+                            isLoading = false,  // Stop loading if there's an error
+                            errorMessage = "Failed to load exercises: ${error.message}"
+                        )
+                    }
+            } catch (e: Exception) {
+                // Catch any exceptions that occur during the API call or other operations
+                _state.value = _state.value.copy(
+                    isLoading = false,  // Stop loading in case of exception
+                    errorMessage = "An error occurred: ${e.message}"  // Provide the exception message
+                )
+                Log.e("ExerciseViewModel", "Error fetching exercises: ${e.message}")
+            }
         }
     }
+
 }
