@@ -99,4 +99,8 @@ override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
                 }
         }
     }
+
+    override suspend fun fetchExercises(offset: Int, limit: Int) {
+
+    }
 }

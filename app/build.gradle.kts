@@ -119,7 +119,10 @@ dependencies {
     implementation ("androidx.compose.foundation:foundation:1.1.0")
     //amazon sdk
     implementation ("com.amazonaws:aws-android-sdk-s3:2.75.0")
-}
+    //shimmering effect
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.3.1")
+    implementation("androidx.biometric:biometric:1.1.0")}
+
 hilt {
     enableTransformForLocalTests = true
 }

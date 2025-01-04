@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -81,7 +82,7 @@ fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyvie
         Text(
             text = "Verification",
             fontSize = 24.sp,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 8.dp)
 
         )
@@ -89,7 +90,7 @@ fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyvie
         Text(
             text = "We sent a code to  ",
             fontSize = 14.sp,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
@@ -152,7 +153,7 @@ fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyvie
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0078D4))
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
                 Text(text = "Verify Otp", color = Color.White)
             }

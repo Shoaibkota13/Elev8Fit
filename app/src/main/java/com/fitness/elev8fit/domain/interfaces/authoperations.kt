@@ -19,4 +19,5 @@ interface authoperations {
     suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe)
 
     suspend fun updateSingleField( field: String, value: String)
+    suspend fun fetchExercises(offset: Int, limit: Int)
 }

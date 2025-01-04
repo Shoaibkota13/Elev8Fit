@@ -56,7 +56,8 @@ fun cards(
         // Label text
         Text(
             text = labeltext,
-            style = MaterialTheme.typography.bodyMedium, color = Color.Black
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
         )
 
         // TextField with Icon

@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,9 +37,7 @@ import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
 import com.fitness.elev8fit.ui.theme.Quotes
 import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.card_color
 import com.fitness.elev8fit.ui.theme.quicksand
-import com.fitness.elev8fit.ui.theme.text_color
 
 @Composable
 fun Firstonboard(navController: NavController){
@@ -71,7 +70,8 @@ fun Firstonboard(navController: NavController){
                 text = " Have A Good Health",
                 fontFamily = quicksand,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.primary
             )
 
             Image(painter = painterResource(id = R.drawable.logo),
@@ -82,7 +82,7 @@ fun Firstonboard(navController: NavController){
             Card(
                 modifier = Modifier.padding(16.dp),
                 shape = CardDefaults.shape,
-                colors = CardDefaults.cardColors(card_color)
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
@@ -99,7 +99,8 @@ fun Firstonboard(navController: NavController){
             Text(text = "If you have account,please sign in",
                 modifier = Modifier.clickable {
             navController.navigate(Navdestination.login.toString())
-                }, fontFamily = quicksand, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }, fontFamily = quicksand, fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)
 
             Column(
                 modifier = Modifier
@@ -113,13 +114,13 @@ fun Firstonboard(navController: NavController){
                     modifier = Modifier.padding(16.dp),
                     shape = CutCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        CustomBackgroundColor
+                       MaterialTheme.colorScheme.primary
                     )
                 ) {
                     Text(
                         text = "Let's Start",
                         fontSize = 24.sp,
-                        color = text_color
+                        color = Color.White
                     )
 
                 }

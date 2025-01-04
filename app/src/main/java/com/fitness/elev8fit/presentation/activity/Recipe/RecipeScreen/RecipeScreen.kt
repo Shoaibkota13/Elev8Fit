@@ -1,20 +1,23 @@
 package com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen
 
-import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,39 +29,46 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.fitness.elev8fit.domain.model.Recipe
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 
 @Composable
 fun RecipeScreen(recipeScreenViewModel: RecipeScreenViewModel, navController: NavController) {
-    // Example implementation for the Recipe Screen
+    // Collect the recipe state
     val recipes by recipeScreenViewModel.state.collectAsState()
-    LaunchedEffect(true) {
-        // This ensures the recipe fetching happens once during the initial composition
-        recipeScreenViewModel.fetchRecipes()
-    }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(recipes) { recipe ->
-            RecipeItem(recipe)
-        }
+    // Trigger the fetching of recipes when the screen is launched
+    LaunchedEffect(true) {
+        recipeScreenViewModel.fetchRecipes(navController)
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            , // Light greenish-blue background
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize() // Light greenish-blue background
     ) {
-        FloatingActionButton(onClick = { navController.navigate(Navdestination.recipeentry.toString()) },
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp) // Ensure the Column takes the full screen space and has padding
+        ) {
+            // LazyColumn inside the Column
+            LazyColumn(
+                modifier = Modifier.weight(1f) // To fill the remaining space of the screen
+            ) {
+                items(recipes) { recipe ->
+                    RecipeItem(recipe)
+                }
+            }
+        }
+
+        // FloatingActionButton positioned at the bottom-right corner
+        FloatingActionButton(
+            onClick = { navController.navigate(Navdestination.recipeentry.toString()) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp, 10.dp, 10.dp, 30.dp), // Padding from the edges
@@ -69,10 +79,10 @@ fun RecipeScreen(recipeScreenViewModel: RecipeScreenViewModel, navController: Na
                 contentDescription = "Add Recipe",
                 tint = Color.White
             )
-
         }
     }
 }
+
 
 @Composable
 fun RecipeItem(recipe: Recipe) {
@@ -83,43 +93,29 @@ fun RecipeItem(recipe: Recipe) {
         modifier = Modifier
             .padding(8.dp , bottom = 32.dp, top = 8.dp, end = 8.dp)
             .fillMaxWidth(),
-        colors = CardDefaults.cardColors(Color.LightGray)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Recipe Image
-
-            AsyncImage(
-                model = recipe.image,
-                contentDescription = "Recipe Image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
-                contentScale = ContentScale.Crop,
-                onError = { error ->
-                    Log.e("RecipeItem", "Error loading image: ${error.result.throwable}")
-                }
-            )
-
-            Log.d("RecipeItem", "Image URI: ${recipe.image}")
-
-
             // Recipe Title
             Text(
                 text = "Title:",
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.Black),
-                modifier = Modifier.padding(top = 4.dp)
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold,   color = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.padding(top = 4.dp),
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = recipe.recipeTitle,
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold,color = Color.Black),
-                modifier = Modifier.padding(vertical = 8.dp)
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold,   color = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.primary
             )
 
             // Ingredients
             Text(
                 text = "Ingredients:",
                 style = TextStyle(color = Color.Black,fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                color = MaterialTheme.colorScheme.primary
             )
             val visibleingrdient = if (showFull.value) recipe.recipeIngredient else recipe.recipeIngredient.take(1)
             visibleingrdient.forEachIndexed { index, step ->
@@ -142,7 +138,8 @@ fun RecipeItem(recipe: Recipe) {
             // Instructions
             Text(
                 text = "Instructions:",
-                style = TextStyle(color = Color.Black,fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
+                style = TextStyle(color = MaterialTheme.colorScheme.primary,
+                    fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
                 modifier = Modifier.padding(top = 8.dp)
             )
 
@@ -169,19 +166,49 @@ fun RecipeItem(recipe: Recipe) {
             Text(
                 text = "Preparation Time: ${recipe.prepTime} mins",
                 style = TextStyle(color = Color.Black,fontSize = 14.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.primary
             )
 
             // Benefits
             if (recipe.benifits.isNotEmpty()) {
                 Text(
                     text = "Benefits: ${recipe.benifits}",
-                    style = TextStyle(fontSize = 14.sp, color = Color.Green),
+                    style = TextStyle(fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary),
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RecipeCard(recipe: Recipe,navController: NavController
+) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp , bottom = 32.dp, top = 8.dp, end = 8.dp)
+            .height(100.dp).width(200.dp).clickable {
+                navController.navigate(Navdestination.Recipe.toString())
+            },
+        colors = CardDefaults.cardColors(Color.LightGray)
+    ){
+        Text(
+            text = "Recipe",
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.Black),
+            modifier = Modifier.padding(top = 4.dp, start = 8.dp)
+        )
+        Text(
+            text = recipe.recipeTitle,
+            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold,color = Color.Black),
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
+        )
+
+    }
+
 }
 
 @Preview(showBackground = true)
@@ -214,54 +241,4 @@ fun PreviewRecipeItem() {
     // RecipeItem composable with mock data
     RecipeItem(recipe = mockRecipe)
 }
-
-
-
-//@Composable
-//fun MyScreen() {
-//    val annotatedString = buildAnnotatedString {
-//        // Regular text
-//        append("By clicking, you agree to our ")
-//
-//        // Clickable "Terms and Conditions" with underlining and blue color
-//        pushStringAnnotation(tag = "terms", annotation = "terms")
-//        withStyle(style = TextStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
-//            append("Terms and Conditions")
-//        }
-//        pop()
-//
-//        // Regular text
-//        append(" and ")
-//
-//        // Clickable "Privacy Policy" with underlining and blue color
-//        pushStringAnnotation(tag = "privacy", annotation = "privacy")
-//        withStyle(style = TextStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
-//            append("Privacy Policy")
-//        }
-//        pop()
-//
-//        // End text
-//        append(".")
-//    }
-//
-//    // ClickableText for handling actions when the user clicks on the text
-//    ClickableText(
-//        text = annotatedString,
-//        onClick = { offset ->
-//            annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let {
-//                when (it.item) {
-//                    "terms" -> {
-//                        // Handle terms click (e.g., open terms page)
-//                        println("Terms clicked")
-//                    }
-//                    "privacy" -> {
-//                        // Handle privacy policy click (e.g., open privacy policy page)
-//                        println("Privacy Policy clicked")
-//                    }
-//                }
-//            }
-//        },
-//        modifier = Modifier.padding(16.dp)
-//    )
-//}
 

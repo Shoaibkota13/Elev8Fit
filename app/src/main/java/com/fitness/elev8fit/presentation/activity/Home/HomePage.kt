@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -29,10 +30,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.domain.model.BottomMenuItems
+import com.fitness.elev8fit.presentation.activity.Excercise.Excercise
 import com.fitness.elev8fit.presentation.activity.Profile.ProfileScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
-import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.card_color
 
 
 
@@ -46,7 +46,7 @@ fun HomePage(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         // Display content based on the selected item
         Box(
@@ -56,7 +56,7 @@ fun HomePage(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             when (selected) {
-                "Home" -> Excercise()
+                "Home" -> Excercise(exerciseViewModel = hiltViewModel(), recipeScreenViewModel = hiltViewModel(),navController)
                 "Recipe" -> RecipeScreen(recipeScreenViewModel = hiltViewModel(),navController)
                 "Account" -> ProfileScreen(profileViewModel = hiltViewModel(), navController, common = hiltViewModel(),context)
 
@@ -66,7 +66,7 @@ fun HomePage(navController: NavController) {
         // Bottom navigation bar
         NavigationBar(
             modifier = Modifier.align(Alignment.BottomCenter),
-            containerColor = card_color
+            containerColor = MaterialTheme.colorScheme.secondary
         ) {
             bottomMenuItems.forEach { menuItem ->
                 NavigationBarItem(

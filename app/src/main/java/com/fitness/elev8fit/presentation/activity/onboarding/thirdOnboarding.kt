@@ -15,18 +15,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,21 +36,16 @@ import androidx.navigation.NavController
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.presentation.viewmodel.imageview
-import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
-import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.card_color
 
 @Composable
 fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navController: NavController) {
     val selectedimg = imageview.selectedimg.value
     val signupdata by signUpViewModel.state.collectAsState()
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
             .padding(16.dp)
     ) {
         Column(
@@ -70,12 +66,13 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
             Card(
                 modifier = Modifier.padding(16.dp),
                 shape = CardDefaults.shape,
-                colors = CardDefaults.cardColors(card_color)
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Enter the Details",
-                        color = CustomBackgroundColor,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center
                     )
@@ -86,7 +83,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
             Text(
                 text = "Select Age",
                 fontSize = 20.sp,
-                color = CustomBackgroundColor,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
@@ -96,7 +93,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
             // LazyColumn for selecting age
             LazyColumn(
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(50.dp)
                     .fillMaxWidth()
             ) {
                 items((18..100).toList()) { age ->
@@ -108,9 +105,9 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
                             .padding(8.dp)
                             .clickable {
                                 signUpViewModel.setAge(age.toString())
-
                             },
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -119,7 +116,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
             Text(
                 text = "Enter Your Name",
                 fontSize = 20.sp,
-                color = CustomBackgroundColor,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
@@ -133,22 +130,28 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
                 label = { Text("Enter Your Name") },
                 modifier = Modifier
                     .padding(8.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    focusedTextColor = Color.Black
+                )
             )
-
-            Button(onClick = {
-
-
-
-                    navController.navigate(Navdestination.Signup.toString())
-
-
-            }, modifier = Modifier.padding(16.dp),
-                shape = CutCornerShape(8.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomCenter
             ) {
-
-                Text(text = "Continue")
-
+                Button(
+                    onClick = {
+                        navController.navigate(Navdestination.Signup.toString())
+                    },
+                    shape = CutCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(text = "Continue")
+                }
             }
         }
     }

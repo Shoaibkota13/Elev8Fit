@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.viewmodel
+package com.fitness.elev8fit.presentation.activity.Excercise
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -9,6 +9,7 @@ import com.fitness.elev8fit.presentation.intent.ExerciseIntent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
 
 class ExerciseViewModel : ViewModel() {
     private val repository = ExerciseRepository()
@@ -23,28 +24,6 @@ class ExerciseViewModel : ViewModel() {
         }
 
     }
-
-//    fun fetchExercises(offset: Int, limit: Int) {
-//        viewModelScope.launch {
-////            _state.value = _state.value.copy(isLoading = true)
-//
-//            repository.getExercises(offset, limit)
-//                .onSuccess { response ->
-//                        val data = response.data
-//                    Log.d("ExerciseViewModel", "API call successful: ${response.data}")
-//                    _state.value = _state.value.copy(
-//                        isLoading = false,
-//                      // Pass the full list of Exercise objects
-//                        successMessage = "Exercises loaded successfully",
-//                        exerciseList = data.exercises
-//                    )
-//                }
-//                .onFailure { error ->
-//                    _state.value = _state.value.copy(errorMessage = "byee")
-//                }
-//        }
-//    }
-
     fun fetchExercises(offset: Int, limit: Int) {
         viewModelScope.launch {
             try {
@@ -54,6 +33,7 @@ class ExerciseViewModel : ViewModel() {
                 // API call to fetch exercises
                 repository.getExercises(offset, limit)
                     .onSuccess { exercises ->
+
                         Log.d("ExerciseViewModel", "API call successful: ${exercises}")
 
                         // Update the state with the loaded exercises

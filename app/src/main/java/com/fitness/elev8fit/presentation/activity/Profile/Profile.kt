@@ -32,6 +32,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -105,7 +106,7 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp)),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White,
+                MaterialTheme.colorScheme.tertiary
             ),
         ) {
             Column(
@@ -119,7 +120,7 @@ fun ProfileScreen(
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color =MaterialTheme.colorScheme.primary
                     )
                 )
                 // User Profile Picture
@@ -317,7 +318,7 @@ fun ProfileItem(
             text = title,
             style = TextStyle(
                 fontSize = 18.sp,
-                color = Color.Green
+                color = MaterialTheme.colorScheme.primary
             )
         )
         Row(
@@ -368,7 +369,7 @@ fun ProfileItem(
                         .align(Alignment.CenterVertically),
                     style = TextStyle(
                         fontSize = 14.sp,
-                        color = Color(0xFFA5A5A5)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 )
                 // Edit Icon

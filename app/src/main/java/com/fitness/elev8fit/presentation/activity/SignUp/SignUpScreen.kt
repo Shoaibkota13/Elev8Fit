@@ -19,9 +19,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,8 +47,6 @@ import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignIn
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.text_color
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,7 +66,7 @@ fun SignUpScreen(viewModel: SignUpViewModel,
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -100,12 +100,13 @@ fun SignUpScreen(viewModel: SignUpViewModel,
             Text(
                 text = "Welcome To Elev8Fit",
                 modifier = Modifier.padding(16.dp),
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.primary
             )
 
             Card(
                 shape = CutCornerShape(8.dp),
-                colors = CardDefaults.cardColors(text_color)
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,7 +114,8 @@ fun SignUpScreen(viewModel: SignUpViewModel,
                 ) {
                     Text(
                         text = "SignUp",
-                        fontSize = 24.sp
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     // Username Input
@@ -234,7 +236,7 @@ fun SignUpScreen(viewModel: SignUpViewModel,
                                     Toast.makeText(context, "Please verify OTP first", Toast.LENGTH_SHORT).show()
                                 }
 
-                        },
+                        }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth()

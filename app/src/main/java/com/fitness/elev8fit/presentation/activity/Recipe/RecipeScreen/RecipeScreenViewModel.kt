@@ -3,6 +3,7 @@ package com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.fitness.elev8fit.domain.model.Recipe
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class RecipeScreenViewModel @Inject constructor(
         MutableStateFlow<List<Recipe>>(emptyList()) // StateFlow to hold the list of recipes
     val state: StateFlow<List<Recipe>> = _state
 
-    fun fetchRecipes() {
+    fun fetchRecipes(navController: NavController) {
         viewModelScope.launch {
             firestore.collection("Recipe")
                 .get()

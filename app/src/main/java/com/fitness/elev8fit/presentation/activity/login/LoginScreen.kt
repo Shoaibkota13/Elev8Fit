@@ -24,9 +24,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -52,8 +54,6 @@ import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.LoginIntent
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.text_color
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -74,7 +74,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -104,7 +104,8 @@ fun LoginScreen(
 
             Text(
                 text = "Welcome To Elev8Fit",
-                fontSize = 24.sp
+                fontSize = 24.sp,
+               color = MaterialTheme.colorScheme.primary
             )
 
             Row(
@@ -141,14 +142,15 @@ fun LoginScreen(
                 if (targetState) {
                     Card(
                         shape = CutCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(text_color)
+                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = "Login",
                                     modifier = Modifier.padding(16.dp),
-                                    fontSize = 24.sp
+                                    fontSize = 24.sp,
+                                    color = MaterialTheme.colorScheme.primary
                                 )
 
                                 cards(
@@ -189,7 +191,7 @@ fun LoginScreen(
                 } else {
                     Card(
                         shape = CutCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(text_color)
+                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Column(
@@ -198,7 +200,8 @@ fun LoginScreen(
                             ) {
                                 Text(
                                     text = "SignUp",
-                                    fontSize = 24.sp
+                                    fontSize = 24.sp,
+                                    color = MaterialTheme.colorScheme.primary
                                 )
 
                                 // Username Input
@@ -248,6 +251,7 @@ fun LoginScreen(
                                 if (signupstate.phonenumber.length ==10) {
                                     Text(
                                         text = "Verify OTP",
+                                        color = Color.Red,
                                         modifier = Modifier
                                             .padding(start = 8.dp)
                                             .align(Alignment.Start)
@@ -265,11 +269,13 @@ fun LoginScreen(
                                                             navController.navigate(Navdestination.otp.toString())
                                                         },
                                                         onFailure = { error ->
-                                                            Toast.makeText(
-                                                                context,
-                                                                error,
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
+                                                            Toast
+                                                                .makeText(
+                                                                    context,
+                                                                    error,
+                                                                    Toast.LENGTH_SHORT
+                                                                )
+                                                                .show()
                                                         }
                                                     )
                                                 }
@@ -290,7 +296,7 @@ fun LoginScreen(
                                                 navController
                                             )
                                         }
-                                    },
+                                    }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                                     modifier = Modifier
                                         .padding(16.dp)
                                         .fillMaxWidth()

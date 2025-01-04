@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fitness.elev8fit.presentation.viewmodel.imageview
 import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
-import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.card_color
 
 @Composable
@@ -65,7 +64,7 @@ fun OnBoardingCommon(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
             .padding(16.dp)
     ) {
         Column(
@@ -87,13 +86,13 @@ fun OnBoardingCommon(
                 modifier = Modifier.padding(16.dp),
                 shape = CardDefaults.shape,
                 colors = CardDefaults.cardColors(
-                    card_color
+                    MaterialTheme.colorScheme.tertiary
                 )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = cardcontent,
-                        color = CustomBackgroundColor,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 24.sp,
                     )
                 }
@@ -170,7 +169,7 @@ fun OnBoardingCommon(
                                 Card(
                                     modifier = Modifier.padding(8.dp),
                                     shape = MaterialTheme.shapes.medium,
-                                    colors = CardDefaults.cardColors(card_color)
+                                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
                                 ) {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,7 +178,7 @@ fun OnBoardingCommon(
                                         Text(
                                             text = text2,
                                             fontSize = 16.sp,
-                                            color = CustomBackgroundColor
+                                            color = MaterialTheme.colorScheme.primary
                                         )
                                     }
                                 }
