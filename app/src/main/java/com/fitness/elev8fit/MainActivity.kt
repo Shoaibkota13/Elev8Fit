@@ -46,12 +46,16 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+
+
             Elev8FitTheme(darkTheme = isDarkMode,dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     displaynav(navController = navController, isAuthenticated = isAuthenticated.value )
+                  //  ChatScreen(viewModel = hiltViewModel(), onBackClick = {})
+
                 }
             }
 

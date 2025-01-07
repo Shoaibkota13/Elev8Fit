@@ -14,8 +14,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,18 +38,25 @@ import com.fitness.elev8fit.domain.model.exercise.Exercise
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeCard
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreenViewModel
 import com.fitness.elev8fit.presentation.intent.ExerciseIntent
+import com.fitness.elev8fit.presentation.navigation.Navdestination
+import com.google.firebase.auth.FirebaseAuth
 import com.valentinilk.shimmer.shimmer
 
 
 @Composable
-fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: RecipeScreenViewModel, navController: NavController){
+fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: RecipeScreenViewModel, navController: NavController) {
     val state by exerciseViewModel.state.collectAsState()
     val recipe by recipeScreenViewModel.state.collectAsState()
+    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+    val coachId = "oriw3fgPs4NqpN5BxfDb58Uq6532"
+
+    LaunchedEffect(currentUserId) {
+
+    }
 
     LaunchedEffect(true) {
         recipeScreenViewModel.fetchRecipes(navController)
     }
-
     LaunchedEffect(Unit) {
         if (state.exerciseList.isEmpty()) {
 
@@ -53,40 +64,63 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
 
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize() // Ensure the Column takes the full screen space
-            .padding(16.dp) ) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
-        LazyRow(){
+        Column(
+            modifier = Modifier
+                .fillMaxSize() // Ensure the Column takes the full screen space
+                .padding(16.dp)
+        ) {
 
-            items(recipe){
-                RecipeCard(it,navController = navController)
-            }
-        }
-        if (state.isLoading) {
-            LazyColumn(){
-                items(10){
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp) // Set height for each shimmer item
-                            .padding(8.dp).background(Color.LightGray)
-                            .shimmer() // Apply shimmer effect
-                    )
+            LazyRow() {
+                items(recipe) {
+                    RecipeCard(it, navController = navController)
                 }
             }
 
-        } else if (state.errorMessage != null) {
-            Text(text = state.errorMessage!!)
-        } else {
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(state.exerciseList) { exercise ->
-                    ExerciseCard(exercise = exercise)
+            if (state.isLoading) {
+                LazyColumn() {
+                    items(10) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .padding(8.dp)
+                                .background(Color.LightGray)
+                                .shimmer()
+                        )
+                    }
+                }
+            } else if (state.errorMessage != null) {
+                Text(text = state.errorMessage!!)
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(state.exerciseList) { exercise ->
+                        ExerciseCard(exercise = exercise)
+                    }
                 }
             }
         }
+
+
+        FloatingActionButton(
+            onClick = { navController.navigate(Navdestination.chat.toString()) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp, 10.dp, 10.dp, 30.dp), // Padding from the edges
+            containerColor = Color.Black
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add Recipe",
+                tint = Color.White
+            )
+        }
+
     }
+
 
 }
 

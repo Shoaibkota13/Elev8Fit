@@ -15,3 +15,16 @@ class imageview: ViewModel() {
     }
 
 }
+
+
+class imageviews: ViewModel() {
+    private val _selectedimage = mutableStateOf<Int>(R.drawable.boy)
+    val selectedimg: State<Int> = _selectedimage
+
+    fun setimg(imgres :Int){
+        _selectedimage.value = imgres
+        println("Image set to: $imgres")
+    }
+
+}
+

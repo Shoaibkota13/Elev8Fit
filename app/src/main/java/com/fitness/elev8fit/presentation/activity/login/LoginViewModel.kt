@@ -6,19 +6,26 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.fitness.elev8fit.data.repository.authfirebaseimpl
 import com.fitness.elev8fit.data.state.LoginState
 import com.fitness.elev8fit.presentation.intent.LoginIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val authrepo :authfirebaseimpl
+):  ViewModel() {
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+  //  private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     fun username(newusername: String) {
         _state.value = _state.value.copy(username = newusername)

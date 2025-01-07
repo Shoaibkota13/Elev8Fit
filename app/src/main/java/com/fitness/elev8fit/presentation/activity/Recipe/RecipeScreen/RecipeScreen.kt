@@ -49,7 +49,7 @@ fun RecipeScreen(recipeScreenViewModel: RecipeScreenViewModel, navController: Na
     }
 
     Box(
-        modifier = Modifier.fillMaxSize() // Light greenish-blue background
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -194,7 +194,7 @@ fun RecipeCard(recipe: Recipe,navController: NavController
             .height(100.dp).width(200.dp).clickable {
                 navController.navigate(Navdestination.Recipe.toString())
             },
-        colors = CardDefaults.cardColors(Color.LightGray)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
     ){
         Text(
             text = "Recipe",

@@ -1,3 +1,5 @@
+
+
 package com.fitness.elev8fit.data.repository
 
 import android.util.Log
@@ -14,37 +16,37 @@ import com.google.firebase.firestore.SetOptions
 import javax.inject.Inject
 
 class authfirebaseimpl @Inject constructor(
-    private val auth : FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
+) : authoperations {
 
-):authoperations {
+    companion object {
+        const val COACH_ID = "oriw3fgPs4NqpN5BxfDb58Uq6532" // Hardcoded coach ID
+    }
+
     override suspend fun registerUser(signinactivity: SignUpViewModel, userInfo: User) {
         firestore.collection(Constants.user)
-            .document(getcurrentuser()).set(userInfo, SetOptions.merge())
+            .document(getcurrentuser())
+            .set(userInfo, SetOptions.merge())
             .addOnSuccessListener {
                 signinactivity.onregistersucess()
             }
     }
 
-    override suspend fun registergoogle(
-        googleSignInViewModel: GoogleSignInViewModel,
-        userInfo: User
-    ) {
+    override suspend fun registergoogle(googleSignInViewModel: GoogleSignInViewModel, userInfo: User) {
         firestore.collection(Constants.user)
             .document(getcurrentuser())
-            .set(userInfo,SetOptions.merge())
-            .addOnSuccessListener{
+            .set(userInfo, SetOptions.merge())
+            .addOnSuccessListener {
                 googleSignInViewModel.onsucess()
             }
     }
 
-    override suspend fun getcurrentuser():String {
+    override suspend fun getcurrentuser(): String {
         return auth.currentUser?.uid ?: throw IllegalStateException("No User Found")
-
-        TODO("Not yet implemented")
     }
 
-  override suspend  fun fetchCurrentUser(onUserFetched: (User?) -> Unit) {
+    override suspend fun fetchCurrentUser(onUserFetched: (User?) -> Unit) {
         val userId = getcurrentuser()
 
         firestore.collection("Users")
@@ -52,55 +54,72 @@ class authfirebaseimpl @Inject constructor(
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.e("Firestore", "Error fetching user data: ${e.message}")
-                    onUserFetched(null) // Return null in case of an error
+                    onUserFetched(null)
                     return@addSnapshotListener
                 }
 
                 if (snapshot != null && snapshot.exists()) {
                     val currentUserData = snapshot.toObject(User::class.java)
                     Log.d("Firestore", "User data fetched successfully: $currentUserData")
-                    onUserFetched(currentUserData) // Return the fetched user
+                    onUserFetched(currentUserData)
                 } else {
                     Log.d("Firestore", "No data found for user with ID: $userId")
-                    onUserFetched(null) // Return null if no data found
+                    onUserFetched(null)
                 }
             }
     }
 
-//    override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
-//        firestore.collection(Constants.Recipe).set(recipeInfo,
-//            SetOptions.merge()).addOnSuccessListener {
-//                    Recipe.saved()
-//        }
-//    }
-override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
-    firestore.collection(Constants.Recipe)
-        .add(recipeInfo) // Automatically generates a unique document ID
-        .addOnSuccessListener {
-            Recipe.saved() // Notify success
-        }
-        .addOnFailureListener { e ->
-            Log.e("Firestore", "Error saving recipe: ${e.message}")
-        }
-}
-
+    override suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe) {
+        firestore.collection(Constants.Recipe)
+            .add(recipeInfo)
+            .addOnSuccessListener {
+                Recipe.saved()
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error saving recipe: ${e.message}")
+            }
+    }
 
     override suspend fun updateSingleField(field: String, value: String) {
         val currentUser = auth.currentUser
         currentUser?.let {
             val userId = it.uid
             firestore.collection("Users").document(userId)
-                .update(field,value)
+                .update(field, value)
                 .addOnSuccessListener {
                     // Optionally, fetch the updated data after update
                 }
                 .addOnFailureListener {
-                    Log.w("ProfileViewModel", "Error updating document",)
+                    Log.w("ProfileViewModel", "Error updating document")
                 }
         }
     }
 
     override suspend fun fetchExercises(offset: Int, limit: Int) {
-
+        // Implementation for fetching exercises (if needed)
     }
+
+
+
+    override suspend fun onNewToken(token: String) {
+        // Store the new FCM token in Firestore
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return
+        FirebaseFirestore.getInstance()
+            .collection("Users")
+            .document(currentUser.uid)
+            .update("fcmtoken", token)
+            .addOnFailureListener { e ->
+                Log.e("FCMService", "Failed to update FCM token", e)
+            }
+    }
+
+
+
+//
+
+
+
+    // Create or fetch the existing chat room
+
 }
+

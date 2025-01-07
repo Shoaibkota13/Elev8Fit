@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.fitness.elev8fit.data.state.OtpState
-import com.fitness.elev8fit.data.state.otpverify
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -61,7 +60,7 @@ class OtpViewModel
                     verificationId: String,
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
-                    _state.value = _state.value.copy(isLoading = false)
+                    _state.value = _state.value.copy(isLoading = false, isverifed = true)
                     Log.d("OTP", "onCodeSent: VerificationId received - $verificationId")
 
                     onOtpSent(verificationId)
@@ -73,36 +72,29 @@ class OtpViewModel
 
 
     }
+    fun verifyOtp(context: Context, verificationId: String, otp: String, onComplete: (Boolean) -> Unit) {
+        val credential = PhoneAuthProvider.getCredential(verificationId, otp)
+        _state.value = _state.value.copy(isLoading = true)
+
+
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _state.value = _state.value.copy(isLoading = false, isverifed = true)
+                    Log.d("OTP", "verifyOtp: OTP verification successful.")
+                    onComplete(true)
+                } else {
+                    _state.value = _state.value.copy(isLoading = false)
+                    Log.e("OTP", "verifyOtp: OTP verification failed.", task.exception)
+                    onComplete(false)
+                }
+            }
+    }
 
 }
-    @HiltViewModel
-    class otpverifyviewmodel
-    @Inject constructor(
-        private val auth: FirebaseAuth
-    )
-        :ViewModel(){
-        private val _state = MutableStateFlow(otpverify())
-        val state:StateFlow<otpverify> = _state
 
 
-        fun verifyOtp(context: Context, verificationId: String, otp: String, onComplete: (Boolean) -> Unit) {
-            val credential = PhoneAuthProvider.getCredential(verificationId, otp)
-            _state.value = _state.value.copy(isLoading = true)
 
 
-            auth.signInWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        _state.value = _state.value.copy(isLoading = false, isverifed = true)
-                        Log.d("OTP", "verifyOtp: OTP verification successful.")
-                        onComplete(true)
-                    } else {
-                        _state.value = _state.value.copy(isLoading = false)
-                        Log.e("OTP", "verifyOtp: OTP verification failed.", task.exception)
-                        onComplete(false)
-                    }
-                }
-        }
 
-    }
 

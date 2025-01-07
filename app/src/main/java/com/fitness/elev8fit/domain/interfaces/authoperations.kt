@@ -10,14 +10,17 @@ interface authoperations {
 
     suspend fun registerUser(signinactivity: SignUpViewModel, userInfo: User)
 
-    suspend fun registergoogle(googleSignInViewModel: GoogleSignInViewModel,userInfo: User)
+    suspend fun registergoogle(googleSignInViewModel: GoogleSignInViewModel, userInfo: User)
 
-    suspend fun getcurrentuser():String
+    suspend fun getcurrentuser(): String
 
     suspend fun fetchCurrentUser(onFetch: (User?) -> Unit)
 
     suspend fun RecipeDb(Recipe: RecipeViewModel, recipeInfo: Recipe)
 
-    suspend fun updateSingleField( field: String, value: String)
+    suspend fun updateSingleField(field: String, value: String)
+
     suspend fun fetchExercises(offset: Int, limit: Int)
+
+  suspend fun onNewToken(token: String)
 }

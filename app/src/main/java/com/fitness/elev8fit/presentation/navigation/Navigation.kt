@@ -10,6 +10,7 @@ import com.fitness.elev8fit.presentation.activity.Otp.OTPVerificationScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
+import com.fitness.elev8fit.presentation.activity.chat.ChatMain
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
@@ -49,8 +50,7 @@ fun displaynav(
         }
         composable(Navdestination.Signup.toString()){
             SignUpScreen(viewModel =hiltViewModel(),navController=navController,
-                hiltViewModel(), googleSignInViewModel = hiltViewModel(),
-                hiltViewModel())
+                hiltViewModel(), googleSignInViewModel = hiltViewModel())
         }
         composable(Navdestination.home.toString()){
             HomePage(navController=navController)
@@ -65,5 +65,15 @@ fun displaynav(
         composable(Navdestination.otp.toString()) {
             OTPVerificationScreen(navController,  hiltViewModel())
         }
+        composable(Navdestination.chat.toString()) {
+           ChatMain()
+
+
+
+        }
+
+
+
+
     }
 }

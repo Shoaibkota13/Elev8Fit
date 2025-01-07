@@ -233,70 +233,6 @@ fun ProfileScreen(
 }
 
 
-//@Composable
-//fun ProfileItem(
-//    title: String,
-//    subtitle: String,
-//    onEdit: (String) -> Unit
-//) {
-//    var isEditing by remember { mutableStateOf(false) }
-//    var text by remember { mutableStateOf(subtitle) }
-//
-//    Column(
-//        modifier = Modifier
-//            .padding(horizontal = 16.dp)
-//            .fillMaxWidth()
-//    ) {
-//        Text(
-//            text = title,
-//            style = TextStyle(
-//                fontSize = 18.sp,
-//                color = Color.Green
-//            )
-//        )
-//        Row {
-//            if (isEditing) {
-//                TextField(
-//                    value = text,
-//                    onValueChange = { text = it },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    label = { Text(title) },
-//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-//                )
-//                IconButton(
-//                    onClick = {
-//                        onEdit(text) // Save changes
-//                        isEditing = false
-//                    }
-//                ) {
-//                    Icon(imageVector = Icons.Default.Check, contentDescription = "Save Changes", modifier = Modifier.size(15.dp),tint = Color.White)
-//                }
-//            } else {
-//                Text(
-//                    text = text,
-//                    modifier = Modifier
-//                        .padding(end = 4.dp)
-//                        .align(Alignment.CenterVertically),
-//                    style = TextStyle(
-//                        fontSize = 14.sp,
-//                        color = Color(0xFFA5A5A5)
-//                    )
-//                )
-//                IconButton(
-//                    onClick = { isEditing = true }
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.Edit,
-//                        contentDescription = null,
-//                        modifier = Modifier.size(16.dp),
-//                        tint = Color.Green
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -342,7 +278,7 @@ fun ProfileItem(
                         focusedIndicatorColor = Color.Black, // Optional: Customize the indicator color when focused
                         unfocusedIndicatorColor = Color.Gray // Optional: Customize the indicator color when unfocused
                     ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    keyboardOptions = KeyboardOptions( keyboardType = if (title == "Mobile" || title == "Age") KeyboardType.Phone else KeyboardType.Text)
                 )
 
                 // Save (Check) Icon

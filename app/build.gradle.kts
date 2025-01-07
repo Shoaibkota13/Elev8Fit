@@ -65,6 +65,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
     implementation("com.google.firebase:firebase-auth:23.1.0")
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.1")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.1.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -121,7 +122,14 @@ dependencies {
     implementation ("com.amazonaws:aws-android-sdk-s3:2.75.0")
     //shimmering effect
     implementation("com.valentinilk.shimmer:compose-shimmer:1.3.1")
-    implementation("androidx.biometric:biometric:1.1.0")}
+    implementation("androidx.biometric:biometric:1.1.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
+   implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+
+
+
+}
 
 hilt {
     enableTransformForLocalTests = true

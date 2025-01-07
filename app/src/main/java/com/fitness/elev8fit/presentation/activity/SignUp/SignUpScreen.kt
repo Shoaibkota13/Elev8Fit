@@ -42,7 +42,6 @@ import androidx.navigation.NavController
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.data.constant.DataStoreManager
 import com.fitness.elev8fit.presentation.activity.Otp.OtpViewModel
-import com.fitness.elev8fit.presentation.activity.Otp.otpverifyviewmodel
 import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
@@ -52,10 +51,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel,
                  navController: NavController ,otpViewModel:OtpViewModel,
-                 googleSignInViewModel: GoogleSignInViewModel,otpverifys: otpverifyviewmodel
+                 googleSignInViewModel: GoogleSignInViewModel
 ) {
     val otpstate by otpViewModel.state.collectAsState()
-    val otpverify by otpverifys.state.collectAsState()
+
     val signupstate by viewModel.state.collectAsState()
     val coroutine = rememberCoroutineScope()
 
@@ -161,7 +160,7 @@ fun SignUpScreen(viewModel: SignUpViewModel,
                         keyboardType = KeyboardType.Phone
                     )
                     // OTP Verification link
-                    if (!otpverify.isverifed) {
+                    if (!otpstate.isverifed) {
                         if (otpstate.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -218,9 +217,9 @@ fun SignUpScreen(viewModel: SignUpViewModel,
                     Button(
                         onClick = {
 
-                                if (otpverify.isverifed) {
+                                if (otpstate.isverifed) {
 
-                            Log.e("ots ","${otpverify.isverifed}")
+                            Log.e("ots ","${otpstate.isverifed}")
                                     // Proceed with the signup
                                     viewModel.SignUpIntentHandler(
                                         SignUpIntent.Signup(

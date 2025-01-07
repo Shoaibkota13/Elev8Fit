@@ -41,276 +41,6 @@ import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
 import com.fitness.elev8fit.ui.theme.quicksand
 import kotlinx.coroutines.launch
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun RecipeEntry(recipemodel : RecipeViewModel,navController: NavController) {
-//    // States for input fields
-//
-//val recipestate by recipemodel.state.collectAsState()
-//    val routine = rememberCoroutineScope()
-//    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-//    var instructionInput by remember { mutableStateOf(recipestate.instruction.joinToString(", ")) }
-//    var ingredientInput by remember { mutableStateOf(recipestate.recipeIngredient.joinToString(", ")) }
-//    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-//        selectedImageUri = uri
-//        uri?.let {
-//            recipemodel.updateRecipeImage(it.toString())
-//        }
-//
-//
-//    }
-//    val isFormValid = remember(recipestate) {
-//        recipestate.recipetitle.isNotBlank() &&
-//                recipestate.category.isNotBlank() &&
-//        recipestate.recipeIngredient.isNotEmpty() &&
-//                recipestate.instruction.isNotEmpty() &&
-//                recipestate.benfits.isNotBlank()
-//}
-//
-//Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(bg_color),
-//        contentAlignment = Alignment.Center
-//    ) {
-//
-//        Column(modifier = Modifier
-//            .padding(16.dp)
-//            .fillMaxSize()
-//            .verticalScroll(
-//                rememberScrollState()
-//            )
-//
-//
-//        ) {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 16.dp),
-//                contentAlignment = Alignment.Center
-//            ) {
-//                Row {
-//                    Text(
-//                        text = "Elev",
-//                        color = Color.Blue,
-//                        fontSize = 24.sp,
-//                        fontWeight = FontWeight.Bold
-//                    )
-//                    Text(
-//                        text = "8Fit",
-//                        color = Color.Green,
-//                        fontSize = 24.sp,
-//                        fontWeight = FontWeight.Bold
-//                    )
-//                }
-//            }
-//            Spacer(modifier = Modifier.height(8.dp))
-//            // Recipe Title Input
-//            Text("Recipe Title:")
-//            TextField(
-//                value = recipestate.recipetitle,
-//                onValueChange = { recipemodel.updateRecipeTitle(it) },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 8.dp, top = 8.dp),
-//
-//                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.White, // Change this to your desired color
-//                    unfocusedContainerColor = Color.LightGray,
-//                    disabledContainerColor = Color.White,
-//                ),
-//                textStyle = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontFamily = quicksand
-//                )
-//
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//
-//            // Recipe Category Input
-//            Text("Category:")
-//            TextField(
-//                value = recipestate.category,
-//                onValueChange = { recipemodel.updateCategory(it) },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 8.dp, top = 8.dp),
-//                shape = CutCornerShape(8.dp, 8.dp, 0.dp, 0.dp),
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.White, // Change this to your desired color
-//                    unfocusedContainerColor = Color.LightGray,
-//                    disabledContainerColor = Color.White,
-//                ),
-//                textStyle = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontFamily = quicksand
-//                )
-//
-//            )
-//
-//            // Preparation Time Input
-//            Text("Prep Time (in minutes):")
-//            TextField(
-//                value = recipestate.prepTime.toString(),
-//                onValueChange = { recipemodel.updatePrepTime(it) },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 8.dp, top = 8.dp),
-//                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.White, // Change this to your desired color
-//                    unfocusedContainerColor = Color.LightGray,
-//                    disabledContainerColor = Color.White,
-//                ),
-//                textStyle = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontFamily = quicksand
-//                )
-//
-//            )
-//
-//            // Ingredients Input
-//            Text("Ingredients (comma separated):")
-//            TextField(
-//                value = ingredientInput,
-//                onValueChange = {
-//                                ingredientInput = it
-//
-//                    recipemodel.updateRecipeIngredients(
-//                        ingredientInput.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-//                    )
-//                },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 8.dp, top = 8.dp)
-//                    .heightIn(100.dp),
-//                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.White, // Change this to your desired color
-//                    unfocusedContainerColor = Color.LightGray,
-//                    disabledContainerColor = Color.White,
-//                ),
-//                textStyle = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontFamily = quicksand
-//                )
-//
-//            )
-//
-//            // Instructions Input
-//            Text("Instructions (comma separated):")
-//            TextField(
-//                value = instructionInput,
-//                onValueChange = {
-//                    instructionInput =it
-//
-//                    recipemodel.updateRecipeInstructions(
-//                        instructionInput.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-//                    ) },
-//
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 8.dp, top = 8.dp)
-//                    .heightIn(100.dp),
-//                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.White, // Change this to your desired color
-//                    unfocusedContainerColor = Color.LightGray,
-//                    disabledContainerColor = Color.White,
-//                ),
-//                textStyle = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontFamily = quicksand
-//                )
-//
-//            )
-//
-//            // Benefits Input
-//            Text("Benefits:")
-//            TextField(
-//                value = recipestate.benfits,
-//                onValueChange = {recipemodel.updateRecipeBenefits(it) },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(bottom = 8.dp, top = 8.dp),
-//                shape = CutCornerShape(8.dp,8.dp,0.dp,0.dp),
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.White, // Change this to your desired color
-//                    unfocusedContainerColor = Color.LightGray,
-//                    disabledContainerColor = Color.White,
-//                ),
-//                textStyle = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontFamily = quicksand
-//                )
-//
-//            )
-//            Text("Recipe Image:")
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(150.dp)
-//                    .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
-//                    .clickable { launcher.launch("image/*") },
-//                contentAlignment = Alignment.Center
-//            ) {
-//                if (selectedImageUri != null) {
-//                    AsyncImage(
-//                        model = selectedImageUri,
-//                        contentDescription = "Selected Recipe Image",
-//                        modifier = Modifier.fillMaxSize(),
-//                        contentScale = ContentScale.Crop
-//                    )
-//                } else {
-//                    Text(
-//                        text = "Tap to select image",
-//                        color = Color.DarkGray,
-//                        fontSize = 16.sp
-//                    )
-//                }
-//            }
-//            Spacer(modifier = Modifier.height(8.dp))
-//
-//                // Submit Button
-//                Button(
-//                    onClick = {
-//                        routine.launch {
-//                            recipemodel.setLoadingState(true)
-//                            recipemodel.handlerecipeintent(RecipeIntent.SubmitRecipe(recipestate))
-//
-//                        }
-//                        navController.navigate(Navdestination.home.toString())
-//                        recipemodel.setLoadingState(false)
-//
-//                    },
-//                    modifier = Modifier
-//                        .padding(top = 16.dp)
-//                        .align(Alignment.CenterHorizontally),
-//                    shape = CutCornerShape(8.dp),
-//                    colors = ButtonDefaults.buttonColors(CustomBackgroundColor),
-//                    enabled = isFormValid
-//                ) {
-//                    Text("Submit Recipe")
-//                }
-//
-//
-//
-//        }
-//    }
-//}
-//
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
@@ -464,7 +194,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
             )
 
             // Benefits Input
-            Text("Benefits:")
+            Text("Benefits:",color = MaterialTheme.colorScheme.primary)
             TextField(
                 value = recipestate.benfits,
                 onValueChange = { recipemodel.updateRecipeBenefits(it) },
@@ -474,14 +204,12 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.LightGray
-                ),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+
+                    ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
             )
 
-            // Recipe Image
-            Text("Recipe Image:", color = MaterialTheme.colorScheme.primary)
-            Spacer(modifier = Modifier.height(8.dp))
 
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -492,9 +220,12 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                         routine.launch {
                             recipemodel.setLoadingState(true)
                             recipemodel.handlerecipeintent(RecipeIntent.SubmitRecipe(recipestate))
+                            navController.navigate(Navdestination.home.toString()){
+                                popUpTo(Navdestination.home.toString()) { inclusive = true}
+                            }
                         }
-                        navController.navigate(Navdestination.home.toString())
-                        recipemodel.setLoadingState(false)
+
+
                     },
                     modifier = Modifier
                         .padding(top = 16.dp)
