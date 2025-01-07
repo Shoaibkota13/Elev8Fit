@@ -15,16 +15,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = PrimaryLight,
+    secondary = SecondaryLight,
+    tertiary = TertiaryLight,
+    background = BackgroundLight, // Ensure this is defined
+    surface = SurfaceLight,
+    onPrimaryContainer =CardLight,
+    secondaryContainer = OnSurfaceLight
+)
+private val DarkColorScheme = darkColorScheme(
+    primary = PrimaryDark,
+    secondary = SecondaryDark,
+    tertiary = TertiaryDark,
+    background = BackgroundDark, // Ensure this is defined
+    surface = SurfaceDark,
+    onPrimaryContainer =CardDark,
+    secondaryContainer = OnSurfaceDark
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

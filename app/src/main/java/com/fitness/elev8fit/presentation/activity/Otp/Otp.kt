@@ -1,26 +1,28 @@
-package com.fitness.elev8fit.presentation.activity.SignUp
+package com.fitness.elev8fit.presentation.activity.Otp
 
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,20 +35,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.card_color
 import kotlinx.coroutines.delay
 
 @Composable
-fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavController) {
+fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyviewmodel) {
     val verificationId = navController.previousBackStackEntry?.savedStateHandle?.get<String>("verificationId")
     val otpLength = 6
+    val otpverifys by otpverifed.state.collectAsState()
+//    val otpstate by remember { otpViewModel.state }.collectAsState()
     val otpFields = remember { mutableStateListOf("", "", "", "", "", "") }
     val focusRequesters = remember { List(otpLength) { FocusRequester() } }
     val context = LocalContext.current
@@ -63,25 +67,30 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
         focusRequesters[0].requestFocus()
     }
 
+    // Get screen width
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val otpFieldSize = (screenWidth / (otpLength + 2)).dp // Adjust size dynamically
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(card_color).padding(16.dp),
+            .background(card_color)
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = "Verification",
             fontSize = 24.sp,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 8.dp)
+
         )
 
         Text(
             text = "We sent a code to  ",
             fontSize = 14.sp,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
@@ -89,7 +98,6 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             for (index in 0 until otpLength) {
                 OTPTextField(
@@ -108,34 +116,51 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
                         if (index > 0) {
                             focusRequesters[index - 1].requestFocus()
                         }
-                    }
+                    },
+                    otpFieldSize = otpFieldSize // Pass dynamic size
                 )
             }
         }
 
-        Button(
-            onClick = {
-                val otp = otpFields.joinToString("")
-                if (verificationId != null && otp.length == otpLength) {
-                    viewModel.verifyOtp(context, verificationId, otp) { success ->
-                        if (success) {
-                            navController.navigate(Navdestination.home.toString())
-                        } else {
-                            Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } else {
-                    Toast.makeText(context, "Please enter all OTP digits", Toast.LENGTH_SHORT).show()
-                }
 
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0078D4))
-        ) {
-            Text(text = "Verify Otp", color = Color.White)
+        if (otpverifys.isLoading) {
+            // Show progress indicator while verifying OTP
+            androidx.compose.material3.CircularProgressIndicator(
+                modifier = Modifier.padding(top = 24.dp),
+                color = Color(0xFF0078D4)
+            )
         }
+//    else {
+            Button(
+                onClick = {
+                    val otp = otpFields.joinToString("")
+                    if (verificationId != null && otp.length == otpLength ) {
+
+                    otpverifed.verifyOtp(context, verificationId, otp) { success ->
+                            if (success) {
+
+                               // Log.e("verify","${otpstate.isverified}")
+                                navController.popBackStack()
+                                Toast.makeText(context, "sucesss", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Invalid OTP", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "Please enter all OTP digits", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+            ) {
+                Text(text = "Verify Otp", color = Color.White)
+            }
+
+
+//        }
+
 
         Text(
             text = if (timerState.value > 0) {
@@ -154,14 +179,20 @@ fun OTPVerificationScreen(viewModel: SignUpViewModel,navController: NavControlle
                 }
         )
     }
+
+
+
 }
+
+
 
 @Composable
 fun OTPTextField(
     value: String,
     onValueChange: (String) -> Unit,
     focusRequester: FocusRequester,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    otpFieldSize: androidx.compose.ui.unit.Dp // Receive dynamic size as parameter
 ) {
     OutlinedTextField(
         value = value,
@@ -173,7 +204,7 @@ fun OTPTextField(
             fontSize = 18.sp
         ),
         modifier = Modifier
-            .size(60.dp)
+            .width(otpFieldSize) // Use dynamic width
             .clip(RoundedCornerShape(8.dp))
             .padding(2.dp)
             .focusRequester(focusRequester)
@@ -196,10 +227,12 @@ fun OTPTextField(
 }
 
 
+
 //@Preview(showBackground = true)
 //@Composable
 //fun PreviewOTPVerificationScreen() {
-//    OTPVerificationScreen()
+//    val nav = rememberNavController()
+//    OTPVerificationScreen(otpViewModel = OtpViewModel(),nav)
 //}
-
+//
 

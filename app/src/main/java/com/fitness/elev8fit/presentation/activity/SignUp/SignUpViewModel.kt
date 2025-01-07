@@ -1,37 +1,44 @@
 package com.fitness.elev8fit.presentation.activity.SignUp
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.fitness.elev8fit.data.login.SignUpState
-import com.fitness.elev8fit.domain.Firebase.FirebaseClass
+import com.fitness.elev8fit.data.state.SignUpState
 import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.concurrent.TimeUnit
+
+//@HiltViewModel
+//class SignUpViewModel @Inject constructor(
+//    private val auth :FirebaseAuth,
+//    private val authRepository: authfirebaseimpl
+//
+//)
 
 class SignUpViewModel:ViewModel() {
-
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state
-    fun username(newusername :String){
-        _state.value = _state.value.copy(username= newusername)
+    private val auth = FirebaseAuth.getInstance()
+//    private val authfirebaseimpl : authfirebaseimpl().
+
+    fun setAge(newage: String) {
+      _state.value = _state.value.copy( age = newage)
+    }
+
+    fun setUsername(username: String) {
+        _state.value = _state.value.copy(name = username)
+    }
+
+    fun email(newemail :String){
+        _state.value = _state.value.copy(email =  newemail)
     }
     fun password(password :String){
         _state.value = _state.value.copy(password = password)
@@ -47,10 +54,10 @@ class SignUpViewModel:ViewModel() {
     fun SignUpIntentHandler(intent: SignUpIntent,navController: NavController) {
 
         when (intent) {
-            is SignUpIntent.Signup -> checkAuth(intent.username, intent.password,navController,intent.phonenumber)
+            is SignUpIntent.Signup -> checkAuth(intent.email, intent.password,navController,intent.phonenumber)
         }
     }
-    fun checkAuth(username: String, password: String,navController: NavController,phonenumber:String) {
+    fun checkAuth(email: String, password: String,navController: NavController,phonenumber:String) {
         _state.value = _state.value.copy(isLoading = true)
         val confirmPassword = _state.value.Confirmpassword
         if (password != confirmPassword) {
@@ -62,32 +69,34 @@ class SignUpViewModel:ViewModel() {
             return
         }
 
-        if (username.isBlank() || password.isBlank()) {
+        if (email.isBlank() || password.isBlank()) {
             _state.value = _state.value.copy(
-                errorMessage = "Username and password cannot be empty",
+                errorMessage = "email and password cannot be empty",
                 isLoading = false,
                successMessage = null
             )
             return
         }
-        createUser(username,password,navController, phonenumber)
+        createUser(email,password,navController, phonenumber)
     }
 
     @SuppressLint("SuspiciousIndentation")
-    private fun createUser(username: String, password: String, navController: NavController,phonenumber:String) {
+    private fun createUser(email: String, password: String, navController: NavController,phonenumber:String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             try {
-                val task = auth.createUserWithEmailAndPassword(username, password)
+                val task = auth.createUserWithEmailAndPassword(email, password)
                     task.await()
                 if (task.isSuccessful) {
                     val firebaseuser :FirebaseUser = task.result!!.user!!
                     val email = firebaseuser.email!!
-                    val user = User(firebaseuser.uid,username,email,phonenumber)
+                    val user = User(firebaseuser.uid, name = _state.value.name,email,phonenumber, age = _state.value.age)
                     //passing the activity
 
-                    FirebaseClass().registerUser(this@SignUpViewModel,user)
-                    navController.navigate(Navdestination.home.toString())
+//                    authRepository.registerUser(this@SignUpViewModel,user)
+                    navController.navigate(Navdestination.home.toString()){
+                        popUpTo((Navdestination.Signup.route)){ inclusive = true }
+                    }
                 } else {
                     _state.value = _state.value.copy(
                         isLoading = false,
@@ -130,39 +139,17 @@ class SignUpViewModel:ViewModel() {
 
     }
 
-    fun triggerOtp(activity: Activity,phoneNumber: String, onOtpSent: (String) -> Unit, onFailure: (String) -> Unit) {
-        val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity) // Replace with your activity context
-            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    // Auto-retrieval or instant verification
-                }
+    fun resetFields() {
+        _state.value = _state.value.copy(
+            email = "",
+            password = "",
+            Confirmpassword = "",
+            phonenumber = "",
 
-                override fun onVerificationFailed(e: FirebaseException) {
-                    onFailure(e.message ?: "OTP verification failed")
-                }
-
-                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                    onOtpSent(verificationId)
-                }
-            })
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
+        )
     }
 
-    fun verifyOtp(context: Context, verificationId: String, otp: String, onComplete: (Boolean) -> Unit) {
-        val credential = PhoneAuthProvider.getCredential(verificationId, otp)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true)
-                } else {
-                    onComplete(false)
-                }
-            }
-    }
+
 }
 
 

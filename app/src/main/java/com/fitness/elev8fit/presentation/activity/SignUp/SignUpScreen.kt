@@ -1,6 +1,7 @@
 package com.fitness.elev8fit.presentation.activity.SignUp
 
 import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,13 +19,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,23 +40,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fitness.elev8fit.R
+import com.fitness.elev8fit.data.constant.DataStoreManager
+import com.fitness.elev8fit.presentation.activity.Otp.OtpViewModel
+import com.fitness.elev8fit.presentation.activity.Otp.otpverifyviewmodel
+import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
 import com.fitness.elev8fit.presentation.common.cards
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.text_color
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
+fun SignUpScreen(viewModel: SignUpViewModel,
+                 navController: NavController ,otpViewModel:OtpViewModel,
+                 googleSignInViewModel: GoogleSignInViewModel,otpverifys: otpverifyviewmodel
+) {
+    val otpstate by otpViewModel.state.collectAsState()
+    val otpverify by otpverifys.state.collectAsState()
     val signupstate by viewModel.state.collectAsState()
+    val coroutine = rememberCoroutineScope()
 
     val context = LocalContext.current
     val activity = context as? Activity
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -86,12 +100,13 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
             Text(
                 text = "Welcome To Elev8Fit",
                 modifier = Modifier.padding(16.dp),
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.primary
             )
 
             Card(
                 shape = CutCornerShape(8.dp),
-                colors = CardDefaults.cardColors(text_color)
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,21 +114,22 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                 ) {
                     Text(
                         text = "SignUp",
-                        fontSize = 24.sp
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     // Username Input
                     cards(
-                        icons = R.drawable.ic_username,
-                        input = signupstate.username,
-                        label = "Enter user name",
+                        icons = R.drawable.user,
+                        input = signupstate.email,
+                        label = "Enter Email ",
                         labeltext = "User Name",
-                        onValueChange = { viewModel.username(it) }
+                        onValueChange = { viewModel.email(it) }
                     )
 
                     // Password Input
                     cards(
-                        icons = R.drawable.ic_username,
+                        icons = R.drawable.padlock,
                         input = signupstate.password,
                         label = "Enter password",
                         onValueChange = { viewModel.password(it) },
@@ -123,7 +139,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                     // Confirm Password Input
                     cards(
-                        icons = R.drawable.ic_username,
+                        icons = R.drawable.padlock,
                         input = signupstate.Confirmpassword,
                         label = "Confirm password",
                         onValueChange = { viewModel.confirmPassword(it) },
@@ -133,7 +149,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                     // Phone Number Input
                     cards(
-                        icons = R.drawable.ic_username,
+                        icons = R.drawable.telephone,
                         input = signupstate.phonenumber,
                         label = "Phone number",
                         onValueChange = { input ->
@@ -144,60 +160,90 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                         labeltext = "Phone number",
                         keyboardType = KeyboardType.Phone
                     )
-
                     // OTP Verification link
-                    if (signupstate.phonenumber.length == 14) {
+                    if (!otpverify.isverifed) {
+                        if (otpstate.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(8.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Verify OTP",
+                                color = Color.Red,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                                    .align(Alignment.Start)
+                                    .clickable {
+                                        if (activity != null) {
+                                            otpViewModel.triggerOtp(
+                                                activity,
+                                                phoneNumber = signupstate.phonenumber,
+                                                onOtpSent = { verificationId ->
+                                                    // Pass the verificationId to the OTPVerificationScreen
+                                                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                        "verificationId",
+                                                        verificationId
+                                                    )
+                                                    navController.navigate(Navdestination.otp.toString())
+                                                },
+                                                onFailure = { error ->
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            error,
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+                                                }
+                                            )
+                                        }
+                                    }
+                            )
+                        }
+                    }
+                         else {
                         Text(
-                            text = "Verify OTP",
+                            text = "Verified",
                             modifier = Modifier
                                 .padding(start = 8.dp)
-                                .align(Alignment.Start)
-                                .clickable {
-                                    if (activity != null) {
-                                        viewModel.triggerOtp(
-                                            activity,
-                                            phoneNumber = signupstate.phonenumber,
-                                            onOtpSent = { verificationId ->
-                                                // Pass the verificationId to the OTPVerificationScreen
-                                                navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                    "verificationId",
-                                                    verificationId
-                                                )
-                                                navController.navigate(Navdestination.otp.toString())
-                                            },
-                                            onFailure = { error ->
-                                                Toast.makeText(
-                                                    context,
-                                                    error,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        )
-                                    }
-                                }
+                                .align(Alignment.Start),
+                            color = Color.Green
                         )
                     }
+
 
                     // Sign Up Button
                     Button(
                         onClick = {
-                            if (signupstate.phonenumber.length == 10 && signupstate.password == signupstate.Confirmpassword) {
-                                viewModel.SignUpIntentHandler(
-                                    SignUpIntent.Signup(
-                                        signupstate.username,
-                                        signupstate.password,
-                                        signupstate.phonenumber
-                                    ),
-                                    navController
-                                )
-                            }
-                        },
+
+                                if (otpverify.isverifed) {
+
+                            Log.e("ots ","${otpverify.isverifed}")
+                                    // Proceed with the signup
+                                    viewModel.SignUpIntentHandler(
+                                        SignUpIntent.Signup(
+                                            signupstate.email,
+                                            signupstate.password,
+                                            signupstate.phonenumber
+                                        ),
+                                        navController
+                                    )
+                                }
+                        else {
+
+                                    Toast.makeText(context, "Please verify OTP first", Toast.LENGTH_SHORT).show()
+                                }
+
+                        }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth()
                     ) {
                         Text("Sign Up")
                     }
+
 
                     // Error message
                     signupstate.errorMessage?.let {
@@ -211,8 +257,13 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                     // Success message
                     signupstate.successMessage?.let {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                        viewModel.clearSuccessMessage()
+                        coroutine.launch {
+                            DataStoreManager.saveAuthState(context, true)
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                            viewModel.clearSuccessMessage()
+                            viewModel.resetFields()
+                        }
+
                     }
                 }
             }
@@ -228,7 +279,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                     modifier = Modifier
                         .size(60.dp)
                         .clickable {
-                            // Handle Google login
+                            googleSignInViewModel.handleGoogleSignIn(context, navController)
                         }
                 )
                 Image(
@@ -238,6 +289,9 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                         .size(60.dp)
                         .clickable {
                             // Handle Facebook login
+//                            facebookSignInViewModel.handleFacebookSignIn(context,navController,)
+
+
                         }
                 )
             }

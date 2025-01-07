@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +56,8 @@ fun cards(
         // Label text
         Text(
             text = labeltext,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
         )
 
         // TextField with Icon
@@ -66,10 +67,10 @@ fun cards(
                 .height(60.dp), // Set consistent height
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
+            TextField(
                 value = input,
                 onValueChange = onValueChange,
-                label = { Text(text = label) },
+                placeholder = { Text(text = label) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(), // Make text field take full width
                 colors = textFieldColors, // Use custom colors
@@ -79,7 +80,8 @@ fun cards(
                     Icon(
                         painter = painterResource(id = icons),
                         contentDescription = "icon",
-                        modifier = Modifier.size(24.dp) // Icon size
+                        modifier = Modifier.size(24.dp), // Icon size
+                        tint = Color.Black // Explicitly set the icon color to black
                     )
                 },
                 visualTransformation = visualTransformation // Apply visual transformation based on isPassword flag

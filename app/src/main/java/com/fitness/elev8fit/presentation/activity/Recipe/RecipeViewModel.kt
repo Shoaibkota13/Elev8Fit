@@ -1,21 +1,30 @@
 package com.fitness.elev8fit.presentation.activity.Recipe
 
 import androidx.lifecycle.ViewModel
-import com.fitness.elev8fit.domain.Firebase.FirebaseClass
-import com.fitness.elev8fit.data.Recipe.RecipeState
+import com.fitness.elev8fit.data.repository.authfirebaseimpl
+import com.fitness.elev8fit.data.state.RecipeState
 import com.fitness.elev8fit.domain.model.Recipe
 import com.fitness.elev8fit.presentation.intent.RecipeIntent
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class RecipeViewModel:ViewModel() {
+@HiltViewModel
+class RecipeViewModel @Inject constructor(
+    private val authfirebaseimpl: authfirebaseimpl,
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
+) :ViewModel() {
+
+    private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val recipes: StateFlow<List<Recipe>> get() = _recipes
+
+
     private val _state = MutableStateFlow(RecipeState())
     val state: StateFlow<RecipeState> = _state
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
-
     fun updateRecipeTitle(newTitle: String) {
         _state.value = _state.value.copy(recipetitle = newTitle)
     }
@@ -26,7 +35,7 @@ class RecipeViewModel:ViewModel() {
     }
 
     // Function to update recipe image
-    fun updateRecipeImage(newImage: Int) {
+    fun updateRecipeImage(newImage: String) {
         _state.value = _state.value.copy(image = newImage)
     }
 
@@ -64,25 +73,30 @@ class RecipeViewModel:ViewModel() {
     fun setErrorMessage(message: String) {
         _state.value = _state.value.copy(errorMessage = message)
     }
-    
-    fun handlerecipeintent(intent :RecipeIntent){
+
+ suspend fun handlerecipeintent(intent :RecipeIntent){
         when(intent){
-            is RecipeIntent.SubmitRecipe -> Recipeupdate(intent.recipeState)
+            is RecipeIntent.SubmitRecipe -> {
+                Recipeupdate(intent.recipeState)
+            }
         }
     }
 
-    private fun Recipeupdate(recipeState: RecipeState) {
+     suspend fun Recipeupdate(recipeState: RecipeState) {
         val recipeInfo = Recipe(
             id = recipeState.id,
             image = recipeState.image,
-            RecipeTitle = recipeState.recipetitle,
+            recipeTitle = recipeState.recipetitle,
             recipeIngredient = recipeState.recipeIngredient,
             instructions = recipeState.instruction,
             prepTime = recipeState.prepTime.toInt(),
             benifits = recipeState.benfits
         )
 
-        FirebaseClass().RecipeDb(this, recipeInfo)
+         authfirebaseimpl.RecipeDb(this,recipeInfo)
+
+
+
     }
 
     fun saved() {
@@ -91,6 +105,7 @@ class RecipeViewModel:ViewModel() {
             successMessage = "Saved in Firebase",
             errorMessage = null
         )
-        auth.signOut()
+
     }
-}
+    }
+

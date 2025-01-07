@@ -9,8 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -23,14 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.domain.model.BottomMenuItems
-import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.ui.theme.bg_color
-import com.fitness.elev8fit.ui.theme.card_color
+import com.fitness.elev8fit.presentation.activity.Excercise.Excercise
+import com.fitness.elev8fit.presentation.activity.Profile.ProfileScreen
+import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 
 
 
@@ -39,11 +41,12 @@ import com.fitness.elev8fit.ui.theme.card_color
 fun HomePage(navController: NavController) {
     val bottomMenuItems = preparebottom()
     var selected by remember { mutableStateOf("Home") }
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bg_color)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         // Display content based on the selected item
         Box(
@@ -53,17 +56,17 @@ fun HomePage(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             when (selected) {
-                "Home" -> Excercise()
-                "Recipe" -> RecipeScreen(navController)
-                "Account" -> ProfileScreen()
+                "Home" -> Excercise(exerciseViewModel = hiltViewModel(), recipeScreenViewModel = hiltViewModel(),navController)
+                "Recipe" -> RecipeScreen(recipeScreenViewModel = hiltViewModel(),navController)
+                "Account" -> ProfileScreen(profileViewModel = hiltViewModel(), navController, common = hiltViewModel(),context)
+
             }
         }
 
         // Bottom navigation bar
         NavigationBar(
             modifier = Modifier.align(Alignment.BottomCenter),
-            containerColor = card_color,
-            contentColor = Color.White
+            containerColor = MaterialTheme.colorScheme.secondary
         ) {
             bottomMenuItems.forEach { menuItem ->
                 NavigationBarItem(
@@ -79,66 +82,14 @@ fun HomePage(navController: NavController) {
                     alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Color.Green,
-                        unselectedIconColor = Color.Gray,
+                        unselectedIconColor = Color.Black,
                         selectedTextColor = Color.Green,
-                        unselectedTextColor = Color.Gray
+                        unselectedTextColor = Color.Gray,
+                        indicatorColor = Color.Black
                     )
                 )
             }
         }
-    }
-}
-
-//@Composable
-//fun HomeScreen() {
-//    Text("Welcome to the Home Screen", color = Color.White)
-//}
-
-@Composable
-fun RecipeScreen(navController: NavController) {
-    // Example implementation for the Recipe Screen
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFB2DFDB)), // Light greenish-blue background
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Explore Delicious Recipes Here!",
-            color = Color.White,
-            modifier = Modifier.padding(16.dp)
-        )
-
-        FloatingActionButton(onClick = { navController.navigate(Navdestination.recipeentry.toString()) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp, 10.dp, 10.dp, 30.dp), // Padding from the edges
-            containerColor = Color.Black
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add Recipe",
-                tint = Color.White
-            )
-            
-        }
-    }
-}
-
-@Composable
-fun ProfileScreen() {
-    // Example implementation for the Profile Screen
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF80DEEA)), // Light cyan background
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Profile Information",
-            color = Color.White,
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }
 

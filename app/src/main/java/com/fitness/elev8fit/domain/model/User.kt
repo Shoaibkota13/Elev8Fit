@@ -5,13 +5,15 @@ import android.os.Parcelable
 
 data class User(
     val id :String="",
-    val name:String="",
-    val email:String="",
-    val mobile:String="",
-    val usertoken:String=""
+    val name:String?=null,
+    val email:String?=null,
+    val mobile:String?=null,
+    val age:String?=null,
+    val photoUrl: String? =null
 
 ):Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -20,15 +22,15 @@ data class User(
     ) {
     }
 
-    override fun describeContents() = 0
+    override fun describeContents() =0
 
-    override fun writeToParcel(dest: Parcel, flag: Int) = with(dest) {
-        TODO("Not yet implemented")
+    override fun writeToParcel(dest: Parcel, flag: Int)= with(dest) {
         writeString(id)
         writeString(name)
         writeString(email)
         writeString(mobile)
-        writeString(usertoken)
+        writeString(age)
+        writeString(photoUrl)
     }
 
     companion object CREATOR : Parcelable.Creator<User> {

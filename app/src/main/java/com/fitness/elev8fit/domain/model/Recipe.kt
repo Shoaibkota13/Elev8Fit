@@ -4,17 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Recipe(
-    val id:Int,
-    val image:Int,
-    val RecipeTitle :String="",
+    val id:Int=0,
+    val image:String="",
+    val recipeTitle :String="",
     val recipeIngredient: List<String> = emptyList(), // Assuming it's a list of ingredients
     val instructions: List<String> = emptyList(),
-    val prepTime: Int,
+    val prepTime: Int=0,
     val benifits:String=""
 ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readInt(),
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.createStringArrayList()!!,
         parcel.createStringArrayList()!!,
@@ -27,8 +27,8 @@ data class Recipe(
 
     override fun writeToParcel(dest: Parcel,flag: Int) =with(dest) {
         writeInt(id)
-        writeString(RecipeTitle)
-        writeInt(image)
+        writeString(recipeTitle)
+        writeString(image)
         writeInt(prepTime)
         writeList(instructions)
         writeList(recipeIngredient)
