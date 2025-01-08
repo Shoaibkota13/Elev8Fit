@@ -46,10 +46,10 @@ import com.fitness.elev8fit.ui.theme.card_color
 import kotlinx.coroutines.delay
 
 @Composable
-fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyviewmodel) {
+fun OTPVerificationScreen( navController: NavController,otpview:OtpViewModel) {
     val verificationId = navController.previousBackStackEntry?.savedStateHandle?.get<String>("verificationId")
     val otpLength = 6
-    val otpverifys by otpverifed.state.collectAsState()
+    val otpverifys by otpview.state.collectAsState()
 //    val otpstate by remember { otpViewModel.state }.collectAsState()
     val otpFields = remember { mutableStateListOf("", "", "", "", "", "") }
     val focusRequesters = remember { List(otpLength) { FocusRequester() } }
@@ -136,7 +136,7 @@ fun OTPVerificationScreen( navController: NavController,otpverifed: otpverifyvie
                     val otp = otpFields.joinToString("")
                     if (verificationId != null && otp.length == otpLength ) {
 
-                    otpverifed.verifyOtp(context, verificationId, otp) { success ->
+                    otpview.verifyOtp(context, verificationId, otp) { success ->
                             if (success) {
 
                                // Log.e("verify","${otpstate.isverified}")

@@ -9,10 +9,12 @@ data class User(
     val email:String?=null,
     val mobile:String?=null,
     val age:String?=null,
-    val photoUrl: String? =null
+    val photoUrl: String? =null,
+    val fcmtoken:String=""
 
 ):Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -31,6 +33,7 @@ data class User(
         writeString(mobile)
         writeString(age)
         writeString(photoUrl)
+        writeString(fcmtoken)
     }
 
     companion object CREATOR : Parcelable.Creator<User> {

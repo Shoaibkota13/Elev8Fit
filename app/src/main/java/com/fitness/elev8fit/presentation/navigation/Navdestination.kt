@@ -11,4 +11,6 @@ sealed class Navdestination(val route:String) {
     object Recipe :Navdestination("Recipe")
     object otp :Navdestination("Otp")
     object account:Navdestination("Account")
+    object chatC:Navdestination("ChatC")
+    object chat:Navdestination("Chat")
 }
