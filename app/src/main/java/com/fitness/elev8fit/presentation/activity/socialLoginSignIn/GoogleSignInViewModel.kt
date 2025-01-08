@@ -16,7 +16,7 @@ import com.fitness.elev8fit.data.constant.DataStoreManager
 import com.fitness.elev8fit.data.repository.authfirebaseimpl
 import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.service.FCMService
+//import com.fitness.elev8fit.service.FCMService
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.AuthResult
@@ -76,7 +76,7 @@ class GoogleSignInViewModel @Inject constructor(
                                                 "Welcome back",
                                                 Toast.LENGTH_SHORT
                                             ).show()
-                                            FCMService.getFCMToken()
+                                        //    FCMService.getFCMToken()
                                             navController.navigate(Navdestination.home.toString())
                                         } else {
 
@@ -92,7 +92,7 @@ class GoogleSignInViewModel @Inject constructor(
 
 
                                             viewModelScope.launch {
-                                                FCMService.getFCMToken()
+                                            //    FCMService.getFCMToken()
 
                                                 authrepo.registergoogle(
                                                     this@GoogleSignInViewModel, users)

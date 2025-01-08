@@ -3,14 +3,17 @@ package com.fitness.elev8fit.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.fitness.elev8fit.presentation.activity.Excercise.ExerciseDetailScreen
 import com.fitness.elev8fit.presentation.activity.Home.HomePage
 import com.fitness.elev8fit.presentation.activity.Otp.OTPVerificationScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
-import com.fitness.elev8fit.presentation.activity.chat.ChatMain
+import com.fitness.elev8fit.presentation.activity.chat.ui.ChatMain
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
@@ -70,6 +73,18 @@ fun displaynav(
 
 
 
+        }
+
+        composable(
+            route = "exercise_detail/{exerciseId}",
+            arguments = listOf(navArgument("exerciseId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: return@composable
+            ExerciseDetailScreen(
+                exerciseId = exerciseId,
+                navController = navController,
+                viewModel = hiltViewModel()
+            )
         }
 
 

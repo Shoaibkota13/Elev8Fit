@@ -4,6 +4,7 @@
 //import retrofit2.http.GET
 //import retrofit2.http.Query
 //
+//
 //interface ExerciseApi {
 //    @GET("exercises")
 //    suspend fun getExercises(
@@ -11,7 +12,7 @@
 //        @Query("limit") limit: Int
 //    ): ApiResponse
 //}
-
+//
 
 
 package com.fitness.elev8fit.data.network
@@ -23,7 +24,7 @@ import retrofit2.http.Query
 
 interface ExerciseApi {
     @Headers(
-        "X-RapidAPI-Key: ce20668418msh943f719645dd8f8p1dcaf9jsnb78e76bf7d6b", // API key in the header
+        "x-rapidapi-key: 06f1743368mshc90894eb6dbd178p144d9ejsnd899d00a1e5b", // API key in the header
         "X-RapidAPI-Host: exercisedb.p.rapidapi.com" // Host header
     )
     @GET("exercises")

@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val isAuthenticated = remember { mutableStateOf(false) }
             val isDarkMode = isSystemInDarkTheme()
+
             LaunchedEffect(Unit) {
                 launch {
                     DataStoreManager.getAuthState(context).collect { authState ->
@@ -46,6 +47,8 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+
+
 
 
             Elev8FitTheme(darkTheme = isDarkMode,dynamicColor = false) {
@@ -61,53 +64,10 @@ class MainActivity : ComponentActivity() {
 
         }
     }
+
+
 }
 
 
 
-
-
-
-
-
-//@Composable
-//fun kt(){
-//    LazyColumn(){
-//        items(10){
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(100.dp) // Set height for each shimmer item
-//                    .padding(8.dp).background(Color.Gray)
-//                    .shimmer() // Apply shimmer effect
-//            )
-//        }
-//    }
-//
-//}
-//
-
-
-
-
-
-
-
-
-//@Composable
-//fun kt(){
-//    LazyColumn(){
-//        items(10){
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(100.dp) // Set height for each shimmer item
-//                    .padding(8.dp).background(Color.Gray)
-//                    .shimmer() // Apply shimmer effect
-//            )
-//        }
-//    }
-//
-//}
-//
 

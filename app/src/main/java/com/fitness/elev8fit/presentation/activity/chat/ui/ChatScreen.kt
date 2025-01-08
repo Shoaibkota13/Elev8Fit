@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.activity.chat
+package com.fitness.elev8fit.presentation.activity.chat.ui
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,21 +49,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.fitness.elev8fit.domain.model.chat.Message
+import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
+import com.fitness.elev8fit.presentation.intent.ChatIntent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> Unit) {
-    val messages by viewModel.messages.collectAsState()
-    val chatInitialized by viewModel.chatInitialized.collectAsState()
-    val isUploading by viewModel.isUploading.collectAsState()
+    val state by viewModel.state.collectAsState()
     var messageText by remember { mutableStateOf("") }
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(chatRoomId) {
-        viewModel.initializeChat(chatRoomId)
+        viewModel.processIntent(ChatIntent.InitializeChat(chatRoomId))
     }
 
     Scaffold(
@@ -77,9 +77,17 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.tertiary
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        if (!state.chatInitialized) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
             Column(modifier = Modifier.padding(paddingValues)) {
                 LazyColumn(
                     modifier = Modifier
@@ -87,7 +95,7 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                         .fillMaxWidth(),
                     reverseLayout = true
                 ) {
-                    items(messages.reversed()) { message ->
+                    items(state.messages.reversed()) { message ->
                         ChatMessageItem(
                             message = message,
                             isCurrentUser = message.senderId == userId
@@ -100,20 +108,19 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                     onMessageChange = { messageText = it },
                     onSendMessage = {
                         if (messageText.isNotEmpty()) {
-                            viewModel.sendMessage(userId, messageText)
+                            viewModel.processIntent(ChatIntent.SendMessage(userId, messageText))
                             messageText = ""
                         }
                     },
                     onImageSelected = { uri ->
                         scope.launch {
-                            viewModel.handleImageUpload(uri, userId)
+                            viewModel.processIntent(ChatIntent.UploadImage(uri, userId))
                         }
                     }
                 )
             }
 
-            // Show loading indicator while uploading
-            if (isUploading) {
+            if (state.isUploading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -159,7 +166,7 @@ fun ChatMessageItem(message: Message, isCurrentUser: Boolean) {
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                 }
-                
+
                 // Display text if present
                 if (message.text.isNotEmpty()) {
                     Text(
@@ -249,4 +256,3 @@ fun MessageInput(
         }
     }
 }
-

@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.activity.chat
+package com.fitness.elev8fit.presentation.activity.chat.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import com.fitness.elev8fit.presentation.activity.chat.ChatRoomListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +47,8 @@ fun ChatRoomListScreen(
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.tertiary
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
             items(chatRooms) { chatRoom ->

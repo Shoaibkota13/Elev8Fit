@@ -7,11 +7,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 
 class FCMService : FirebaseMessagingService() {
-    
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         updateFCMToken(token)
     }
+
+
 
     companion object {
         fun updateFCMToken(token: String) {
@@ -36,4 +38,4 @@ class FCMService : FirebaseMessagingService() {
                 }
         }
     }
-} 
+}

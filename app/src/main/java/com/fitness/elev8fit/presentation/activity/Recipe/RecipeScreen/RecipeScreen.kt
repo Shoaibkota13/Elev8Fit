@@ -127,7 +127,7 @@ fun RecipeItem(recipe: Recipe) {
             }
 
             // "Read More" or "Read Less" for instructions
-            if (recipe.instructions.size > 1) {
+            if (recipe.recipeIngredient.size > 1) {
                 TextButton(
                     onClick = { showFull.value = !showFull.value }
                 ) {

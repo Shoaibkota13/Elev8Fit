@@ -1,5 +1,4 @@
-package com.fitness.elev8fit.presentation.activity.chat
-
+package com.fitness.elev8fit.presentation.activity.chat.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,21 +30,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
+import com.fitness.elev8fit.presentation.intent.ChatIntent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreens(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> Unit) {
-    val messages by viewModel.messages.collectAsState()
-    val chatInitialized by viewModel.chatInitialized.collectAsState()
+fun CoachChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> Unit) {
+    val state by viewModel.state.collectAsState()
     var messageText by remember { mutableStateOf("") }
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     val scope = rememberCoroutineScope()
-    val isUploading by viewModel.isUploading.collectAsState()
 
     LaunchedEffect(chatRoomId) {
-        viewModel.initializeChat(chatRoomId)
+        viewModel.processIntent(ChatIntent.InitializeChat(chatRoomId))
     }
 
     Scaffold(
@@ -59,9 +58,10 @@ fun ChatScreens(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () ->
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.tertiary
     ) { paddingValues ->
-        if (!chatInitialized) {
+        if (!state.chatInitialized) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -70,14 +70,13 @@ fun ChatScreens(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () ->
             }
         } else {
             Column(modifier = Modifier.padding(paddingValues)) {
-                // Rest of the chat UI implementation...
                 LazyColumn(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
                     reverseLayout = true
                 ) {
-                    items(messages.reversed()) { message ->
+                    items(state.messages.reversed()) { message ->
                         ChatMessageItem(
                             message = message,
                             isCurrentUser = message.senderId == userId
@@ -90,19 +89,19 @@ fun ChatScreens(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () ->
                     onMessageChange = { messageText = it },
                     onSendMessage = {
                         if (messageText.isNotEmpty()) {
-                            viewModel.sendMessage(userId, messageText)
+                            viewModel.processIntent(ChatIntent.SendMessage(userId, messageText))
                             messageText = ""
                         }
                     },
-                    onImageSelected =
-                     { uri ->
+                    onImageSelected = { uri ->
                         scope.launch {
-                            viewModel.handleImageUpload(uri, userId)
+                            viewModel.processIntent(ChatIntent.UploadImage(uri, userId))
                         }
                     }
                 )
             }
-            if (isUploading) {
+
+            if (state.isUploading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -115,4 +114,3 @@ fun ChatScreens(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () ->
         }
     }
 }
-

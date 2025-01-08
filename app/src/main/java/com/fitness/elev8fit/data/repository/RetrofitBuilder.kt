@@ -1,9 +1,13 @@
-package com.fitness.elev8fit.data.repository
-
 import com.fitness.elev8fit.data.network.ExerciseApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+//package com.fitness.elev8fit.data.repository
+//
+//import com.fitness.elev8fit.data.network.ExerciseApi
+//import retrofit2.Retrofit
+//import retrofit2.converter.gson.GsonConverterFactory
+//
 //object RetrofitBuilder {
 //    private const val BASE_URL = "https://exercisedb-api.vercel.app/api/v1/"
 //

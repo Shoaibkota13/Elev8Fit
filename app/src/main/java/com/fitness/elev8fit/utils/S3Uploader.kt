@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
 
+@Suppress("DEPRECATION")
 class S3Uploader(private val context: Context) {
     private val accessKey = s3acess.YOUR_ACCESS_KEY
     private val secretKey = s3acess.YOUR_SECRET_KEY

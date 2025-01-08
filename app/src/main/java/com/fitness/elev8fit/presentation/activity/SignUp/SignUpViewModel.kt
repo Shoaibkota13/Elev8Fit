@@ -10,6 +10,7 @@ import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.service.FCMService
+//import com.fitness.elev8fit.service.FCMService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -98,7 +99,7 @@ class SignUpViewModel @Inject constructor(
                     authRepository.registerUser(this@SignUpViewModel, user)
                     
                     // Get and update FCM token
-                    FCMService.getFCMToken()
+                  FCMService.getFCMToken()
                     
                     navController.navigate(Navdestination.home.toString()) {
                         popUpTo((Navdestination.Signup.route)) { inclusive = true }
