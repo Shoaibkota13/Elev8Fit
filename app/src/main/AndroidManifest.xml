@@ -2,19 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions -->
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<<<<<<< Updated upstream
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-=======
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
->>>>>>> Stashed changes
+
+
     <!-- Application -->
     <application
         android:name=".Elev8FitApplication"
@@ -27,6 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Elev8Fit"
         tools:targetApi="31">
+
+        <service
+            android:name=".data.service.FCMService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <!-- Main Activity -->
         <activity
@@ -43,23 +48,22 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Handle HTTPS -->
                 <data
                     android:scheme="https"
                     android:host="elev8fit"
                     android:pathPrefix="/onboard"/>
             </intent-filter>
         </activity>
-
-
-
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token" />
+
+
+
+
 
     </application>
 

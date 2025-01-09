@@ -1,6 +1,5 @@
 package com.fitness.elev8fit
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -22,8 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.data.constant.DataStoreManager
-import com.fitness.elev8fit.presentation.activity.splash.SplashScreen
-import com.fitness.elev8fit.presentation.navigation.Navdestination
+import com.fitness.elev8fit.presentation.navigation.displaynav
 import com.fitness.elev8fit.ui.theme.Elev8FitTheme
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,21 +78,14 @@ class MainActivity : androidx.fragment.app.FragmentActivity() {
     }
 
     private fun initializeApp() {
-        // Move the setContent and rest of the app initialization here
         setContent {
             val navController = rememberNavController()
             val context = LocalContext.current
             val isAuthenticated = remember { mutableStateOf(false) }
             val isDarkMode = isSystemInDarkTheme()
+            val deepLink = remember { mutableStateOf(intent?.data) }
 
-
-            val intent: Intent? = intent
-            val deepLink = intent?.data
-            if (deepLink != null && deepLink.path == "/onboard") {
-                navController.navigate(Navdestination.onboarding1.toString())
-            }
-
-
+            // Handle deep links for both initial launch and runtime
             LaunchedEffect(Unit) {
                 launch {
                     DataStoreManager.getAuthState(context).collect { authState ->
@@ -103,21 +94,19 @@ class MainActivity : androidx.fragment.app.FragmentActivity() {
                 }
             }
 
-
-
-
-            Elev8FitTheme(darkTheme = isDarkMode,dynamicColor = false) {
-
-
-
+            Elev8FitTheme(darkTheme = isDarkMode, dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if(isbioverified.value){
-                       // displaynav(navController = navController, isAuthenticated = isAuthenticated.value)
-                        SplashScreen(navController)
+                    if(isbioverified.value) {
+                        displaynav(
+                            navController = navController,
+                            isAuthenticated = isAuthenticated.value,
+                            deepLink = deepLink.value
+                        )
 
+                       // FCMTokenButton()
                     }
                 }
             }

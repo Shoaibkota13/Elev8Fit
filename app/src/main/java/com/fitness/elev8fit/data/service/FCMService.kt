@@ -1,4 +1,5 @@
-package com.fitness.elev8fit.service
+package com.fitness.elev8fit.data.service
+
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth

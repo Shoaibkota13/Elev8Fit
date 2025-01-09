@@ -153,9 +153,9 @@ class authfirebaseimpl @Inject constructor(
                     fetchUserName(otherUserId) { userName ->
                         chatRooms.add(
                             ChatRoom(
-                            id = document.id,
-                            name = userName
-                        )
+                                id = document.id,
+                                name = userName
+                            )
                         )
 
                         completedQueries++

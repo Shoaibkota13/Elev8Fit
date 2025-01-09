@@ -1,6 +1,8 @@
 package com.fitness.elev8fit.presentation.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -23,15 +25,17 @@ import secondOnboarding
 @Composable
 fun displaynav(
     navController: NavHostController,
-    isAuthenticated: Boolean
+    isAuthenticated: Boolean,
+    deepLink: Uri?
 ){
     val startDestination = when {
+        deepLink != null -> {
+            handleDeepLink(deepLink)
+        }
         isAuthenticated -> {
-            // User is logged in, show home
             Navdestination.home.toString()
         }
         else -> {
-            // User is not logged in, show login
             Navdestination.onboarding1.toString()
         }
     }
@@ -83,6 +87,7 @@ fun displaynav(
 
         }
 
+
         composable(
             route = "exercise_detail/{exerciseId}",
             arguments = listOf(navArgument("exerciseId") { type = NavType.StringType })
@@ -98,5 +103,32 @@ fun displaynav(
 
 
 
+
+
+
+    }
+    LaunchedEffect(deepLink) {
+        deepLink?.let { uri ->
+            val destination = handleDeepLink(uri)
+            navController.navigate(destination) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+}
+
+private fun handleDeepLink(uri: Uri): String {
+    return when {
+        uri.scheme == "https" && uri.host == "elev8fit" -> {
+            when (uri.path) {
+                "/onboard" -> Navdestination.onboarding1.toString()
+                else -> Navdestination.onboarding1.toString()
+            }
+        }
+        else -> Navdestination.onboarding1.toString()
     }
 }

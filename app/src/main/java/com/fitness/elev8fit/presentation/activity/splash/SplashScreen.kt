@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fitness.elev8fit.R
-import com.fitness.elev8fit.presentation.navigation.Navdestination
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -42,8 +41,8 @@ fun SplashScreen(navController: NavController) {
         )
     ,
     finishedListener = {
-        navController.navigate(Navdestination.onboarding1.toString()) {
-            popUpTo(0) // Clear the back stack
+        navController.navigate("main") {
+            popUpTo("splash") { inclusive = true } // Clears the splash screen from the backstack
         }
     }
     )

@@ -1,16 +1,16 @@
 package com.fitness.elev8fit.presentation.activity.SignUp
 
+//import com.fitness.elev8fit.service.FCMService
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.fitness.elev8fit.data.repository.authfirebaseimpl
+import com.fitness.elev8fit.data.service.FCMService
 import com.fitness.elev8fit.data.state.SignUpState
 import com.fitness.elev8fit.domain.model.User
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.service.FCMService
-//import com.fitness.elev8fit.service.FCMService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -29,11 +29,11 @@ class SignUpViewModel @Inject constructor(
 ):ViewModel() {
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state
-   // private val auth = FirebaseAuth.getInstance()
+    // private val auth = FirebaseAuth.getInstance()
 //    private val authfirebaseimpl : authfirebaseimpl().
 
     fun setAge(newage: String) {
-      _state.value = _state.value.copy( age = newage)
+        _state.value = _state.value.copy( age = newage)
     }
 
     fun setUsername(username: String) {
@@ -76,7 +76,7 @@ class SignUpViewModel @Inject constructor(
             _state.value = _state.value.copy(
                 errorMessage = "email and password cannot be empty",
                 isLoading = false,
-               successMessage = null
+                successMessage = null
             )
             return
         }
@@ -94,13 +94,13 @@ class SignUpViewModel @Inject constructor(
                     val firebaseuser: FirebaseUser = task.result!!.user!!
                     val email = firebaseuser.email!!
                     val user = User(firebaseuser.uid, name = _state.value.name,email,phonenumber, age = _state.value.age,null,"")
-                    
+
                     // Register user first
                     authRepository.registerUser(this@SignUpViewModel, user)
-                    
+
                     // Get and update FCM token
-                  FCMService.getFCMToken()
-                    
+                    FCMService.getFCMToken()
+
                     navController.navigate(Navdestination.home.toString()) {
                         popUpTo((Navdestination.Signup.route)) { inclusive = true }
                     }
@@ -153,20 +153,8 @@ class SignUpViewModel @Inject constructor(
             Confirmpassword = "",
             phonenumber = "",
 
-        )
+            )
     }
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-

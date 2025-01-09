@@ -95,7 +95,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             // Recipe Title Input
-            Text("Recipe Title:", color = MaterialTheme.colorScheme.primary)
+            Text("Recipe Title:", color = MaterialTheme.colorScheme.primary, fontFamily = quicksand)
             TextField(
                 value = recipestate.recipetitle,
                 onValueChange = { recipemodel.updateRecipeTitle(it) },

@@ -23,7 +23,7 @@ val OnSurfaceLight = Color(0xFFF3E8E8)
 val CardLight = Color(0xFFF4B59A)
 
 // Dark Theme Colors
-val PrimaryDark = Color(0xFFFF9999)
+val PrimaryDark = Color(0xFFFFB4B4)
 val SecondaryDark = Color(0xFFF6DDB7)
 val TertiaryDark = Color(0xFFEFECEC)
 val BackgroundDark = Color(0xFFF8B7B7)
