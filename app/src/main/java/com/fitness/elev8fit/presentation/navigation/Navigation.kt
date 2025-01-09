@@ -39,7 +39,15 @@ fun displaynav(
 
 
     NavHost(navController = navController, startDestination = startDestination) {
-        composable(Navdestination.onboarding1.toString()) {
+        composable(
+            route = Navdestination.onboarding1.toString(),
+//            deepLinks = listOf(
+//                navDeepLink {
+//                    uriPattern = "https://elev8fit/onboard"
+//                    uriPattern = "http://elev8fit/onboard"
+//                }
+//            )
+        ) {
             Firstonboard(navController = navController)
         }
         composable(Navdestination.onboarding2.toString()) {

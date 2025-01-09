@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id ("kotlin-kapt")
     id ("com.google.dagger.hilt.android")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -73,6 +74,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.1")
     implementation ("com.google.firebase:firebase-dynamic-links-ktx:21.2.0")
     implementation("com.google.firebase:firebase-messaging-ktx:24.1.0")
+<<<<<<< Updated upstream
 
     // Google Play Services and Identity
     implementation("androidx.credentials:credentials:1.2.2")
@@ -124,6 +126,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
 
     // Testing Libraries
+=======
+    implementation("com.google.firebase:firebase-crashlytics:19.3.0")
+>>>>>>> Stashed changes
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
