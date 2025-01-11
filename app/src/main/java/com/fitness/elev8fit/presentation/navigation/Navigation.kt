@@ -19,38 +19,35 @@ import com.fitness.elev8fit.presentation.activity.chat.ui.ChatMain
 import com.fitness.elev8fit.presentation.activity.chat.ui.ChatScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
+import com.fitness.elev8fit.presentation.activity.onboarding.secondOnboarding
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import secondOnboarding
-
 
 @Composable
 fun displaynav(
     navController: NavHostController,
     isAuthenticated: Boolean,
     deepLink: Uri?,
-    chatid :String
-){
+    chatid: String?
+) {
     val auth = Firebase.auth.currentUser?.uid
-    val chatRoomid = chatid?: auth
 
     val startDestination = when {
-        chatRoomid !=null ->{
-            Navdestination.chatuser.toString()
+        !isAuthenticated -> {
+            Navdestination.onboarding1.toString()
         }
         deepLink != null -> {
             handleDeepLink(deepLink)
         }
-        isAuthenticated -> {
-          Navdestination.home.toString()
+        chatid != null -> {
+            navController.navigate(Navdestination.chatuser.toString())
+            Navdestination.chatuser.toString()
         }
         else -> {
-            Navdestination.onboarding1.toString()
+            Navdestination.home.toString()
         }
     }
-
-
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
@@ -63,39 +60,41 @@ fun displaynav(
             secondOnboarding(viewModel = hiltViewModel(), navController = navController)
         }
         composable(Navdestination.onboarding3.toString()) {
-            thirdOnboarding(signUpViewModel = hiltViewModel(),imageview= hiltViewModel(),navController=navController)
+            thirdOnboarding(signUpViewModel = hiltViewModel(), imageview = hiltViewModel(), navController = navController)
         }
-        composable(Navdestination.login.toString()){
-            LoginScreen(loginview = hiltViewModel(), signUpViewModel = hiltViewModel(),navController=navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel() )
+        composable(Navdestination.login.toString()) {
+            LoginScreen(loginview = hiltViewModel(), signUpViewModel = hiltViewModel(), navController = navController, otpViewModel = hiltViewModel(), googleSignInViewModel = hiltViewModel())
         }
-        composable(Navdestination.Signup.toString()){
-            SignUpScreen(viewModel =hiltViewModel(),navController=navController,
+        composable(Navdestination.Signup.toString()) {
+            SignUpScreen(viewModel = hiltViewModel(), navController = navController,
                 hiltViewModel(), googleSignInViewModel = hiltViewModel())
         }
-        composable(Navdestination.home.toString()){
-            HomePage(navController=navController)
+        composable(Navdestination.home.toString()) {
+            HomePage(navController = navController)
         }
 
-        composable(Navdestination.recipeentry.toString()){
-            RecipeEntry(recipemodel = hiltViewModel(),navController=navController )
+        composable(Navdestination.recipeentry.toString()) {
+            RecipeEntry(recipemodel = hiltViewModel(), navController = navController)
         }
         composable(Navdestination.Recipe.toString()) {
-            RecipeScreen(recipeScreenViewModel = hiltViewModel(),navController = navController)
+            RecipeScreen(recipeScreenViewModel = hiltViewModel(), navController = navController)
         }
         composable(Navdestination.otp.toString()) {
-            OTPVerificationScreen(navController,  hiltViewModel())
+            OTPVerificationScreen(navController, hiltViewModel())
         }
         composable(Navdestination.chat.toString()) {
-           ChatMain()
+            ChatMain()
         }
-        composable(Navdestination.chatuser.toString() ){
-            if (chatRoomid != null) {
-                ChatScreen(viewModel = hiltViewModel(), chatRoomId =chatRoomid ) {
-
+        composable(Navdestination.chatuser.toString()) {
+            if (chatid != null || auth != null) {
+                ChatScreen(
+                    viewModel = hiltViewModel(),
+                    chatRoomId = chatid ?: auth!!
+                ) {
+                    navController.navigateUp()
                 }
             }
         }
-
 
         composable(
             route = "exercise_detail/{exerciseId}",
@@ -108,8 +107,6 @@ fun displaynav(
                 viewModel = hiltViewModel()
             )
         }
-
-
     }
     LaunchedEffect(deepLink) {
         deepLink?.let { uri ->

@@ -17,20 +17,20 @@ class NotificationHandler (private val context: Context) {
     fun showSimpleNotification(chatroomId:String) {
         //creating an intent to launch notification
         val intent = Intent(context,MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("chatroomId",chatroomId)
         }
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
             context,
-            0,
+            Random.nextInt(), // Use random request code to avoid PendingIntent collision
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(context, notificationChannelID)
-            .setContentTitle("Simple Notification")
-            .setContentText("Message or text with notification")
+            .setContentTitle("New Message")
+            .setContentText("You have a new message")
             .setSmallIcon(R.drawable.logo)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
@@ -38,15 +38,11 @@ class NotificationHandler (private val context: Context) {
                     R.drawable.chat
                 )
             )
-            .setPriority(NotificationManager.IMPORTANCE_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText("Excercise Kar liya abhi thoda masti karlo")
-            )
             .build()  // finalizes the creation
 
-        notificationManager.notify(Random.nextInt(), notification)
+        notificationManager.notify(chatroomId.hashCode(), notification)
     }
 }
