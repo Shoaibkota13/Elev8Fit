@@ -1,6 +1,7 @@
 @file:Suppress("DEPRECATION")
 
 package com.fitness.elev8fit.presentation.activity.chat.ui
+
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,13 +57,12 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
-
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.domain.model.chat.Message
 import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
 import com.fitness.elev8fit.presentation.intent.ChatIntent
+import com.fitness.elev8fit.utils.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,6 +77,11 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
     val context = LocalContext.current
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.done))
     val progress = rememberLottieAnimatable()
+
+    val notificationHandler = NotificationHandler(context)
+
+
+
 
     // Start the animation and keep it looping while `state.isUploading` is true
     LaunchedEffect(state.isUploading) {
@@ -94,7 +99,7 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
 
     LaunchedEffect(chatRoomId) {
         viewModel.processIntent(ChatIntent.InitializeChat(chatRoomId))
-        FirebaseMessaging.getInstance().subscribeToTopic("Chat")
+        notificationHandler.showSimpleNotification(chatRoomId)
 
 
         // Show notification when chat is opened
@@ -225,6 +230,7 @@ fun MessageInput(
     onSendMessage: () -> Unit,
     onImageSelected: (Uri) -> Unit
 ) {
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->

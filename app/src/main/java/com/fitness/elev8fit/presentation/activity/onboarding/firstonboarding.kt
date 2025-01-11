@@ -42,6 +42,9 @@ import com.fitness.elev8fit.ui.theme.quicksand
 @Composable
 fun Firstonboard(navController: NavController){
 
+    val context = LocalContext.current
+
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(bg_color)
@@ -98,6 +101,7 @@ fun Firstonboard(navController: NavController){
             val context = LocalContext.current
             Text(text = "If you have account,please sign in",
                 modifier = Modifier.clickable {
+
             navController.navigate(Navdestination.login.toString())
                 }, fontFamily = quicksand, fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)

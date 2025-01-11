@@ -44,15 +44,42 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+        val chatroomId = intent.getStringExtra("chatroomId")
 
-        // Setting content to the SplashScreen
         setContent {
-            SplashScreen()
+            Elev8FitTheme(darkTheme = isSystemInDarkTheme()) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val showMainContent = remember { mutableStateOf(false) }
+                    
+                    if (!showMainContent.value) {
+                        SplashScreen(onSplashComplete = {
+                            showMainContent.value = true
+                            setupBiometric()
+                        })
+                    } else {
+                        val navController = rememberNavController()
+                        val context = LocalContext.current
+                        val dataStore = remember { DataStoreManager(context) }
+                        
+                        LaunchedEffect(isbioverified.value) {
+                            if (isbioverified.value) {
+                                requestNotificationPermissionIfNeeded()
+                            }
+                        }
+                        
+                        displaynav(
+                            navController = navController,
+                            isAuthenticated = isbioverified.value,
+                            deepLink = intent.data,
+                            chatid = chatroomId
+                        )
+                    }
+                }
+            }
         }
-
-        // Initialize biometric prompt and request notification permission after biometric success
-        setupBiometricPrompt()
-        setupBiometric()
     }
 
     override fun onRequestPermissionsResult(
@@ -144,35 +171,6 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun initializeApp() {
-        setContent {
-            val navController = rememberNavController()
-            val context = LocalContext.current
-            val isAuthenticated = remember { mutableStateOf(false) }
-            val isDarkMode = isSystemInDarkTheme()
-            val deepLink = remember { mutableStateOf(intent?.data) }
-
-            LaunchedEffect(Unit) {
-                launch {
-                    DataStoreManager.getAuthState(context).collect { authState ->
-                        isAuthenticated.value = authState
-                    }
-                }
-            }
-
-            Elev8FitTheme(darkTheme = isDarkMode, dynamicColor = false) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    if (isbioverified.value) {
-                        displaynav(
-                            navController = navController,
-                            isAuthenticated = isAuthenticated.value,
-                            deepLink = deepLink.value
-                        )
-                    }
-                }
-            }
-        }
+        // This function is not needed anymore, as the navigation is now handled in the onCreate method
     }
 }

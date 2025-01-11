@@ -16,9 +16,12 @@ import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
 import com.fitness.elev8fit.presentation.activity.chat.ui.ChatMain
+import com.fitness.elev8fit.presentation.activity.chat.ui.ChatScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import secondOnboarding
 
 
@@ -26,14 +29,21 @@ import secondOnboarding
 fun displaynav(
     navController: NavHostController,
     isAuthenticated: Boolean,
-    deepLink: Uri?
+    deepLink: Uri?,
+    chatid :String
 ){
+    val auth = Firebase.auth.currentUser?.uid
+    val chatRoomid = chatid?: auth
+
     val startDestination = when {
+        chatRoomid !=null ->{
+            Navdestination.chatuser.toString()
+        }
         deepLink != null -> {
             handleDeepLink(deepLink)
         }
         isAuthenticated -> {
-            Navdestination.home.toString()
+          Navdestination.home.toString()
         }
         else -> {
             Navdestination.onboarding1.toString()
@@ -45,12 +55,7 @@ fun displaynav(
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
             route = Navdestination.onboarding1.toString(),
-//            deepLinks = listOf(
-//                navDeepLink {
-//                    uriPattern = "https://elev8fit/onboard"
-//                    uriPattern = "http://elev8fit/onboard"
-//                }
-//            )
+
         ) {
             Firstonboard(navController = navController)
         }
@@ -82,9 +87,13 @@ fun displaynav(
         }
         composable(Navdestination.chat.toString()) {
            ChatMain()
+        }
+        composable(Navdestination.chatuser.toString() ){
+            if (chatRoomid != null) {
+                ChatScreen(viewModel = hiltViewModel(), chatRoomId =chatRoomid ) {
 
-
-
+                }
+            }
         }
 
 
@@ -99,11 +108,6 @@ fun displaynav(
                 viewModel = hiltViewModel()
             )
         }
-
-
-
-
-
 
 
     }

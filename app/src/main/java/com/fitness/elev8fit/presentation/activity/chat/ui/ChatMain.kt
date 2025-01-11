@@ -41,13 +41,14 @@ fun ChatMain() {
             // Show button to start chat
             // TODO: Add button UI here
 //           // Auto-show chat for now, replace with button logic
-
             val chatViewModel: ChatViewModel = hiltViewModel()
             ChatScreen(
                 viewModel = chatViewModel,
                 chatRoomId = currentUser?.uid ?: "",
                 onBackClick = { showChat = false }
             )
+
+
         }
     }
 }
