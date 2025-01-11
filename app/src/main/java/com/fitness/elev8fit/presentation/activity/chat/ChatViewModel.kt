@@ -1,7 +1,6 @@
 package com.fitness.elev8fit.presentation.activity.chat
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fitness.elev8fit.data.repository.authfirebaseimpl
@@ -10,7 +9,6 @@ import com.fitness.elev8fit.domain.model.chat.Message
 import com.fitness.elev8fit.presentation.intent.ChatIntent
 import com.fitness.elev8fit.utils.S3Uploader
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -64,7 +62,7 @@ class ChatViewModel @Inject constructor(
                     timestamp = System.currentTimeMillis()
                 )
                 authRepository.sendMessageToChatRoom(chatRoomId, message)
-                notifyRecipient(chatRoomId, message)
+
             } catch (e: Exception) {
                 _state.update { it.copy(error = e.message) }
             }
@@ -107,36 +105,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun notifyRecipient(chatRoomId: String, message: Message) {
-        viewModelScope.launch {
-            try {
-                // Get recipient's user ID (opposite of sender)
-                val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
-                val recipientId = if (message.senderId == currentUserId) {
-                    // If current user is sender, notify the coach
-                    "coach_user_id" // Replace with actual coach ID
-                } else {
-                    // If coach is sender, notify the user
-                    chatRoomId.replace("chat_", "")
-                }
 
-                // Get recipient's FCM token
-                FirebaseFirestore.getInstance()
-                    .collection("Users")
-                    .document(recipientId)
-                    .get()
-                    .addOnSuccessListener { document ->
-                        val recipientToken = document.getString("fcmtoken")
-                        if (recipientToken != null) {
-                            // Here you would trigger your backend to send the FCM notification
-                            Log.d("ChatViewModel", "Should send notification to token: $recipientToken")
-                        }
-                    }
-            } catch (e: Exception) {
-                _state.update { it.copy(error = e.message) }
-            }
-        }
-    }
 }
 
 

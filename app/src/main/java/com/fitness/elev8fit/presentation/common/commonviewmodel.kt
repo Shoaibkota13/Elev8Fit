@@ -17,8 +17,10 @@ class commonviewmodel @Inject constructor(
 ):ViewModel() {
     fun logout(context: Context, navController: NavController) {
         viewModelScope.launch {
+            FirebaseAuth.getInstance().signOut()
+       //     FirebaseMessaging.getInstance().deleteToken()
             DataStoreManager.saveAuthState(context, false)
-            auth.signOut()
+            //auth.signOut()
             navController.navigate(Navdestination.onboarding1.toString()) {
                 popUpTo(Navdestination.home.toString()) { inclusive = true }
             }

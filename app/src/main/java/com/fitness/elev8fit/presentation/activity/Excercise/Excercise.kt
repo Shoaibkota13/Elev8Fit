@@ -1,5 +1,11 @@
 package com.fitness.elev8fit.presentation.activity.Excercise
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,7 +24,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -41,12 +49,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationCompat
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.fitness.elev8fit.MainActivity
+import com.fitness.elev8fit.R
 import com.fitness.elev8fit.domain.model.exercise.Exercise
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeCard
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreenViewModel
@@ -56,12 +68,14 @@ import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay
 
 
+
 @Composable
 fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: RecipeScreenViewModel, navController: NavController) {
     val state by exerciseViewModel.state.collectAsState()
     val recipe by recipeScreenViewModel.state.collectAsState()
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
     val coachId = "oriw3fgPs4NqpN5BxfDb58Uq6532"
+    val context = LocalContext.current
 
     LaunchedEffect(currentUserId) {
 
@@ -73,7 +87,7 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
 //    LaunchedEffect(Unit) {
 //        if (state.exerciseList.isEmpty()) {
 //
-//            exerciseViewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 15))
+//            exerciseViewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 30))
 //
 //        }
 //    }
@@ -119,7 +133,8 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
 
 
         FloatingActionButton(
-            onClick = { navController.navigate(Navdestination.chat.toString()) },
+            onClick = {  showNotification(context)
+                 navController.navigate(Navdestination.chat.toString()) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp, 10.dp, 10.dp, 30.dp), // Padding from the edges
@@ -137,6 +152,42 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
 
 }
 
+    fun showNotification(context: Context) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelId = "chat_channel"
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "Chat Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Intent to launch the ChatScreen
+        val intent = Intent(context, MainActivity::class.java).apply {
+            putExtra("chatRoomId", "exampleRoomId")  // Pass necessary data like chatRoomId
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Build the notification
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle("New Chat Available")
+            .setContentText("Tap to start a chat with the coach")
+            .setSmallIcon(R.drawable.logo)  // You can replace with your own icon
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(1, notification)
+    }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -203,8 +254,8 @@ fun ExerciseDetailScreen(
     val state by viewModel.state.collectAsState()
     val exercise = state.exerciseList.find { it.id == exerciseId }
     var timerRunning by remember { mutableStateOf(false) }
-    var remainingTime by remember { mutableStateOf(180) } // 3 minutes in seconds
-
+    var remainingTime by remember { mutableStateOf(60) } // 3 minutes in second // s
+    val scrollState = rememberScrollState()
     LaunchedEffect(timerRunning) {
         if (timerRunning) {
             while (remainingTime > 0 && timerRunning) {
@@ -218,7 +269,7 @@ fun ExerciseDetailScreen(
     }
 //    LaunchedEffect(Unit) {
 //        if (state.exerciseList.isEmpty()) {
-//            viewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 15))
+//            viewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 30))
 //        }
 //    }
 
@@ -240,6 +291,7 @@ fun ExerciseDetailScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
+                    .verticalScroll(scrollState)
             ) {
                 // Back button
                 IconButton(
@@ -294,33 +346,17 @@ fun ExerciseDetailScreen(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-
-//                LazyColumn(
-//                    modifier = Modifier.padding(top = 8.dp)
-//                ) {
-
                     val instruction = if(showfull.value)it.instructions else it.instructions.take(3)
                     instruction.forEachIndexed{ index, step->
-                        Text(text = "${index+1} $step")
+                        Text(text = "${index+1} $step", color = MaterialTheme.colorScheme.primary)
                     }
-                
+
                 if(it.instructions.size>1){
                     TextButton(onClick = {showfull.value =! showfull.value}) {
-                       
+
                         Text(text = if(showfull.value) "Read less" else "Read more")
                     }
                 }
-
-//                    items(it.instructions) { instruction ->
-//                        // Log each instruction
-//                        Log.d("ExerciseDetailScreen", "Instruction: $instruction")
-//                        Text(
-//                            text = "• $instruction",
-//                            style = MaterialTheme.typography.bodyMedium,
-//                            modifier = Modifier.padding(vertical = 4.dp)
-//                        )
-//                    }
-//                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -369,14 +405,4 @@ fun ExerciseDetailScreen(
 }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun RecipeCardPreview() {
-//    RecipeCard(title = "Pasta Recipe")
-//}
 
-//@Preview(showBackground = true)
-//@Composable
-//fun ExerciseCardPreview() {
-//    ExerciseCard(name = Exercis, target = "Chest")
-//}

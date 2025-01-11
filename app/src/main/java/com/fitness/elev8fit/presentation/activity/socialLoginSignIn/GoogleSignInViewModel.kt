@@ -77,7 +77,7 @@ class GoogleSignInViewModel @Inject constructor(
                                                 "Welcome back",
                                                 Toast.LENGTH_SHORT
                                             ).show()
-                                            //    FCMService.getFCMToken()
+                                           FCMService.getFCMToken()
                                             navController.navigate(Navdestination.home.toString())
                                         } else {
 

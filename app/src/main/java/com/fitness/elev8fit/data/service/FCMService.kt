@@ -30,9 +30,11 @@ class FCMService : FirebaseMessagingService() {
 
         // Call this when user creates account or signs in
         fun getFCMToken() {
-            FirebaseMessaging.getInstance().token
+            FirebaseMessaging.getInstance().getToken()
                 .addOnSuccessListener { token ->
                     updateFCMToken(token)
+                    Log.e("FCMService", token )
+
                 }
                 .addOnFailureListener { e ->
                     Log.e("FCMService", "Failed to get FCM token", e)
