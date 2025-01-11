@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.fitness.elev8fit.presentation.activity.chat.ui
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -46,24 +48,56 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieAnimatable
+import com.airbnb.lottie.compose.rememberLottieComposition
+
+import com.fitness.elev8fit.R
 import com.fitness.elev8fit.domain.model.chat.Message
 import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
 import com.fitness.elev8fit.presentation.intent.ChatIntent
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> Unit) {
+
+
     val state by viewModel.state.collectAsState()
     var messageText by remember { mutableStateOf("") }
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.done))
+    val progress = rememberLottieAnimatable()
+
+    // Start the animation and keep it looping while `state.isUploading` is true
+    LaunchedEffect(state.isUploading) {
+        if (state.isUploading) {
+            progress.animate(
+                composition = composition,
+                iterations = LottieConstants.IterateForever // Loops infinitely
+            )
+        } else {
+            progress.isAtEnd // Stop animation when `state.isUploading` is false
+        }
+    }
+
+
 
     LaunchedEffect(chatRoomId) {
         viewModel.processIntent(ChatIntent.InitializeChat(chatRoomId))
+        FirebaseMessaging.getInstance().subscribeToTopic("Chat")
+
+
+        // Show notification when chat is opened
     }
 
     Scaffold(
@@ -127,7 +161,11 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                         .background(Color.Black.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    LottieAnimation(
+                        composition = composition,
+                        progress =  progress.progress,
+                        modifier = Modifier.size(150.dp)
+                    )
                 }
             }
         }
@@ -139,7 +177,7 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
 @Composable
 fun ChatMessageItem(message: Message, isCurrentUser: Boolean) {
     val alignment = if (isCurrentUser) Alignment.End else Alignment.Start
-    val backgroundColor = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val backgroundColor = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
     val textColor = if (isCurrentUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Row(
@@ -256,3 +294,4 @@ fun MessageInput(
         }
     }
 }
+

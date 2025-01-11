@@ -81,11 +81,11 @@ fun HomePage(navController: NavController) {
                     label = { Text(menuItem.label) },
                     alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.Green,
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = Color.Black,
-                        selectedTextColor = Color.Green,
+                        selectedTextColor =MaterialTheme.colorScheme.primary,
                         unselectedTextColor = Color.Gray,
-                        indicatorColor = Color.Black
+                        indicatorColor = MaterialTheme.colorScheme.secondary
                     )
                 )
             }

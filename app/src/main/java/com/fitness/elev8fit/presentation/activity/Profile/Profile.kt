@@ -294,7 +294,7 @@ fun ProfileItem(
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Save Changes",
-                        tint = Color.Green // Ensure the icon is visible
+                        tint =MaterialTheme.colorScheme.secondary // Ensure the icon is visible
                     )
                 }
             } else {
@@ -318,7 +318,7 @@ fun ProfileItem(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = null,
-                        tint = Color.Green // Keep icon color consistent
+                        tint = MaterialTheme.colorScheme.secondary  // Keep icon color consistent
                     )
                 }
             }

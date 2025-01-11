@@ -1,11 +1,5 @@
 package com.fitness.elev8fit.presentation.activity.Excercise
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,13 +46,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.app.NotificationCompat
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.fitness.elev8fit.MainActivity
-import com.fitness.elev8fit.R
 import com.fitness.elev8fit.domain.model.exercise.Exercise
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeCard
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreenViewModel
@@ -133,7 +124,7 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
 
 
         FloatingActionButton(
-            onClick = {  showNotification(context)
+            onClick = {
                  navController.navigate(Navdestination.chat.toString()) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -152,42 +143,6 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
 
 }
 
-    fun showNotification(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = "chat_channel"
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Chat Notifications",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        // Intent to launch the ChatScreen
-        val intent = Intent(context, MainActivity::class.java).apply {
-            putExtra("chatRoomId", "exampleRoomId")  // Pass necessary data like chatRoomId
-        }
-
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        // Build the notification
-        val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle("New Chat Available")
-            .setContentText("Tap to start a chat with the coach")
-            .setSmallIcon(R.drawable.logo)  // You can replace with your own icon
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .build()
-
-        notificationManager.notify(1, notification)
-    }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
