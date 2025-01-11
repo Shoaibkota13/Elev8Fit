@@ -19,10 +19,10 @@ import com.fitness.elev8fit.presentation.activity.chat.ui.ChatMain
 import com.fitness.elev8fit.presentation.activity.chat.ui.ChatScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
-import com.fitness.elev8fit.presentation.activity.onboarding.secondOnboarding
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import secondOnboarding
 
 @Composable
 fun displaynav(

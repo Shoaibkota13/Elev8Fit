@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 class MainActivity : FragmentActivity() {
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private val isbioverified = mutableStateOf(false)
+    private val isBioVerified = mutableStateOf(false)
 
     companion object {
         const val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
@@ -46,16 +46,43 @@ class MainActivity : FragmentActivity() {
         FirebaseApp.initializeApp(this)
         val chatroomId = intent.getStringExtra("chatroomId")
 
-        // Setting content to the SplashScreen
-        setContent {
-            SplashScreen()
-        }
-
-        // Initialize biometric prompt and request notification permission after biometric success
+        // Setup biometric authentication
         setupBiometricPrompt()
-        setupBiometric()
 
+        setContent {
+            Elev8FitTheme(darkTheme = isSystemInDarkTheme(), dynamicColor = false) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    if (!isBioVerified.value) {
+                        SplashScreen() // Display splash screen while biometric is being verified
+                        setupBiometric()
+                    } else {
+                        // Main app content after successful biometric authentication
+                        val navController = rememberNavController()
+                        val context = LocalContext.current
+                        val isAuthenticated = remember { mutableStateOf(false) }
+                        val deepLink = remember { mutableStateOf(intent?.data) }
 
+                        LaunchedEffect(Unit) {
+                            launch {
+                                DataStoreManager.getAuthState(context).collect { authState ->
+                                    isAuthenticated.value = authState
+                                }
+                            }
+                        }
+
+                        displaynav(
+                            navController = navController,
+                            isAuthenticated = isAuthenticated.value,
+                            deepLink = deepLink.value,
+                            chatid = chatroomId
+                        )
+                    }
+                }
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -64,18 +91,16 @@ class MainActivity : FragmentActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            NOTIFICATION_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    initializeApp() // Once permission is granted, show the navigation
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Notification permission denied. Some features may not work.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    finish()
-                }
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Notification permission denied. Some features may not work.",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
             }
         }
     }
@@ -86,20 +111,24 @@ class MainActivity : FragmentActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-
-                    isbioverified.value = true
-                    // Now request notification permission after successful biometric authentication
+                    isBioVerified.value = true
                     requestNotificationPermissionIfNeeded()
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Biometric authentication error: $errString",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(this@MainActivity, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Authentication failed", Toast.LENGTH_SHORT)
+                        .show()
                     finish()
                 }
             })
@@ -118,7 +147,11 @@ class MainActivity : FragmentActivity() {
                 biometricPrompt.authenticate(promptInfo)
             }
             else -> {
-                Toast.makeText(this, "Biometric authentication is required to use this app", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "Biometric authentication is required to use this app",
+                    Toast.LENGTH_LONG
+                ).show()
                 finish()
             }
         }
@@ -136,52 +169,7 @@ class MainActivity : FragmentActivity() {
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     NOTIFICATION_PERMISSION_REQUEST_CODE
                 )
-            } else {
-                // If permission is already granted, proceed to initialize the app
-                initializeApp()
-            }
-        } else {
-            // No need to request permission for older SDKs, directly initialize app
-            initializeApp()
-        }
-    }
-
-    private fun initializeApp() {
-        setContent {
-            val navController = rememberNavController()
-            val context = LocalContext.current
-            val isAuthenticated = remember { mutableStateOf(false) }
-            val isDarkMode = isSystemInDarkTheme()
-            val deepLink = remember { mutableStateOf(intent?.data) }
-
-            LaunchedEffect(Unit) {
-                launch {
-                    DataStoreManager.getAuthState(context).collect { authState ->
-                        isAuthenticated.value = authState
-                    }
-                }
-            }
-
-            Elev8FitTheme(darkTheme = isDarkMode, dynamicColor = false) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    if (isbioverified.value) {
-                        displaynav(
-                            navController = navController,
-                            isAuthenticated = isAuthenticated.value,
-                            deepLink = deepLink.value,
-                           chatid = intent.getStringExtra("chatroomId") ?: "default_chatroom_id"
-                        )
-                    }
-                }
             }
         }
     }
-
 }
-
-
-
-
