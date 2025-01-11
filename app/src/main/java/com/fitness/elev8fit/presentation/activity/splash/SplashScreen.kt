@@ -27,11 +27,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.fitness.elev8fit.R
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen() {
     var startAnimation by remember { mutableStateOf(false) }
     val scale = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0.5f,
@@ -40,11 +39,7 @@ fun SplashScreen(navController: NavController) {
             easing = FastOutSlowInEasing
         )
     ,
-    finishedListener = {
-        navController.navigate("main") {
-            popUpTo("splash") { inclusive = true } // Clears the splash screen from the backstack
-        }
-    }
+
     )
     LaunchedEffect(key1 = true) {
         startAnimation = true
