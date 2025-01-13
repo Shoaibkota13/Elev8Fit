@@ -53,6 +53,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.fitness.elev8fit.domain.model.exercise.Exercise
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeCard
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreenViewModel
+import com.fitness.elev8fit.presentation.intent.ExerciseIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.google.firebase.auth.FirebaseAuth
 import com.valentinilk.shimmer.shimmer
@@ -75,13 +76,13 @@ fun Excercise(exerciseViewModel: ExerciseViewModel,recipeScreenViewModel: Recipe
     LaunchedEffect(true) {
         recipeScreenViewModel.fetchRecipes(navController)
     }
-//    LaunchedEffect(Unit) {
-//        if (state.exerciseList.isEmpty()) {
-//
-//            exerciseViewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 30))
-//
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        if (state.exerciseList.isEmpty()) {
+
+            exerciseViewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 30))
+
+        }
+    }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -222,11 +223,11 @@ fun ExerciseDetailScreen(
             }
         }
     }
-//    LaunchedEffect(Unit) {
-//        if (state.exerciseList.isEmpty()) {
-//            viewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 30))
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        if (state.exerciseList.isEmpty()) {
+            viewModel.handleAPIintent(ExerciseIntent.Loadexcercises(0, 30))
+        }
+    }
 
     // Log when the screen is opened
     LaunchedEffect(Unit) {

@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fitness.elev8fit.presentation.intent.RecipeIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
-import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
 import com.fitness.elev8fit.ui.theme.quicksand
 import kotlinx.coroutines.launch
 
@@ -124,7 +123,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = Color.Black
                 ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
@@ -141,7 +140,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = Color.Black
                 ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
@@ -164,7 +163,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = Color.Black
                 ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
@@ -187,7 +186,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = Color.Black
                 ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
@@ -204,7 +203,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor =MaterialTheme.colorScheme.primary,
 
                     ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
@@ -231,7 +230,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                         .padding(top = 16.dp)
                         .align(Alignment.CenterHorizontally),
                     shape = CutCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(CustomBackgroundColor),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                     enabled = isFormValid
                 ) {
                     Text("Submit Recipe")

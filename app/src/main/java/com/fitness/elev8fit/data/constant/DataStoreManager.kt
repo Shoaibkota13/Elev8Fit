@@ -17,7 +17,6 @@ object DataStoreManager {
 
     // Define keys for authentication state and onboarding state
     private val AUTH_STATE_KEY = booleanPreferencesKey("is_authenticated")
-    private val ONBOARDING_STATE_KEY = booleanPreferencesKey("has_seen_onboarding")
     private val LANGUAGE_PREF_KEY = stringPreferencesKey("selected_language")
     // Save the authentication state (true for logged in, false for logged out)
     suspend fun saveAuthState(context: Context, isAuthenticated: Boolean) {

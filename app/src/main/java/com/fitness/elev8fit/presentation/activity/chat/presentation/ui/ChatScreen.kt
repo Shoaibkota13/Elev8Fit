@@ -55,13 +55,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.presentation.activity.chat.domain.model.Message
-import com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel.ChatViewModel
 import com.fitness.elev8fit.presentation.activity.chat.presentation.intent.ChatIntent
+import com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel.ChatViewModel
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.utils.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
@@ -193,6 +195,17 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, navController: NavC
 
     val notificationHandler = NotificationHandler(context)
 
+    LaunchedEffect(state.isUploading) {
+        if (state.isUploading) {
+            progress.animate(
+                composition = composition,
+                iterations = LottieConstants.IterateForever // Loops infinitely
+            )
+        } else {
+            progress.isAtEnd // Stop animation when `state.isUploading` is false
+        }
+    }
+
     // Log when the state is updating
     LaunchedEffect(state) {
         Log.d("ChatScreen", "State updated: $state")
@@ -263,7 +276,22 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, navController: NavC
                             viewModel.processIntent(ChatIntent.UploadImage(uri, userId))
                         }
                     }
+
                 )
+            }
+            if (state.isUploading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LottieAnimation(
+                        composition = composition,
+                        progress =  progress.progress,
+                        modifier = Modifier.size(150.dp)
+                    )
+                }
             }
         }
     }

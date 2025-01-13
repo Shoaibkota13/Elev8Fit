@@ -121,7 +121,7 @@ dependencies {
     implementation("com.valentinilk.shimmer:compose-shimmer:1.3.1")
 
     // Biometric Authentication
-    implementation("androidx.biometric:biometric:1.4.0-alpha02")
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 
     // Gson
     implementation("com.google.code.gson:gson:2.8.9")

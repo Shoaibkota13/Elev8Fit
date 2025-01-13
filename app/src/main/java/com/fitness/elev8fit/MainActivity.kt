@@ -152,22 +152,131 @@ class MainActivity : FragmentActivity() {
             .build()
     }
 
+//    private fun setupBiometric() {
+//        val biometricManager = BiometricManager.from(this)
+//        val biometricAuthenticator = BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+//        when (biometricManager.canAuthenticate(biometricAuthenticator)) {
+//            BiometricManager.BIOMETRIC_SUCCESS -> {
+//                biometricPrompt.authenticate(promptInfo)
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+//                // No biometric hardware available on the device
+//                Toast.makeText(this, "No biometric hardware detected. Using device credentials.", Toast.LENGTH_LONG).show()
+//                promptDeviceCredential()
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+//                // Biometric hardware is currently unavailable (e.g., in use by another app)
+//                Toast.makeText(this, "Biometric hardware unavailable. Using device credentials.", Toast.LENGTH_LONG).show()
+//                promptDeviceCredential()
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+//                // Biometric authentication not enrolled (user has not set up biometrics)
+//                Toast.makeText(this, "No biometrics enrolled. Using device credentials.", Toast.LENGTH_LONG).show()
+//                promptDeviceCredential()
+//            }
+//            else -> {
+//                Toast.makeText(
+//                    this,
+//                    "Biometric authentication is required to use this app",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//                finish()
+//            }
+//        }
+//    }
+
     private fun setupBiometric() {
         val biometricManager = BiometricManager.from(this)
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL  or BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+        val biometricAuthenticator = BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+
+        when (biometricManager.canAuthenticate(biometricAuthenticator)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
+                // Biometric authentication is available and can be used
                 biometricPrompt.authenticate(promptInfo)
             }
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                // No biometric hardware available on the device
+                Toast.makeText(this, "No biometric hardware detected. Using device credentials.", Toast.LENGTH_LONG).show()
+                promptDeviceCredential()
+            }
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                // Biometric hardware is currently unavailable (e.g., in use by another app)
+                Toast.makeText(this, "Biometric hardware unavailable. Using device credentials.", Toast.LENGTH_LONG).show()
+                promptDeviceCredential()
+            }
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                // No biometrics enrolled
+                Toast.makeText(this, "No biometrics enrolled. Using device credentials.", Toast.LENGTH_LONG).show()
+                promptDeviceCredential()
+            }
             else -> {
-                Toast.makeText(
-                    this,
-                    "Biometric authentication is required to use this app",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
+                // Other error cases
+                Toast.makeText(this, "Error occurred with biometric authentication.", Toast.LENGTH_LONG).show()
             }
         }
     }
+
+
+//    private fun promptDeviceCredential() {
+//        // This will prompt the user for device credentials (PIN, pattern, or password)
+//        val biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(this), object : BiometricPrompt.AuthenticationCallback() {
+//            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+//                super.onAuthenticationSucceeded(result)
+//                isBioVerified.value = true
+//                requestNotificationPermissionIfNeeded()
+//            }
+//
+//            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+//                super.onAuthenticationError(errorCode, errString)
+//                Toast.makeText(this@MainActivity, "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+//                finish()
+//            }
+//
+//            override fun onAuthenticationFailed() {
+//                super.onAuthenticationFailed()
+//                Toast.makeText(this@MainActivity, "Authentication failed", Toast.LENGTH_SHORT).show()
+//                finish()
+//            }
+//        })
+//
+//        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+//            .setTitle("Device Credential Authentication")
+//            .setSubtitle("Please authenticate using your device credentials (PIN, pattern, or password).")
+//            .setNegativeButtonText("Cancel")
+//            .build()
+//
+//        biometricPrompt.authenticate(promptInfo)
+//    }
+private fun promptDeviceCredential() {
+    // This will prompt the user for device credentials (PIN, pattern, or password)
+    val biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(this), object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            isBioVerified.value = true
+            requestNotificationPermissionIfNeeded()
+        }
+
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            super.onAuthenticationError(errorCode, errString)
+            // Show the error message but don't finish the app
+            Toast.makeText(this@MainActivity, "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            // Show failure message but don't finish the app
+            Toast.makeText(this@MainActivity, "Authentication failed", Toast.LENGTH_SHORT).show()
+        }
+    })
+
+    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        .setTitle("Device Credential Authentication")
+        .setSubtitle("Please authenticate using your device credentials (PIN, pattern, or password).")
+        .setNegativeButtonText("Cancel")
+        .build()
+
+    biometricPrompt.authenticate(promptInfo)
+}
 
     private fun requestNotificationPermissionIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
