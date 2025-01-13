@@ -3,9 +3,17 @@
     <string name="app_names">एलेवे</string>
     <string name="app_na">8फिट</string>
     <string name="app_name">एलेवे8फिट</string>
+    <string name="health">एक अच्छा स्वास्थ्य है</string>
+    <string name="Accntpresent">यदि आपके पास खाता है, तो कृपया साइन इन करें</string>
+    <string name="let_s_start">चलो शुरू करो</string>
+    <string name="select_language">भाषा चुने</string>
+    <string name="Gender">आपका लिंग क्या है ?</string>
+    <string name="name">अपना नाम दर्ज करें</string>
+    <string name="age"> आयु का चयन करें </string>
+    <string name="btn_continue">जारी रखें</string>
 
 
-        <string-array name="quotes">
+    <string-array name="quotes">
             <item>खुद को आगे बढ़ाओ क्योंकि तुम्हारे लिए कोई और ऐसा नहीं करेगा।</item>
             <item>एकमात्र खराब कसरत वह है जो नहीं हुई।</item>
             <item>व्यायाम आपके शरीर की क्षमता का उत्सव है, न कि आपने क्या खाया इसके लिए दंड।</item>

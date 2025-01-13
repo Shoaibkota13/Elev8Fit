@@ -3,9 +3,11 @@
 package com.fitness.elev8fit.presentation.activity.chat.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,25 +53,136 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.domain.model.chat.Message
 import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
 import com.fitness.elev8fit.presentation.intent.ChatIntent
+import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.utils.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String,navController: NavController) {
+//
+//
+//    val state by viewModel.state.collectAsState()
+//    var messageText by remember { mutableStateOf("") }
+//    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+//    val scope = rememberCoroutineScope()
+//    val context = LocalContext.current
+//    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.done))
+//    val progress = rememberLottieAnimatable()
+//
+//    val notificationHandler = NotificationHandler(context)
+//
+//
+//
+//
+//    // Start the animation and keep it looping while `state.isUploading` is true
+//    LaunchedEffect(state.isUploading) {
+//        if (state.isUploading) {
+//            progress.animate(
+//                composition = composition,
+//                iterations = LottieConstants.IterateForever // Loops infinitely
+//            )
+//        } else {
+//            progress.isAtEnd // Stop animation when `state.isUploading` is false
+//        }
+//    }
+//
+//
+//
+//    LaunchedEffect(chatRoomId) {
+//        viewModel.processIntent(ChatIntent.InitializeChat(chatRoomId))
+//        // Show notification when chat is opened
+//    }
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = { Text("Chat with Coach") },
+//                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.primary),
+//                navigationIcon = {
+//
+//                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", modifier = Modifier.clickable {
+//                            navController.navigate(Navdestination.home.toString())
+//                        })
+//
+//                }
+//            )
+//        },
+//        containerColor = MaterialTheme.colorScheme.tertiary
+//    ) { paddingValues ->
+//        if (!state.chatInitialized) {
+//            Box(
+//                modifier = Modifier.fillMaxSize(),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                CircularProgressIndicator()
+//            }
+//        } else {
+//            Column(modifier = Modifier.padding(paddingValues)) {
+//                LazyColumn(
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .fillMaxWidth(),
+//                    reverseLayout = true
+//                ) {
+//                    items(state.messages.reversed()) { message ->
+//                        ChatMessageItem(
+//                            message = message,
+//                            isCurrentUser = message.senderId == userId
+//                        )
+//                    }
+//                }
+//
+//                MessageInput(
+//                    messageText = messageText,
+//                    onMessageChange = { messageText = it },
+//                    onSendMessage = {
+//                        if (messageText.isNotEmpty()) {
+//                            viewModel.processIntent(ChatIntent.SendMessage(userId, messageText))
+//                            messageText = ""
+//                            notificationHandler.showSimpleNotification(chatRoomId)
+//                        }
+//                    },
+//                    onImageSelected = { uri ->
+//                        scope.launch {
+//                            viewModel.processIntent(ChatIntent.UploadImage(uri, userId))
+//                        }
+//                    }
+//                )
+//            }
+//
+//            if (state.isUploading) {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(Color.Black.copy(alpha = 0.5f)),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    LottieAnimation(
+//                        composition = composition,
+//                        progress =  progress.progress,
+//                        modifier = Modifier.size(150.dp)
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> Unit) {
-
-
+fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, navController: NavController) {
     val state by viewModel.state.collectAsState()
     var messageText by remember { mutableStateOf("") }
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -80,29 +193,15 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
 
     val notificationHandler = NotificationHandler(context)
 
-
-
-
-    // Start the animation and keep it looping while `state.isUploading` is true
-    LaunchedEffect(state.isUploading) {
-        if (state.isUploading) {
-            progress.animate(
-                composition = composition,
-                iterations = LottieConstants.IterateForever // Loops infinitely
-            )
-        } else {
-            progress.isAtEnd // Stop animation when `state.isUploading` is false
-        }
+    // Log when the state is updating
+    LaunchedEffect(state) {
+        Log.d("ChatScreen", "State updated: $state")
     }
 
-
-
+    // Log when chat initialization happens
     LaunchedEffect(chatRoomId) {
+        Log.d("ChatScreen", "Initializing chat for chatRoomId: $chatRoomId")
         viewModel.processIntent(ChatIntent.InitializeChat(chatRoomId))
-        notificationHandler.showSimpleNotification(chatRoomId)
-
-
-        // Show notification when chat is opened
     }
 
     Scaffold(
@@ -111,9 +210,15 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                 title = { Text("Chat with Coach") },
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.primary),
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
+                    Log.d("ChatScreen", "Back button clicked")
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier.clickable {
+                            Log.d("Navigation", "Navigating to home: ${Navdestination.home.toString()}")
+                            navController.navigate(Navdestination.home.toString())
+                        }
+                    )
                 }
             )
         },
@@ -147,8 +252,10 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                     onMessageChange = { messageText = it },
                     onSendMessage = {
                         if (messageText.isNotEmpty()) {
+                            Log.d("ChatScreen", "Sending message: $messageText")
                             viewModel.processIntent(ChatIntent.SendMessage(userId, messageText))
                             messageText = ""
+                            notificationHandler.showSimpleNotification(chatRoomId)
                         }
                     },
                     onImageSelected = { uri ->
@@ -158,24 +265,10 @@ fun ChatScreen(viewModel: ChatViewModel, chatRoomId: String, onBackClick: () -> 
                     }
                 )
             }
-
-            if (state.isUploading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LottieAnimation(
-                        composition = composition,
-                        progress =  progress.progress,
-                        modifier = Modifier.size(150.dp)
-                    )
-                }
-            }
         }
     }
 }
+
 
 
 

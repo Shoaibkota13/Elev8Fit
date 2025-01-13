@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fitness.elev8fit.presentation.viewmodel.imageview
 import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
-import com.fitness.elev8fit.ui.theme.card_color
 
 @Composable
 fun OnBoardingCommon(
@@ -126,11 +125,11 @@ fun OnBoardingCommon(
                                 .focusable(enabled = true))
                         if (text1 != null) {
                             Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                                Card(
-                                    modifier = Modifier.padding(8.dp),
-                                    shape = MaterialTheme.shapes.medium,
-                                    colors = CardDefaults.cardColors(card_color)
-                                ) {
+//                                Card(
+//                                    modifier = Modifier.padding(8.dp),
+//                                    shape = MaterialTheme.shapes.medium,
+//                                    colors = CardDefaults.cardColors(card_color)
+                             //   ) {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = Modifier.padding(8.dp)
@@ -141,7 +140,7 @@ fun OnBoardingCommon(
                                             color = CustomBackgroundColor
                                         )
                                     }
-                                }
+                                //}
                             }
                         }
                     }
@@ -166,11 +165,11 @@ fun OnBoardingCommon(
 
                         if (text2 != null) {
                             Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                                Card(
-                                    modifier = Modifier.padding(8.dp),
-                                    shape = MaterialTheme.shapes.medium,
-                                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
-                                ) {
+//                                Card(
+//                                    modifier = Modifier.padding(8.dp),
+//                                    shape = MaterialTheme.shapes.medium,
+//                                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
+//                                ) {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = Modifier.padding(8.dp)
@@ -181,7 +180,7 @@ fun OnBoardingCommon(
                                             color = MaterialTheme.colorScheme.primary
                                         )
                                     }
-                                }
+                               // }
                             }
                         }
                     }

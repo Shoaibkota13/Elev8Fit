@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.fitness.elev8fit.R
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.presentation.viewmodel.imageview
@@ -81,7 +83,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
 
             // Age selector text
             Text(
-                text = "Select Age",
+                text = stringResource(R.string.age),
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -114,7 +116,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
 
             // Prompt to enter name
             Text(
-                text = "Enter Your Name",
+                text = stringResource(R.string.name),
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -127,13 +129,12 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
             TextField(
                 value = signupdata.name,
                 onValueChange = { signUpViewModel.setUsername(it) },
-                label = { Text("Enter Your Name") },
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor = Color.White,
                     focusedTextColor = Color.Black
                 )
             )
@@ -150,7 +151,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
                     shape = CutCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(text = "Continue")
+                    Text(text = stringResource(R.string.btn_continue))
                 }
             }
         }

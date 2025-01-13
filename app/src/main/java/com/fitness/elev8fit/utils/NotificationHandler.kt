@@ -29,8 +29,8 @@ class NotificationHandler (private val context: Context) {
         )
 
         val notification = NotificationCompat.Builder(context, notificationChannelID)
-            .setContentTitle("New Message")
-            .setContentText("You have a new message")
+            .setContentTitle("Chat Is Active")
+            .setContentText("You just sent a  message")
             .setSmallIcon(R.drawable.logo)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
@@ -45,4 +45,33 @@ class NotificationHandler (private val context: Context) {
 
         notificationManager.notify(chatroomId.hashCode(), notification)
     }
+
+
+    fun showLogoutNotification() {
+        // Creating an intent to launch the MainActivity after logout
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context,
+            Random.nextInt(), // Use random request code to avoid PendingIntent collision
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Building the logout notification
+        val notification = NotificationCompat.Builder(context, notificationChannelID)
+            .setContentTitle("Logged Out")
+            .setContentText("You have successfully logged out.")
+            .setSmallIcon(R.drawable.logo)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true) // Automatically dismiss the notification when clicked
+            .build()
+
+        // Displaying the notification with a unique ID (e.g., static value or based on the action)
+        notificationManager.notify("logout_notification".hashCode(), notification)
+    }
+
 }

@@ -19,10 +19,8 @@ import com.fitness.elev8fit.presentation.activity.chat.ui.ChatMain
 import com.fitness.elev8fit.presentation.activity.chat.ui.ChatScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
+import com.fitness.elev8fit.presentation.activity.onboarding.secondOnboarding
 import com.fitness.elev8fit.presentation.activity.onboarding.thirdOnboarding
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import secondOnboarding
 
 @Composable
 fun displaynav(
@@ -31,7 +29,7 @@ fun displaynav(
     deepLink: Uri?,
     chatid: String?
 ) {
-    val auth = Firebase.auth.currentUser?.uid
+    //val auth = Firebase.auth.currentUser?.uid
 
     val startDestination = when {
         !isAuthenticated -> {
@@ -41,7 +39,7 @@ fun displaynav(
             handleDeepLink(deepLink)
         }
         chatid != null -> {
-            navController.navigate(Navdestination.chatuser.toString())
+
             Navdestination.chatuser.toString()
         }
         else -> {
@@ -86,13 +84,13 @@ fun displaynav(
             ChatMain()
         }
         composable(Navdestination.chatuser.toString()) {
-            if (chatid != null || auth != null) {
+            if (chatid != null ) {
                 ChatScreen(
                     viewModel = hiltViewModel(),
-                    chatRoomId = chatid ?: auth!!
-                ) {
-                    navController.navigateUp()
-                }
+                    chatRoomId = chatid,
+                    navController=navController
+                )
+
             }
         }
 
@@ -127,6 +125,7 @@ private fun handleDeepLink(uri: Uri): String {
         uri.scheme == "https" && uri.host == "elev8fit" -> {
             when (uri.path) {
                 "/onboard" -> Navdestination.onboarding1.toString()
+                "/login"->Navdestination.login.toString()
                 else -> Navdestination.onboarding1.toString()
             }
         }

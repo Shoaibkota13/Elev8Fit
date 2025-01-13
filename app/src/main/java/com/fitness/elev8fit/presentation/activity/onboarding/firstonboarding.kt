@@ -1,6 +1,5 @@
 package com.fitness.elev8fit.presentation.activity.onboarding
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,11 +19,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,53 +36,63 @@ import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.R
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.ui.theme.CustomBackgroundColor
-import com.fitness.elev8fit.ui.theme.Quotes
 import com.fitness.elev8fit.ui.theme.bg_color
 import com.fitness.elev8fit.ui.theme.quicksand
 
 @Composable
-fun Firstonboard(navController: NavController){
 
-    val context = LocalContext.current
+fun Firstonboard(navController: NavController) {
+    // Generate the random quote only once when the composable is first created
+    val quotes = stringArrayResource(id = R.array.quotes)
+    val randomQuote = remember { quotes.random() }
 
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(bg_color)
-        .padding(16.dp),
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(bg_color)
+            .padding(16.dp),
         contentAlignment = Alignment.Center
-    )
-    {
-
-        Column(modifier = Modifier.fillMaxSize(),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // App name header
             Row(horizontalArrangement = Arrangement.Center) {
-                Text(text = "Elev",
+                Text(
+                    text = stringResource(id = R.string.app_name),
                     color = Color.Blue,
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold)
+                    fontWeight = FontWeight.Bold
+                )
                 Text(
-                    text = "8Fit",
+                    text = stringResource(id = R.string.app_na),
                     color = Color.Green,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
+
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle
             Text(
-                text = " Have A Good Health",
+                text = stringResource(id = R.string.health),
                 fontFamily = quicksand,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Image(painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo")
+            // Logo
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo"
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Quotes card
             Card(
                 modifier = Modifier.padding(16.dp),
                 shape = CardDefaults.shape,
@@ -89,7 +100,7 @@ fun Firstonboard(navController: NavController){
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = Quotes.getRandomQuote(),
+                        text = randomQuote,
                         fontSize = 24.sp,
                         fontFamily = quicksand,
                         fontWeight = FontWeight.Black,
@@ -98,44 +109,55 @@ fun Firstonboard(navController: NavController){
                     )
                 }
             }
-            val context = LocalContext.current
-            Text(text = "If you have account,please sign in",
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Navigation to login
+            Text(
+                text = stringResource(id = R.string.Accntpresent),
                 modifier = Modifier.clickable {
+                    // Navigate to login screen
+                    navController.navigate(Navdestination.login.toString())
+                },
+                fontFamily = quicksand,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
 
-            navController.navigate(Navdestination.login.toString())
-                }, fontFamily = quicksand, fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)
-
+            // Button for onboarding navigation
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp), // Optional padding around the Column
-                verticalArrangement = Arrangement.Bottom, // Places content at the bottom
-                horizontalAlignment = Alignment.CenterHorizontally // Centers content horizontally
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
-                    onClick = { navController.navigate(Navdestination.onboarding2.toString())},
+                    onClick = {
+                        // Navigate to the second onboarding screen
+                        navController.navigate(Navdestination.onboarding2.toString())
+                    },
                     modifier = Modifier.padding(16.dp),
                     shape = CutCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                       MaterialTheme.colorScheme.primary
-                    )
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = "Let's Start",
                         fontSize = 24.sp,
                         color = Color.White
                     )
-
                 }
             }
         }
-
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun OnboardingPreview() {
-    val navController = rememberNavController() // Remember NavController for preview
-    Firstonboard(navController = navController) // Pass NavController to onboarding function
+    val navController = rememberNavController()
+    Firstonboard(navController = navController)
 }
+
+

@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.presentation.activity.chat.ChatRoomListViewModel
 import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ChatMain() {
+    val navController = rememberNavController()
     val currentUser = FirebaseAuth.getInstance().currentUser
     val isCoach = currentUser?.uid == "oriw3fgPs4NqpN5BxfDb58Uq6532"
     var selectedChatRoomId by remember { mutableStateOf<String?>(null) }
@@ -45,7 +47,7 @@ fun ChatMain() {
             ChatScreen(
                 viewModel = chatViewModel,
                 chatRoomId = currentUser?.uid ?: "",
-                onBackClick = { showChat = false }
+                navController = navController
             )
 
 

@@ -1,10 +1,50 @@
 <resources>
     <string name="app_name">Elev8Fit</string>
+    <string name="app_names">Elev</string>
+    <string name="app_na">8Fit</string>
     <string name="Web_client_id" translatable="false">593588186105-9hk6qifh6ign6pq1revh5lapr058gt9q.apps.googleusercontent.com</string>
-
+    <string name="health">Have A Good Health</string>
     <string name="facebook_app_id" translatable="false">2014364505743725</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb2014364505743725</string>
     <string name="facebook_client_token" translatable="false">2234726933c690b22ba4841ddeedc97a</string>
+    <string name="Accntpresent">If you have account,please sign in</string>
+    <string name="let_s_start">Let\'s Start</string>
+    <string name="select_language">Select Language</string>
+    <string name="Gender">What is your Gender ?</string>
+    <string name="name">Enter Your Name</string>
+    <string name="age">Select Age</string>
+    <string name="btn_continue">Continue</string>
 
-
+    <string-array name="quotes">
+        <item>Push yourself because no one else is going to do it for you.</item>
+        <item>The only bad workout is the one that didn’t happen.</item>
+        <item>Exercise is a celebration of what your body can do, not a punishment for what you ate.</item>
+        <item>Don’t stop when you’re tired. Stop when you’re done.</item>
+        <item>It’s not about being the best, it’s about being better than you were yesterday.</item>
+        <item>The body achieves what the mind believes.</item>
+        <item>A little progress every day adds up to big results.</item>
+        <item>Success starts with self-discipline.</item>
+        <item>Sweat is fat crying.</item>
+        <item>When you feel like quitting, think about why you started.</item>
+        <item>Don’t wish for a good body, work for it.</item>
+        <item>Hard work beats talent when talent doesn’t work hard.</item>
+        <item>You don’t have to be great to start, but you have to start to be great.</item>
+        <item>Strength doesn’t come from what you can do. It comes from overcoming the things you once thought you couldn’t.</item>
+        <item>It’s going to be a journey. It’s not a sprint to get fit.</item>
+        <item>There are no shortcuts. Work hard, stay consistent, and achieve greatness.</item>
+        <item>The pain you feel today will be the strength you feel tomorrow.</item>
+        <item>Your only limit is you.</item>
+        <item>The harder you work for something, the greater you’ll feel when you achieve it.</item>
+        <item>Sitting won’t get you the body you want.</item>
+        <item>Take care of your body, it’s the only place you have to live.</item>
+        <item>Discipline is the bridge between goals and accomplishments.</item>
+        <item>Make your body the sexiest outfit you own.</item>
+        <item>Work hard in silence, let your success be the noise.</item>
+        <item>You don’t need to be fast, just keep moving.</item>
+        <item>Don’t count the days, make the days count.</item>
+        <item>The only way to finish is to start.</item>
+        <item>One hour of workout is just 4% of your day. No excuses.</item>
+        <item>Believe in yourself and all that you are.</item>
+        <item>Fitness isn’t about being better than someone else; it’s about being better than you used to be.</item>
+    </string-array>
 </resources>

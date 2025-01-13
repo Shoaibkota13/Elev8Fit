@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
+   // private val languageCode = mutableStateOf("en")
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private val isBioVerified = mutableStateOf(false)
@@ -44,6 +45,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+       // LocaleManager.setLocale(this,languageCode.value)
         val chatroomId = intent.getStringExtra("chatroomId")
 
         // Setup biometric authentication
@@ -142,7 +144,7 @@ class MainActivity : FragmentActivity() {
 
     private fun setupBiometric() {
         val biometricManager = BiometricManager.from(this)
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL  or BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
                 biometricPrompt.authenticate(promptInfo)
             }

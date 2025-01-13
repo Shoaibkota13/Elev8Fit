@@ -105,7 +105,7 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 shape = CutCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                     focusedTextColor = Color.Black
                 ),
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
