@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.intent
+package com.fitness.elev8fit.presentation.activity.chat.presentation.intent
 
 import android.net.Uri
 

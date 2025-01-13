@@ -1,12 +1,13 @@
-package com.fitness.elev8fit.presentation.activity.chat
+package com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fitness.elev8fit.data.repository.authfirebaseimpl
-import com.fitness.elev8fit.data.state.ChatState
-import com.fitness.elev8fit.domain.model.chat.Message
-import com.fitness.elev8fit.presentation.intent.ChatIntent
+import com.fitness.elev8fit.data.repository.chatrepoimpl
+import com.fitness.elev8fit.presentation.activity.chat.data.state.ChatState
+import com.fitness.elev8fit.presentation.activity.chat.domain.model.Message
+import com.fitness.elev8fit.presentation.activity.chat.presentation.intent.ChatIntent
 import com.fitness.elev8fit.utils.S3Uploader
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val authRepository: authfirebaseimpl,
+    private val chatrepo:chatrepoimpl,
     private val s3Uploader: S3Uploader
 ) : ViewModel() {
     private val _state = MutableStateFlow(ChatState())
@@ -42,7 +44,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                authRepository.initializeChatRoom(chatRoomId, currentUser.uid)
+                chatrepo.initializeChatRoom(chatRoomId, currentUser.uid)
                 _state.update { it.copy(chatInitialized = true, isLoading = false) }
               observeMessages(chatRoomId)
             } catch (e: Exception) {
@@ -61,7 +63,7 @@ class ChatViewModel @Inject constructor(
                     text = messageText,
                     timestamp = System.currentTimeMillis()
                 )
-                authRepository.sendMessageToChatRoom(chatRoomId, message)
+                chatrepo.sendMessageToChatRoom(chatRoomId, message)
 
             } catch (e: Exception) {
                 _state.update { it.copy(error = e.message) }
@@ -72,7 +74,7 @@ class ChatViewModel @Inject constructor(
     private fun observeMessages(chatRoomId: String) {
         viewModelScope.launch {
             try {
-                authRepository.observeChatMessages(chatRoomId) { messages ->
+                chatrepo.observeChatMessages(chatRoomId) { messages ->
                     _state.update { currentState ->
                         currentState.copy(messages = messages)
                     }
@@ -95,7 +97,7 @@ class ChatViewModel @Inject constructor(
                     imageUrl = imageUrl
                 )
                 selectedChatRoomId?.let { chatRoomId ->
-                    authRepository.sendMessageToChatRoom(chatRoomId, message)
+                    chatrepo.sendMessageToChatRoom(chatRoomId, message)
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(error = e.message) }

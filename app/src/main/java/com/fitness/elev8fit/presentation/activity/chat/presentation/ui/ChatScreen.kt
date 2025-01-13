@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.fitness.elev8fit.presentation.activity.chat.ui
+package com.fitness.elev8fit.presentation.activity.chat.presentation.ui
 
 import android.net.Uri
 import android.util.Log
@@ -59,9 +59,9 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fitness.elev8fit.R
-import com.fitness.elev8fit.domain.model.chat.Message
-import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
-import com.fitness.elev8fit.presentation.intent.ChatIntent
+import com.fitness.elev8fit.presentation.activity.chat.domain.model.Message
+import com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel.ChatViewModel
+import com.fitness.elev8fit.presentation.activity.chat.presentation.intent.ChatIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.utils.NotificationHandler
 import com.google.firebase.auth.FirebaseAuth

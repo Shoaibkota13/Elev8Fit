@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.activity.chat.ui
+package com.fitness.elev8fit.presentation.activity.chat.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,8 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
-import com.fitness.elev8fit.presentation.intent.ChatIntent
+import com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel.ChatViewModel
+import com.fitness.elev8fit.presentation.activity.chat.presentation.intent.ChatIntent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 

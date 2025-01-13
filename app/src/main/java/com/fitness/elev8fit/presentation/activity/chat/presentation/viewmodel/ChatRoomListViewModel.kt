@@ -1,9 +1,10 @@
-package com.fitness.elev8fit.presentation.activity.chat
+package com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fitness.elev8fit.data.repository.authfirebaseimpl
-import com.fitness.elev8fit.domain.model.chat.ChatRoom
+import com.fitness.elev8fit.data.repository.chatrepoimpl
+import com.fitness.elev8fit.presentation.activity.chat.domain.model.ChatRoom
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatRoomListViewModel @Inject constructor(
-    private val authRepository: authfirebaseimpl
+    private val authRepository: authfirebaseimpl,
+    private val chatrepo : chatrepoimpl
 ) : ViewModel() {
     private val _chatRooms = MutableStateFlow<List<ChatRoom>>(emptyList())
     val chatRooms: StateFlow<List<ChatRoom>> = _chatRooms
@@ -24,7 +26,7 @@ class ChatRoomListViewModel @Inject constructor(
 
     private fun fetchChatRoomsForCoach() {
         viewModelScope.launch {
-            authRepository.fetchChatRoomsForCoach { chatRoomsList ->
+            chatrepo.fetchChatRoomsForCoach { chatRoomsList ->
                 _chatRooms.value = chatRoomsList
             }
         }

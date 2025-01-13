@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.activity.chat.ui
+package com.fitness.elev8fit.presentation.activity.chat.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -7,8 +7,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.fitness.elev8fit.presentation.activity.chat.ChatRoomListViewModel
-import com.fitness.elev8fit.presentation.activity.chat.ChatViewModel
+import com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel.ChatRoomListViewModel
+import com.fitness.elev8fit.presentation.activity.chat.presentation.viewmodel.ChatViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable

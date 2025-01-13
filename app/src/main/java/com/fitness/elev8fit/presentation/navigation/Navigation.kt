@@ -15,8 +15,8 @@ import com.fitness.elev8fit.presentation.activity.Otp.OTPVerificationScreen
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeEntry
 import com.fitness.elev8fit.presentation.activity.Recipe.RecipeScreen.RecipeScreen
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpScreen
-import com.fitness.elev8fit.presentation.activity.chat.ui.ChatMain
-import com.fitness.elev8fit.presentation.activity.chat.ui.ChatScreen
+import com.fitness.elev8fit.presentation.activity.chat.presentation.ui.ChatMain
+import com.fitness.elev8fit.presentation.activity.chat.presentation.ui.ChatScreen
 import com.fitness.elev8fit.presentation.activity.login.LoginScreen
 import com.fitness.elev8fit.presentation.activity.onboarding.Firstonboard
 import com.fitness.elev8fit.presentation.activity.onboarding.secondOnboarding

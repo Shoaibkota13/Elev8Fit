@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.domain.model.chat
+package com.fitness.elev8fit.presentation.activity.chat.domain.model
 
 //
 //data class Message(

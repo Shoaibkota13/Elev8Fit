@@ -1,6 +1,6 @@
-package com.fitness.elev8fit.data.state
+package com.fitness.elev8fit.presentation.activity.chat.data.state
 
-import com.fitness.elev8fit.domain.model.chat.Message
+import com.fitness.elev8fit.presentation.activity.chat.domain.model.Message
 
 data class ChatState(
     val messages: List<Message> = emptyList(),
