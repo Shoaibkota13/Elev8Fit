@@ -21,11 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.data.constant.DataStoreManager
 import com.fitness.elev8fit.presentation.activity.splash.SplashScreen
 import com.fitness.elev8fit.presentation.navigation.displaynav
 import com.fitness.elev8fit.ui.theme.Elev8FitTheme
+import com.fitness.elev8fit.utils.setLocaleForApp
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -45,6 +47,14 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+        val context = this
+        val coroutineScope = lifecycleScope
+        coroutineScope.launch {
+            DataStoreManager.getLanguagePreference(context).collect { languageCode ->
+                setLocaleForApp(context, languageCode) // Set the locale
+            }
+        }
+
        // LocaleManager.setLocale(this,languageCode.value)
         val chatroomId = intent.getStringExtra("chatroomId")
 
@@ -95,7 +105,7 @@ class MainActivity : FragmentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+             ///   Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(
                     this,

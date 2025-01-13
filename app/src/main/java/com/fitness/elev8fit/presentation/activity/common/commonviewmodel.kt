@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.common
+package com.fitness.elev8fit.presentation.activity.common
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

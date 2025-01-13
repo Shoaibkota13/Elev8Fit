@@ -61,12 +61,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.fitness.elev8fit.R
-import com.fitness.elev8fit.presentation.common.commonviewmodel
+import com.fitness.elev8fit.presentation.activity.common.commonviewmodel
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 
 @Composable
 fun ProfileScreen(
-    profileViewModel: ProfileViewModel,navController: NavController, common: commonviewmodel,context: Context
+    profileViewModel: ProfileViewModel, navController: NavController, common: commonviewmodel, context: Context
 ) {
 
     val user by profileViewModel.user.observeAsState()

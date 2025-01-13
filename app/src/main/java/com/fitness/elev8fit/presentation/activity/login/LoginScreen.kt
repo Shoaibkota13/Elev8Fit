@@ -51,7 +51,7 @@ import com.fitness.elev8fit.R
 import com.fitness.elev8fit.presentation.activity.Otp.OtpViewModel
 import com.fitness.elev8fit.presentation.activity.SignUp.SignUpViewModel
 import com.fitness.elev8fit.presentation.activity.socialLoginSignIn.GoogleSignInViewModel
-import com.fitness.elev8fit.presentation.common.cards
+import com.fitness.elev8fit.presentation.activity.common.cards
 import com.fitness.elev8fit.presentation.intent.LoginIntent
 import com.fitness.elev8fit.presentation.intent.SignUpIntent
 import com.fitness.elev8fit.presentation.navigation.Navdestination

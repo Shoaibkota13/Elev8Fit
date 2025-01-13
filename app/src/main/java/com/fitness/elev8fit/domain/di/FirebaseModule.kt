@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.di
+package com.fitness.elev8fit.domain.di
 
 import android.content.Context
 import com.fitness.elev8fit.data.repository.authfirebaseimpl

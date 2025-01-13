@@ -8,7 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.fitness.elev8fit.R
-import com.fitness.elev8fit.presentation.common.OnBoardingCommon
+import com.fitness.elev8fit.presentation.activity.common.OnBoardingCommon
 import com.fitness.elev8fit.presentation.navigation.Navdestination
 import com.fitness.elev8fit.presentation.viewmodel.imageview
 

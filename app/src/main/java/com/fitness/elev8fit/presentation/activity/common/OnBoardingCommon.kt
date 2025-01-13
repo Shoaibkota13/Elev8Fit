@@ -1,4 +1,4 @@
-package com.fitness.elev8fit.presentation.common
+package com.fitness.elev8fit.presentation.activity.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
