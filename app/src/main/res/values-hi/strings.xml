@@ -11,6 +11,7 @@
     <string name="name">अपना नाम दर्ज करें</string>
     <string name="age"> आयु का चयन करें </string>
     <string name="btn_continue">जारी रखें</string>
+    <string name="details"> विवरण दर्ज करें</string>
 
 
     <string-array name="quotes">

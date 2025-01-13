@@ -26,7 +26,7 @@ fun secondOnboarding(navController: NavController,viewModel: imageview) {
             text2="Female",
             showimage2 = true,
             showimage3 = true,
-            buttontext = "Continue",
+            buttontext = stringResource(id = R.string.btn_continue),
            viewModel = viewModel
         ) {
             navController.navigate(Navdestination.onboarding3.toString())

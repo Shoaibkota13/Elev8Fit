@@ -73,7 +73,7 @@ fun thirdOnboarding(signUpViewModel: SignUpViewModel,imageview: imageview,navCon
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Enter the Details",
+                        text = stringResource(R.string.details),
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center

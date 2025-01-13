@@ -14,6 +14,7 @@
     <string name="name">Enter Your Name</string>
     <string name="age">Select Age</string>
     <string name="btn_continue">Continue</string>
+    <string name="details">Enter the Details</string>
 
     <string-array name="quotes">
         <item>Push yourself because no one else is going to do it for you.</item>

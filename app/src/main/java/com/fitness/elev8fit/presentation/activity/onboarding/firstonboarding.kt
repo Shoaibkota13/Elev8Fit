@@ -60,7 +60,7 @@ fun Firstonboard(navController: NavController) {
             // App name header
             Row(horizontalArrangement = Arrangement.Center) {
                 Text(
-                    text = stringResource(id = R.string.app_name),
+                    text = stringResource(id = R.string.app_names),
                     color = Color.Blue,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
@@ -143,7 +143,7 @@ fun Firstonboard(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = "Let's Start",
+                        text = stringResource(id = R.string.let_s_start),
                         fontSize = 24.sp,
                         color = Color.White
                     )
