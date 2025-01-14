@@ -9,6 +9,7 @@ data class RecipeState(
     var benfits : String="",
     var prepTime:String="",
     var category :String="",
+    var dplink:String="",
     val isLoading: Boolean = false,
     val successMessage: String? = null,
     val errorMessage: String? = null

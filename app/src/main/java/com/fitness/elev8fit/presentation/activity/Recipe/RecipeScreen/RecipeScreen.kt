@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -94,97 +96,171 @@ fun RecipeItem(recipe: Recipe) {
 
     Card(
         modifier = Modifier
-            .padding(8.dp , bottom = 32.dp, top = 8.dp, end = 8.dp)
+            .padding(8.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            // Recipe Title
-            Text(
-                text = "Title:",
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold,   color = MaterialTheme.colorScheme.primary),
-                modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = recipe.recipeTitle,
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold,   color = MaterialTheme.colorScheme.primary),
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.primary
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Recipe image as background with fixed aspect ratio (adjust if needed)
+            AsyncImage(
+                model = recipe.image,
+                contentDescription = "Recipe Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize()
+                      // Set a fixed height or adjust to fit your design
             )
 
-            // Ingredients
-            Text(
-                text = "Ingredients:",
-                style = TextStyle(color = Color.Black,fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
-                modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.primary
+            // Full-screen black semi-transparent overlay to ensure the whole image gets shaded
+            Box(
+                modifier = Modifier
+                    .matchParentSize() // Ensure it fills the entire space
+                    .background(Color.Black.copy(alpha = 0.5f)) // Semi-transparent black overlay
             )
-            val visibleingrdient = if (showFull.value) recipe.recipeIngredient else recipe.recipeIngredient.take(1)
-            visibleingrdient.forEachIndexed { index, step ->
+
+            // Content on top of the overlay
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .align(Alignment.BottomStart) // Align content to the bottom of the Box
+            ) {
+                // Recipe Title
                 Text(
-                    text = "${index + 1}. $step",
-                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                    modifier = Modifier.padding(start = 8.dp)
+                    text = recipe.recipeTitle,
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 )
-            }
 
-            // "Read More" or "Read Less" for instructions
-            if (recipe.recipeIngredient.size > 1) {
-                TextButton(
-                    onClick = { showFull.value = !showFull.value }
-                ) {
-                    Text(text = if (showFull.value) "Read Less" else "Read More")
+                // Ingredients Section
+                Text(
+                    text = "Ingredients:",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                val visibleIngredients =
+                    if (showFull.value) recipe.recipeIngredient else recipe.recipeIngredient.take(1)
+                visibleIngredients.forEachIndexed { index, ingredient ->
+                    Text(
+                        text = "${index + 1}. $ingredient",
+                        style = TextStyle(fontSize = 14.sp, color = Color.White),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
-            }
 
-            // Instructions
-            Text(
-                text = "Instructions:",
-                style = TextStyle(color = MaterialTheme.colorScheme.primary,
-                    fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
-                modifier = Modifier.padding(top = 8.dp)
-            )
-
-            val visibleInstructions = if (showFulls.value) recipe.instructions else recipe.instructions.take(1)
-            visibleInstructions.forEachIndexed { index, step ->
-                Text(
-                    text = "${index + 1}. $step",
-                    style = TextStyle(fontSize = 14.sp, color = Color.Gray),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-
-            // "Read More" or "Read Less" for instructions
-            if (recipe.instructions.size > 1) {
-                TextButton(
-                    onClick = { showFulls.value = !showFulls.value }
-                ) {
-                    Text(text = if (showFulls.value) "Read Less" else "Read More")
+                // "Read More" or "Read Less" for ingredients
+                if (recipe.recipeIngredient.size > 1) {
+                    TextButton(
+                        onClick = { showFull.value = !showFull.value }
+                    ) {
+                        Text(text = if (showFull.value) "Read Less" else "Read More", color = Color.White)
+                    }
                 }
-            }
 
-
-            // Preparation Time
-            Text(
-                text = "Preparation Time: ${recipe.prepTime} mins",
-                style = TextStyle(color = Color.Black,fontSize = 14.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            // Benefits
-            if (recipe.benifits.isNotEmpty()) {
+                // Instructions Section
                 Text(
-                    text = "Benefits: ${recipe.benifits}",
-                    style = TextStyle(fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary),
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    text = "Instructions:",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(top = 8.dp)
                 )
+
+                val visibleInstructions =
+                    if (showFulls.value) recipe.instructions else recipe.instructions.take(1)
+                visibleInstructions.forEachIndexed { index, instruction ->
+                    Text(
+                        text = "${index + 1}. $instruction",
+                        style = TextStyle(fontSize = 14.sp, color = Color.White),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+
+                // "Read More" or "Read Less" for instructions
+                if (recipe.instructions.size > 1) {
+                    TextButton(
+                        onClick = { showFulls.value = !showFulls.value }
+                    ) {
+                        Text(text = if (showFulls.value) "Read Less" else "Read More", color = Color.White)
+                    }
+                }
+
+
+                Text(
+                    text = "Recipe Link",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = recipe.dplink,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                )
+                // Preparation Time Row
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(
+                        text = "Preparation Time",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "${recipe.prepTime} mins",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    )
+                }
+
+                // Benefits
+                if (recipe.benifits.isNotEmpty()) {
+                    Text(
+                        text = "Benefits:",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        ),
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                    Text(
+                        text = recipe.benifits,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = Color.White
+                        ),
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
             }
         }
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -193,8 +269,10 @@ fun RecipeCard(recipe: Recipe,navController: NavController
 ) {
     Card(
         modifier = Modifier
-            .padding(8.dp , bottom = 32.dp, top = 8.dp, end = 8.dp)
-            .height(100.dp).width(200.dp).clickable {
+            .padding(8.dp, bottom = 32.dp, top = 8.dp, end = 8.dp)
+            .height(100.dp)
+            .width(200.dp)
+            .clickable {
                 navController.navigate(Navdestination.Recipe.toString())
             },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary)
@@ -210,6 +288,7 @@ fun RecipeCard(recipe: Recipe,navController: NavController
                 modifier = Modifier.fillMaxSize()
             )
 
+
             // Overlay for text content
             Column(
                 modifier = Modifier
@@ -218,11 +297,6 @@ fun RecipeCard(recipe: Recipe,navController: NavController
                     .padding(8.dp)
             ) {
                 // Recipe title
-                Text(
-                    text = "Recipe",
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.White),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
                 Text(
                     text = recipe.recipeTitle,
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White),

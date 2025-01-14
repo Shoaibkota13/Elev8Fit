@@ -90,7 +90,8 @@ class RecipeViewModel @Inject constructor(
             recipeIngredient = recipeState.recipeIngredient,
             instructions = recipeState.instruction,
             prepTime = recipeState.prepTime.toInt(),
-            benifits = recipeState.benfits
+            benifits = recipeState.benfits,
+            dplink = recipeState.dplink
         )
 
          authfirebaseimpl.RecipeDb(this,recipeInfo)

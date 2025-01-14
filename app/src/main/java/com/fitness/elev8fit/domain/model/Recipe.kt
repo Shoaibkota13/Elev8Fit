@@ -10,7 +10,8 @@ data class Recipe(
     val recipeIngredient: List<String> = emptyList(), // Assuming it's a list of ingredients
     val instructions: List<String> = emptyList(),
     val prepTime: Int=0,
-    val benifits:String=""
+    val benifits:String="",
+    val dplink :String=""
 ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -19,6 +20,7 @@ data class Recipe(
         parcel.createStringArrayList()!!,
         parcel.createStringArrayList()!!,
         parcel.readInt()!!,
+        parcel.readString()!!,
         parcel.readString()!!
     ) {
     }
@@ -33,6 +35,7 @@ data class Recipe(
         writeList(instructions)
         writeList(recipeIngredient)
         writeString(benifits)
+        writeString(dplink)
         TODO("Not yet implemented")
     }
 
