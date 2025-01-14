@@ -209,9 +209,28 @@ fun RecipeEntry(recipemodel : RecipeViewModel, navController: NavController) {
                 textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
             )
 
+            // Benefits Input
+            Text("Recipe Links:",color = MaterialTheme.colorScheme.primary)
+            TextField(
+                value = recipestate.dplink,
+                onValueChange = { recipemodel.updatelink(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, top = 8.dp),
+                shape = CutCornerShape(8.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor =MaterialTheme.colorScheme.primary,
+
+                    ),
+                textStyle = TextStyle(color = Color.Black, fontSize = 16.sp, fontFamily = quicksand)
+            )
 
 
-                Spacer(modifier = Modifier.height(8.dp))
+
+
+
+            Spacer(modifier = Modifier.height(8.dp))
 
                 // Submit Button
                 Button(

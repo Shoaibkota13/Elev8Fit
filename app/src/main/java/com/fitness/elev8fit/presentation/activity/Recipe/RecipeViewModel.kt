@@ -28,7 +28,9 @@ class RecipeViewModel @Inject constructor(
     fun updateRecipeTitle(newTitle: String) {
         _state.value = _state.value.copy(recipetitle = newTitle)
     }
-
+    fun updatelink(newdplink:String){
+        _state.value = _state.value.copy(dplink = newdplink)
+    }
     // Function to update recipe ingredients
     fun updateRecipeIngredients(newIngredients: List<String>) {
         _state.value = _state.value.copy(recipeIngredient = newIngredients)
